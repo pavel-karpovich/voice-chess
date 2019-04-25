@@ -18,12 +18,12 @@ stockfish.onmessage = function(e) {
     console.log(fenstring);
   } else if (e.startsWith('bestmove')) {
     console.log(e);
-    bestMove = e.slice(8, 13);
+    bestMove = e.slice(9, 13);
     stockfish.postMessage(`position fen ${fenstring} moves ${bestMove}`);
-    console.log(bestMove);
+    console.log('|' + bestMove + '|');
     console.log('2');
     if (on) {
-      on();
+      on(e);
     }
     // stockfish.postMessage('d');
   }
@@ -32,7 +32,12 @@ stockfish.postMessage('ucinewgame');
 stockfish.postMessage('isready');
 stockfish.postMessage(`position fen ${fenstring}`);
 stockfish.postMessage('d');
-send().then(() => {
+send().then((e) => {
+  console.log(e);
+  const enemyMove = e.slice(9, 13);
+  const enemyFrom = enemyMove.slice(0, 2);
+  const enemyTo = enemyMove.slice(2);
+  console.log(`I would move from ${enemyFrom} to ${enemyTo}!`);
   stockfish.postMessage('d');
   console.log('3');
   return true;
@@ -44,7 +49,7 @@ send().then(() => {
  */
 async function send() {
   return new Promise((resolve) => {
-    on = () => resolve();
+    on = (e) => resolve(e);
     console.log('1');
     stockfish.postMessage('go ponder depth 8 movetime 10000');
   });
