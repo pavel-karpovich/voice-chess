@@ -3,6 +3,7 @@ const id = 0;
 // const stockfish = require('stockfish');
 
 // const engine = stockfish('node_modules/stockfish/src/stockfish.wasm');
+
 const loadEngine = require('stockfish');
 
 const stockfish = loadEngine('node_modules/stockfish/src/stockfish.wasm');
@@ -16,8 +17,11 @@ stockfish.onmessage = function(e) {
     console.log(e);
     fenstring = e.slice(5);
     console.log(fenstring);
-  } else if (e.startsWith('bestmove')) {
+  } else if (e.startsWith('Legal uci moves')) {
+    const moves = e.slice(17).split(' ');
+    console.log(moves);
     console.log(e);
+  } else if (e.startsWith('bestmove')) {
     bestMove = e.slice(9, 13);
     stockfish.postMessage(`position fen ${fenstring} moves ${bestMove}`);
     console.log('|' + bestMove + '|');
@@ -31,18 +35,19 @@ stockfish.onmessage = function(e) {
 stockfish.postMessage('ucinewgame');
 stockfish.postMessage('isready');
 stockfish.postMessage(`position fen ${fenstring}`);
-stockfish.postMessage('d');
-send().then((e) => {
-  console.log(e);
-  const enemyMove = e.slice(9, 13);
-  const enemyFrom = enemyMove.slice(0, 2);
-  const enemyTo = enemyMove.slice(2);
-  console.log(`I would move from ${enemyFrom} to ${enemyTo}!`);
-  stockfish.postMessage('d');
-  console.log('3');
-  return true;
-}).catch(() => console.log('Error'));
+// stockfish.postMessage('d');
+// send().then((e) => {
+//   console.log(e);
+//   const enemyMove = e.slice(9, 13);
+//   const enemyFrom = enemyMove.slice(0, 2);
+//   const enemyTo = enemyMove.slice(2);
+//   console.log(`I would move from ${enemyFrom} to ${enemyTo}!`);
+//   stockfish.postMessage('d');
+//   console.log('3');
+//   return true;
+// }).catch(() => console.log('Error'));
 
+stockfish.postMessage('d');
 
 /**
  * Send
@@ -71,3 +76,14 @@ async function send() {
 //     });
 //   });
 // });
+
+const i18n = require('i18n');
+const path = require('path');
+
+i18n.configure({
+  locales: ['en-US', 'ru-RU'],
+  directory: path.join(__dirname, 'functions/locales'),
+  defaultLocale: 'en-US',
+});
+
+console.log(i18n.__('WELCOME_BASIC', 32));
