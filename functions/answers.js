@@ -262,12 +262,12 @@ module.exports = class Answers {
     return rand({
       'en': [
         ['You can\'t do this move!', 'Try something else...'],
-        [`You can\'t move <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>!`],
+        [`<speak>You can\'t move <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>!</speak>`],
         ['This makes no sense!', 'You need to come up with another move.'],
       ],
       'ru': [
         ['Вы не можете сделать такой ход!'],
-        [`Вы не можете ходить с <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>.`],
+        [`<speak>Вы не можете ходить с <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>.</speak>`],
         ['Нельзя так ходить!'],
       ],
     }[this.lang]);
@@ -277,13 +277,13 @@ module.exports = class Answers {
     return rand({
       'en': [
         ['But you can\'t!', 'Remind the location of chess pieces?'],
-        [`You can\'t move <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>! Have you forgotten something?`, 'I can recall all positions.'],
+        [`<speak>You can\'t move <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>! Have you forgotten something?</speak>`, 'I can recall all positions.'],
         ['Sorry, but you can\'t move like that...', 'Remind you the board positions?'],
       ],
       'ru': [
         ['Вы не можете так походить!', 'Напомнить, где какие фигуры на доске?'],
-        [`Вы не можете ходить с <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>.`, 'Напомнить расположение фигур?'],
-        [`<say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>... Это некорректно.`, 'Я могу напомнить вам позиции на доске, если нужно'],
+        [`<speak>Вы не можете ходить с <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>.</speak>`, 'Напомнить расположение фигур?'],
+        [`<speak><say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>... Это некорректно.</speak>`, 'Я могу напомнить вам позиции на доске, если нужно'],
       ],
     }[this.lang]);
   }

@@ -32,12 +32,11 @@ app.intent('Default Welcome Intent', (conv) => {
     conv.user.storage.difficulty = 2;
   } else if (conv.user.storage.fen === undefined) {
     conv.ask(...Ans.welcomeNoGame());
-    conv.contexts.set('Welcome-new', 1);
+    conv.contexts.set('welcome-new', 1);
   } else {
     conv.ask(...Ans.welcomeWithGame());
-    conv.contexts.set('Welcome-continue', 1);
+    conv.contexts.set('welcome-continue', 1);
   }
-  conv.ask(...Ans.welcome());
 });
 
 // eslint-disable-next-line require-jsdoc
@@ -89,7 +88,7 @@ app.intent('New Game', startNewGame);
 function askToCreateNewGame(conv) {
   console.log('ask to create new game');
   conv.ask(...Ans.askToNewGame());
-  conv.contexts.set('Welcome-new', 1);
+  conv.contexts.set('welcome-new', 1);
 }
 
 // eslint-disable-next-line require-jsdoc
@@ -98,12 +97,12 @@ function continueGame(conv) {
   const fenstring = conv.user.storage.fen;
   if (!fenstring) {
     conv.ask(...Ans.noGameToContinue());
-    conv.contexts.set('Welcome-new', 1);
+    conv.contexts.set('welcome-new', 1);
     return;
   }
   conv.ask(...Ans.continueGame());
   conv.contexts.set('game', 5);
-  conv.contexts.set('Turn-followup', 1);
+  conv.contexts.set('turn-followup', 1);
 }
 
 app.intent('Continue', continueGame);
@@ -143,6 +142,7 @@ function beginShowingTheBoard(conv) {
   }
   longString += '</speak>';
   conv.ask(longString);
+  conv.contexts.set('board-followup', 1);
 }
 
 app.intent('Board', beginShowingTheBoard);
@@ -221,7 +221,7 @@ app.intent('Turn', async (conv, {from, to, piece}) => {
     if (fiftyFifty < 0.5) {
       conv.ask(...Ans.illegalMove(from, to, {piece}));
     } else {
-      conv.contexts.set('Turn-followup', 1);
+      conv.contexts.set('turn-followup', 1);
       conv.ask(...Ans.illegalMoveToBoardInfo(from, to, {piece}));
     }
   }
@@ -262,7 +262,7 @@ app.intent('Difficulty - number', (conv, {number, ordinal}) => {
       conv.ask(...Ans.difficultyChanged(newDifficulty, currentDifficulty));
     }
   } else {
-    conv.contexts.set('Difficulty-followup', 2);
+    conv.contexts.set('difficulty-followup', 1);
     conv.ask(...Ans.difficultyWithoutValue());
   }
 });
@@ -273,13 +273,13 @@ app.intent('No', (conv) => {
   // if (gameContext) {
   //   conv.contexts.set('game', gameContext.lifespan + 1);
   // }
-  if (conv.contexts.get('Welcome-new')) {
+  if (conv.contexts.get('welcome-new')) {
     conv.data.fallbackCount = 0;
     whatDoYouWant(conv);
-  } else if (conv.contexts.get('Welcome-continue')) {
+  } else if (conv.contexts.get('welcome-continue')) {
     conv.data.fallbackCount = 0;
     askToCreateNewGame(conv);
-  } else if (conv.contexts.get('Turn-followup')) {
+  } else if (conv.contexts.get('turn-followup')) {
     conv.data.fallbackCount = 0;
     conv.ask(...Ans.askToMove());
   } else {
@@ -293,13 +293,13 @@ app.intent('Yes', (conv) => {
   // if (gameContext) {
   //   conv.contexts.set('game', gameContext.lifespan + 1);
   // }
-  if (conv.contexts.get('Welcome-new')) {
+  if (conv.contexts.get('welcome-new')) {
     conv.data.fallbackCount = 0;
     startNewGame(conv);
-  } else if (conv.contexts.get('Welcome-continue')) {
+  } else if (conv.contexts.get('welcome-continue')) {
     conv.data.fallbackCount = 0;
     continueGame(conv);
-  } else if (conv.contexts.get('Turn-followup')) {
+  } else if (conv.contexts.get('turn-followup')) {
     conv.data.fallbackCount = 0;
     beginShowingTheBoard(conv);
   } else {
