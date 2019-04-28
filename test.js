@@ -5,6 +5,9 @@ const id = 0;
 // const engine = stockfish('node_modules/stockfish/src/stockfish.wasm');
 
 const loadEngine = require('stockfish');
+const Chess = require('./functions/chess');
+const Ans = require('./functions/answers');
+const Helpers = require('./functions/helpers');
 
 const stockfish = loadEngine('node_modules/stockfish/src/stockfish.wasm');
 console.log(stockfish);
@@ -13,6 +16,7 @@ let fenstring = 'rnbqkbnr/ppp1pppp/3p4/8/8/4P3/PPPP1PPP/RNBQKBNR w KQkq - 0 2';
 let bestMove = null;
 let on = null;
 stockfish.onmessage = function(e) {
+  if (typeof e !== 'string') return;
   if (e.startsWith('Fen')) {
     console.log(e);
     fenstring = e.slice(5);
@@ -35,18 +39,6 @@ stockfish.onmessage = function(e) {
 stockfish.postMessage('ucinewgame');
 stockfish.postMessage('isready');
 stockfish.postMessage(`position fen ${fenstring}`);
-// stockfish.postMessage('d');
-// send().then((e) => {
-//   console.log(e);
-//   const enemyMove = e.slice(9, 13);
-//   const enemyFrom = enemyMove.slice(0, 2);
-//   const enemyTo = enemyMove.slice(2);
-//   console.log(`I would move from ${enemyFrom} to ${enemyTo}!`);
-//   stockfish.postMessage('d');
-//   console.log('3');
-//   return true;
-// }).catch(() => console.log('Error'));
-
 stockfish.postMessage('d');
 
 /**
@@ -60,30 +52,24 @@ async function send() {
   });
 }
 
-// stockfish.send('uci', () => {
-//   stockfish.send('isready');
-//   stockfish.send('d', (str) => {
-//     console.log('1 ' + str);
-//     stockfish.send('eval', (str) => {
-//       console.log('2 ' + str);
+Ans.setLanguage('en');
 
-//       stockfish.send('go depth 7', (str) => {
-//         console.log('3 Stockfish says best move: ' + str.match(/bestmove (\S+)/)[1]);
-//         stockfish.send('quit');
-//       }, (str) => {
-//         console.log('thinking: ' + str);
-//       });
-//     });
-//   });
-// });
-
-const i18n = require('i18n');
-const path = require('path');
-
-i18n.configure({
-  locales: ['en-US', 'ru-RU'],
-  directory: path.join(__dirname, 'functions/locales'),
-  defaultLocale: 'en-US',
-});
-
-console.log(i18n.__('WELCOME_BASIC', 32));
+const board = Chess.parseBoard(fenstring);
+let longString = '<speak>\n';
+for (let i = 0; i < board.length; ++i) {
+  if (board[i].every((el) => el.val === null)) {
+    const emptyRowString = Helpers.upFirst(Ans.emptyRow(i + 1));
+    longString += emptyRowString + '.\n';
+  } else {
+    longString += Ans.nRow(i + 1) + ': ';
+    for (let j = 0; j < board[i].length; ++j) {
+      const cell = board[i][j];
+      if (cell.val !== null) {
+        longString += Ans.coloredPieceOnPosition(cell.val, cell.pos) + ', ';
+      }
+    }
+    longString = longString.slice(0, -2) + '.\n';
+  }
+}
+longString += '</speak>';
+console.log(longString.length);
