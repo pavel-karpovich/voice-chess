@@ -5,9 +5,9 @@ const id = 0;
 // const engine = stockfish('node_modules/stockfish/src/stockfish.wasm');
 
 const loadEngine = require('stockfish');
-const Chess = require('./functions/chess');
-const Ans = require('./functions/answers');
-const Helpers = require('./functions/helpers');
+const Chess = require('./functions/src/chess');
+const Ans = require('./functions/src/answer');
+const {upFirst} = require('./functions/src/helpers');
 
 const stockfish = loadEngine('node_modules/stockfish/src/stockfish.wasm');
 console.log(stockfish);
@@ -58,7 +58,7 @@ const board = Chess.parseBoard(fenstring);
 let longString = '<speak>\n';
 for (let i = 0; i < board.length; ++i) {
   if (board[i].every((el) => el.val === null)) {
-    const emptyRowString = Helpers.upFirst(Ans.emptyRow(i + 1));
+    const emptyRowString = upFirst(Ans.emptyRow(i + 1));
     longString += emptyRowString + '.\n';
   } else {
     longString += Ans.nRow(i + 1) + ': ';

@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "voice-chess-a27c0"
+    "default": "voice-chess-a27c0",
+    "chessapp": "voice-chess-a27c0"
   }
 }

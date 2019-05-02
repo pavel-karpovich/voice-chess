@@ -2,22 +2,33 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "lint": "eslint .",
-    "serve": "firebase serve --only functions",
-    "shell": "firebase functions:shell",
+    "lint": "tslint --project tsconfig.json",
+    "build": "tsc",
+    "serve": "npm run build && firebase serve --only functions",
+    "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc -p .",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run check"
   },
+  "main": "lib/index.js",
   "dependencies": {
     "actions-on-google": "^2.6.0",
     "firebase-admin": "~7.0.0",
-    "firebase-functions": "^2.3.0",
+    "firebase-functions": "^2.2.0",
     "stockfish": "^10.0.0"
   },
   "devDependencies": {
-    "eslint": "^5.12.0",
-    "eslint-plugin-promise": "^4.0.1"
+    "tslint": "^5.12.0",
+    "typescript": "~3.4.0",
+    "typescript-tslint-plugin": "^0.3.1",
+    "gts": "^1.0.0"
   },
   "private": true,
   "engines": {
