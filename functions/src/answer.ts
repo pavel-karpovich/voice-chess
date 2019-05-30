@@ -174,18 +174,18 @@ export class Answer {
     return rand(
       ({
         en: [
-          "But you can't!",
-          "You can't do this move!",
-          `<speak>You can\'t move <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>!</speak>`,
+          'You can\'t!',
+          'You can\'t do this move!',
+          `You can't move <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>!`,
           'This makes no sense!\nYou need to come up with another move.',
-          "Sorry, but you can't move like that...",
+          'Sorry, but you can\'t move like that...',
         ],
         ru: [
           'Вы не можете так походить!',
           'Вы не можете сделать такой ход!',
-          `<speak>Вы не можете ходить с <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>.</speak>`,
+          `Вы не можете ходить с <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>.`,
           'Нельзя так ходить!',
-          `<speak><say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>... Это некорректный ход.</speak>`,
+          `<say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>... Это некорректный ход.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -195,14 +195,14 @@ export class Answer {
       return rand(
         ({
           en: [
-            `<speak><p><s>The move is made!</s><s>You move ${
+            `<p><s>The move is made!</s><s>You move ${
               details.piece
-            } from <say-as interpret-as="characters">${from}</say-as> to <say-as interpret-as="characters">${to}</say-as>.</s></p></speak>`,
+            } from <say-as interpret-as="characters">${from}</say-as> to <say-as interpret-as="characters">${to}</say-as>.</s></p>`,
           ],
           ru: [
-            `<speak><p><s>Ход сделан!</s><s>Вы передвинули ${
+            `<p><s>Ход сделан!</s><s>Вы передвинули ${
               details.piece
-            } с позиции <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>.</s></p></speak>`,
+            } с позиции <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>.</s></p>`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -229,7 +229,7 @@ export class Answer {
         ],
         ru: [
           `<break time="2s"/>Мой ход таков: с <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>.`,
-          `<break time="2s"/>Хм... Пожалуй, <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>.`,
+          `<break time="2s"/>Хм... Пожалуй, я отвечу <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>.`,
           `<break time="2s"/>Я сделаю ход с <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>!`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
@@ -498,6 +498,54 @@ export class Answer {
       ({
         en: [`The difficulty level is already ${level}}!`],
         ru: [`Уровень сложности уже равен ${level}!`, 'Сложность и так такая!'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static youLose(): string {
+    return rand(
+      ({
+        en: [
+          'You checkmate! Don\'t worry, next time you get!',
+        ],
+        ru: [
+          'Вы проиграли, шах и мат! Ничего, в другой раз всё получится.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static youWin(): string {
+    return rand(
+      ({
+        en: [
+          'Oh... You checkmate me! Very impressive! You won! Congratulations!.',
+        ],
+        ru: [
+          'Погодите секундочку... Вы поставили мне шах и мат? Ничего себе, да вы победили! Поздравляю!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static checkToEnemy(): string {
+    return rand(
+      ({
+        en: [
+          'And you set me a check!',
+        ],
+        ru: [
+          'И тем самым вы ставите мне шах!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static checkToPlayer(): string {
+    return rand(
+      ({
+        en: [
+          'Check to your king!',
+        ],
+        ru: [
+          'Вам шах.',
+        ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }

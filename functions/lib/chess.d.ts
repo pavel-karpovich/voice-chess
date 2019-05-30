@@ -1,13 +1,19 @@
 export declare const chessBoardSize = 8;
+export declare enum ChessGameState {
+    OK = 0,
+    CHECK = 1,
+    CHECKMATE = 2
+}
 /**
  * Class for making move in chess
  */
 export declare class Chess {
     private stockfish;
     private fen;
-    private onMove;
-    private onLegalMoves;
-    private enemyMoveValue;
+    private moves;
+    private checkers;
+    private onChangeGameState;
+    private enemy;
     private depth;
     /**
      * Chess game with initial board state
@@ -28,7 +34,7 @@ export declare class Chess {
     /**
      * Get legal moves for current board position
      */
-    getLegalMoves(): Promise<string[]>;
+    updateGameState(): Promise<void>;
     /**
      * Checks if this move is allowed
      * @param {string} move
@@ -38,11 +44,12 @@ export declare class Chess {
      * Player move
      * @param {string} move
      */
-    move(move: string): Promise<{}>;
+    move(move: string): Promise<void>;
     /**
      * Move making by computer
      */
-    moveAuto(): Promise<{}>;
+    moveAuto(): Promise<void>;
+    readonly currentGameState: ChessGameState;
     /**
      * Get fen string - chess board state representation in string
      */

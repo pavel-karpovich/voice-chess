@@ -4,15 +4,23 @@ const stockfishPath = '../node_modules/stockfish/src/stockfish.wasm';
 
 export const chessBoardSize = 8;
 
+
+export enum ChessGameState {
+  OK = 1,
+  CHECK = 2,
+  CHECKMATE = 3,
+}
+
 /**
  * Class for making move in chess
  */
 export class Chess {
   private stockfish: any;
   private fen: string;
-  private onMove: () => void;
-  private onLegalMoves: (moves: string[]) => void;
-  private enemyMoveValue: string;
+  private moves: string[];
+  private checkers: string[];
+  private onChangeGameState: () => void;
+  private enemy: string;
   private depth: number;
   /**
    * Chess game with initial board state
@@ -24,9 +32,8 @@ export class Chess {
     const stockfishWasm = stockfishPath;
     this.stockfish = loadEngine(path.join(__dirname, stockfishWasm));
     this.fen = fenstring;
-    this.onMove = null;
-    this.onLegalMoves = null;
-    this.enemyMoveValue = null;
+    this.onChangeGameState = null;
+    this.enemy = null;
     this.stockfish.postMessage('ucinewgame');
     this.stockfish.postMessage('isready');
     this.configureDifficulty(difficulty);
@@ -37,18 +44,20 @@ export class Chess {
     this.stockfish.onmessage = (e: any) => {
       if (typeof e !== 'string') return;
       if (e.startsWith('bestmove')) {
-        this.enemyMoveValue = e.slice(9, 13);
+        this.enemy = e.slice(9, 13);
         const command = `position fen ${this.fen} moves ${this.enemyMove}`;
         this.stockfish.postMessage(command);
         this.stockfish.postMessage('d');
-      } else if (e.startsWith('Fen') && this.onMove) {
+      } else if (e.startsWith('Fen')) {
         this.fen = e.slice(5);
-        this.onMove();
-        this.onMove = null;
-      } else if (e.startsWith('Legal uci moves') && this.onLegalMoves) {
-        const moves = e.slice(17).split(' ');
-        this.onLegalMoves(moves);
-        this.onLegalMoves = null;
+      } else if (e.startsWith('Checkers')) {
+        this.checkers = e.slice(10).split(' ');
+        this.checkers.pop();
+      } else if (e.startsWith('Legal uci moves')) {
+        this.moves = e.slice(17).split(' ');
+        this.moves.pop();
+        this.onChangeGameState();
+        this.onChangeGameState = null;
       }
     };
   }
@@ -83,9 +92,9 @@ export class Chess {
   /**
    * Get legal moves for current board position
    */
-  async getLegalMoves(): Promise<string[]> {
-    return new Promise((resolve: (moves: string[]) => void) => {
-      this.onLegalMoves = resolve;
+  async updateGameState(): Promise<void> {
+    return new Promise<void>((resolve: () => void) => {
+      this.onChangeGameState = resolve;
       this.stockfish.postMessage('d');
     });
   }
@@ -95,44 +104,51 @@ export class Chess {
    * @param {string} move
    */
   async isMoveLegal(move: string): Promise<boolean> {
-    const legalMoves = await this.getLegalMoves();
-    return legalMoves.indexOf(move) !== -1;
+    await this.updateGameState();
+    return this.moves.indexOf(move) !== -1;
   }
 
   /**
    * Player move
    * @param {string} move
    */
-  async move(move: string): Promise<{}> {
-    return new Promise((resolve: () => void) => {
-      this.onMove = resolve;
-      console.log('move: ' + move);
-      this.stockfish.postMessage(`position fen ${this.fen} moves ${move}`);
-      this.stockfish.postMessage('d');
-    });
+  async move(move: string): Promise<void> {
+    console.log('move: ' + move);
+    this.stockfish.postMessage(`position fen ${this.fen} moves ${move}`);
+    return this.updateGameState();
   }
 
   /**
    * Move making by computer
    */
-  async moveAuto(): Promise<{}> {
-    return new Promise((resolve: () => void) => {
-      this.onMove = resolve;
+  async moveAuto(): Promise<void> {
+    return new Promise<void>((resolve: () => void) => {
+      this.onChangeGameState = resolve;
       this.stockfish.postMessage(`go depth ${this.depth} movetime 2000`);
     });
+  }
+
+  get currentGameState(): ChessGameState {
+    if (this.checkers.length !== 0) {
+      return ChessGameState.CHECK;
+    } else if (this.checkers.length !== 0 && this.moves.length === 0) {
+      return ChessGameState.CHECKMATE;
+    } else {
+      return ChessGameState.OK;
+    }
   }
 
   /**
    * Get fen string - chess board state representation in string
    */
-  get fenstring() {
+  get fenstring(): string {
     return this.fen;
   }
 
   /**
    * Get last enemy's move
    */
-  get enemyMove() {
-    return this.enemyMoveValue;
+  get enemyMove(): string {
+    return this.enemy;
   }
 }

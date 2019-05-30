@@ -29,4 +29,5 @@ export declare class Answer {
     static showDifficulty(current: number): string;
     static difficultyChanged(newLevel: number, oldLevel: number): string;
     static difficultyTheSame(level: number): string;
+    static youLose(): string;
 }

@@ -21,8 +21,13 @@ stockfish.onmessage = function(e) {
     console.log(e);
     fenstring = e.slice(5);
     console.log(fenstring);
+  } else if (e.startsWith('Checkers')) {
+      checkers = e.slice(10).split(' ');
+      checkers.pop();
+      console.log(checkers);
   } else if (e.startsWith('Legal uci moves')) {
     const moves = e.slice(17).split(' ');
+    moves.pop();
     console.log(moves);
     console.log(e);
   } else if (e.startsWith('bestmove')) {
@@ -40,12 +45,7 @@ stockfish.postMessage('ucinewgame');
 stockfish.postMessage('isready');
 stockfish.postMessage(`position fen ${fenstring}`);
 stockfish.postMessage('d');
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
+stockfish.postMessage(`go depth 2 movetime 2000`);
 
 /**
  * Send

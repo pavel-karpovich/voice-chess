@@ -3,7 +3,7 @@ import { dialogflow, DialogflowConversation } from 'actions-on-google';
 
 import { Answer as Ans } from './answer';
 import { Ask } from './ask';
-import { Chess, chessBoardSize } from './chess';
+import { Chess, chessBoardSize, ChessGameState } from './chess';
 import { ChessBoard, ChessCellInfo } from './chessboard';
 import { upFirst } from './helpers';
 
@@ -72,12 +72,13 @@ app.intent(
       conv.user.storage.difficulty = 2;
       conv.ask(Ans.firstPlay());
       conv.ask(Ask.askToNewGame());
+      conv.contexts.set('ask-to-new-game', 1);
     } else if (conv.user.storage.fen === undefined) {
-      conv.contexts.set('welcome-new', 1);
       conv.ask(Ans.welcome());
       conv.ask(Ask.askToNewGame());
+      conv.contexts.set('ask-to-new-game', 1);
     } else {
-      conv.contexts.set('welcome-continue', 1);
+      conv.contexts.set('ask-to-continue', 1);
       conv.ask(Ans.welcome());
       conv.ask(Ask.askToContinue());
     }
@@ -120,13 +121,13 @@ function continueGame(conv: VoiceChessConv): void {
   console.log('continue game');
   const fenstring = conv.user.storage.fen;
   if (!fenstring) {
-    conv.contexts.set('welcome-new', 1);
     conv.ask(Ans.noGameToContinue());
     conv.ask(Ask.askToNewGame());
+    conv.contexts.set('ask-to-new-game', 1);
     return;
   }
   conv.contexts.set('game', 5);
-  conv.contexts.set('turn-followup', 1);
+  conv.contexts.set('turn-showboard', 1);
   conv.ask(Ans.continueGame());
   conv.ask(Ask.askToRemindBoard());
 }
@@ -155,6 +156,7 @@ function beginShowingTheBoard(conv: VoiceChessConv): void {
   if (!fenstring) {
     conv.ask(Ans.noboard());
     conv.ask(Ask.askToNewGame());
+    conv.contexts.set('ask-to-new-game', 1);
     return;
   }
   const board = new ChessBoard(fenstring);
@@ -196,6 +198,7 @@ function rowHandler(
   if (!fenstring) {
     conv.ask(Ans.noboard());
     conv.ask(Ask.askToNewGame());
+    conv.contexts.set('ask-to-new-game', 1);
     return;
   }
   const board = new ChessBoard(fenstring);
@@ -257,29 +260,53 @@ app.intent(
     const move = from + to;
     console.log(`From: ${from}, to: ${to}`);
     const fenstring = conv.user.storage.fen;
-    // const difficulty = parseInt(conv.user.storage.difficulty);
     const difficulty = conv.user.storage.difficulty;
     const chess = new Chess(fenstring, difficulty);
+    if (chess.currentGameState === ChessGameState.CHECKMATE) {
+      conv.ask(Ans.youLose());
+      conv.ask(Ask.askToNewGame());
+      conv.contexts.set('ask-to-new-game', 1);
+      return;
+    }
     const isLegal = await chess.isMoveLegal(move);
     if (isLegal) {
       await chess.move(move);
-      conv.ask(Ans.playerMove(from, to, { piece }));
+      let ask = Ans.playerMove(from, to, { piece });
+      if (chess.currentGameState as ChessGameState === ChessGameState.CHECKMATE) {
+        conv.ask(`<speak>${ask}\n${Ans.youWin()}</speak>`);
+        conv.ask(Ask.askToNewGame());
+        conv.contexts.set('ask-to-new-game', 1);
+        return;
+      } else if (chess.currentGameState === ChessGameState.CHECK) {
+        ask += '\n' + Ans.checkToEnemy();
+      }
+      conv.ask(`<speak>${ask}</speak>`);
       await chess.moveAuto();
       const enemyFrom = chess.enemyMove.slice(0, 2);
       const enemyTo = chess.enemyMove.slice(2);
-      const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, {});
+      let enemyStr = Ans.enemyMove(enemyFrom, enemyTo, {});
+      if (chess.currentGameState as ChessGameState === ChessGameState.CHECKMATE) {
+        conv.ask(`${enemyStr}\n${Ans.youLose()}\n${Ask.askToNewGame()}`);
+        conv.contexts.set('ask-to-new-game', 1);
+        return;
+      } else if (chess.currentGameState === ChessGameState.CHECK) {
+        enemyStr += '\n' + Ans.checkToPlayer();
+      }
       const askYouStr = Ask.nowYouNeedToMove();
       conv.ask(`<speak>${enemyStr}\n${askYouStr}</speak>`);
       conv.user.storage.fen = chess.fenstring;
     } else {
       const fiftyFifty = Math.random();
+      let illegal = Ans.illegalMove(from, to, { piece });
+      if (chess.currentGameState === ChessGameState.CHECK) {
+        illegal = Ans.checkToPlayer() + '\n' + illegal;
+      }
+      conv.ask(`<speak>${illegal}</speak>`);
       if (fiftyFifty < 0.5) {
-        conv.ask(Ans.illegalMove(from, to, { piece }));
         conv.ask(Ask.askToMoveAgain());
       } else {
-        conv.contexts.set('turn-followup', 1);
-        conv.ask(Ans.illegalMove(from, to, { piece }));
         conv.ask(Ask.askToRemindBoard());
+        conv.contexts.set('turn-showboard', 1);
       }
     }
   }
@@ -343,11 +370,11 @@ app.intent(
       }
       const game = conv.contexts.get('game');
       if (game !== undefined) {
-        conv.contexts.set('turn-intent', 1);
         conv.ask(Ask.waitMove());
+        conv.contexts.set('turn-intent', 1);
       } else {
-        conv.contexts.set('welcome-new', 1);
         conv.ask(Ask.askToNewGame());
+        conv.contexts.set('ask-to-new-game', 1);
       }
     } else {
       conv.ask(Ask.difficultyWithoutValue());
@@ -364,12 +391,12 @@ app.intent(
     let isFallback = false;
     if (conv.contexts.get('turn-intent')) {
       conv.ask(Ask.askWhatever());
-    } else if (conv.contexts.get('welcome-new')) {
+    } else if (conv.contexts.get('ask-to-new-game')) {
       conv.ask(Ask.whatToDo());
-    } else if (conv.contexts.get('welcome-continue')) {
+    } else if (conv.contexts.get('ask-to-continue')) {
       conv.ask(Ask.askToNewGame());
-      conv.contexts.set('welcome-new', 1);
-    } else if (conv.contexts.get('turn-followup')) {
+      conv.contexts.set('ask-to-new-game', 1);
+    } else if (conv.contexts.get('turn-showboard')) {
       conv.ask(Ask.askToMove());
     } else {
       isFallback = true;
@@ -389,11 +416,11 @@ app.intent(
     let isFallback = false;
     if (conv.contexts.get('turn-intent')) {
       conv.ask(Ask.askToMove());
-    } else if (conv.contexts.get('welcome-new')) {
+    } else if (conv.contexts.get('ask-to-new-game')) {
       startNewGame(conv);
-    } else if (conv.contexts.get('welcome-continue')) {
+    } else if (conv.contexts.get('ask-to-continue')) {
       continueGame(conv);
-    } else if (conv.contexts.get('turn-followup')) {
+    } else if (conv.contexts.get('turn-showboard')) {
       beginShowingTheBoard(conv);
     } else {
       isFallback = true;
