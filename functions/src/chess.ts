@@ -2,10 +2,7 @@ const loadEngine = require('stockfish');
 import * as path from 'path';
 const stockfishPath = '../node_modules/stockfish/src/stockfish.wasm';
 
-export interface ChessboardCell {
-  pos: string;
-  val: string;
-}
+export const chessBoardSize = 8;
 
 /**
  * Class for making move in chess
@@ -137,32 +134,5 @@ export class Chess {
    */
   get enemyMove() {
     return this.enemyMoveValue;
-  }
-
-  /**
-   * Parse fen string into 2-dim array
-   * @param {string} fen fen string
-   * @return {ChessboardCell[][]} 2-dim array with board data
-   */
-  static parseBoard(fen: string): ChessboardCell[][] {
-    const board = new Array(8);
-    const columns = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-    const fenRows = fen.split(/[// ]/);
-    for (let i = 0; i < board.length; ++i) {
-      board[i] = new Array(8);
-      let j = 0;
-      for (const code of fenRows[i]) {
-        const int = Number(code);
-        if (isNaN(int)) {
-          board[i][j] = { pos: columns[j] + (i + 1), val: code };
-          ++j;
-        } else {
-          for (let k = 0; k < int; ++k, ++j) {
-            board[i][j] = { pos: columns[j] + (i + 1), val: null };
-          }
-        }
-      }
-    }
-    return board;
   }
 }

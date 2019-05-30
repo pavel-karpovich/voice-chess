@@ -276,7 +276,7 @@ export class Ask {
       ({
         en: [
           'Sorry, can you repeat the level value?',
-          'Repeat please... I didn\'t understand the number.',
+          "Repeat please... I didn't understand the number.",
         ],
         ru: [
           'Повторите пожалуйста, я не расслышал номер...',

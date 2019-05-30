@@ -1,7 +1,4 @@
-export interface ChessboardCell {
-    pos: string;
-    val: string;
-}
+export declare const chessBoardSize = 8;
 /**
  * Class for making move in chess
  */
@@ -54,10 +51,4 @@ export declare class Chess {
      * Get last enemy's move
      */
     readonly enemyMove: string;
-    /**
-     * Parse fen string into 2-dim array
-     * @param {string} fen fen string
-     * @return {ChessboardCell[][]} 2-dim array with board data
-     */
-    static parseBoard(fen: string): ChessboardCell[][];
 }

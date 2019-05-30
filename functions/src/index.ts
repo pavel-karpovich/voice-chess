@@ -3,7 +3,8 @@ import { dialogflow, DialogflowConversation } from 'actions-on-google';
 
 import { Answer as Ans } from './answer';
 import { Ask } from './ask';
-import { Chess, ChessboardCell } from './chess';
+import { Chess, chessBoardSize } from './chess';
+import { ChessBoard, ChessCellInfo } from './chessboard';
 import { upFirst } from './helpers';
 
 process.env.DEBUG = 'dialogflow:debug';
@@ -22,7 +23,8 @@ type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
 
 const app = dialogflow<ConversationData, LongStorageData>();
 
-app.middleware((conv: VoiceChessConv): void => {
+app.middleware(
+  (conv: VoiceChessConv): void => {
     if (conv.user.locale) {
       const lang = conv.user.locale.slice(0, 2);
       Ans.setLanguage(lang);
@@ -130,15 +132,14 @@ function continueGame(conv: VoiceChessConv): void {
 }
 app.intent('Continue', continueGame);
 
-function showRow(board: ChessboardCell[][], rowNum: number): string {
+function showRow(row: ChessCellInfo[], rowNum: number): string {
   let resultString = '';
-  if (board[rowNum - 1].every(el => el.val === null)) {
+  if (row.every(el => el.val === null)) {
     const emptyRowString = upFirst(Ans.emptyRow(rowNum));
     resultString += emptyRowString + '\n';
   } else {
     resultString += Ans.nRow(rowNum) + ': ';
-    for (let i = 0; i < board[rowNum - 1].length; ++i) {
-      const cell = board[rowNum - 1][i];
+    for (const cell of row) {
       if (cell.val !== null) {
         resultString += Ans.coloredPieceOnPosition(cell.val, cell.pos) + ', ';
       }
@@ -156,14 +157,15 @@ function beginShowingTheBoard(conv: VoiceChessConv): void {
     conv.ask(Ask.askToNewGame());
     return;
   }
-  const board = Chess.parseBoard(fenstring);
+  const board = new ChessBoard(fenstring);
   let longString = `<speak><p><s>${Ans.board1()}</s></p>\n`;
-  for (let i = 0; i < board.length / 2; ++i) {
-    longString += showRow(board, i + 1);
+  for (let i = 1; i < chessBoardSize + 1; ++i) {
+    longString += showRow(board.row(i), i);
   }
   longString += '</speak>';
-  conv.ask(longString);
   conv.contexts.set('board-followup', 1);
+  conv.ask(longString);
+  conv.ask(Ask.askToGoNext());
 }
 app.intent('Board', beginShowingTheBoard);
 
@@ -172,10 +174,10 @@ app.intent(
   (conv: VoiceChessConv): void => {
     console.log('board - next');
     const fenstring = conv.user.storage.fen;
-    const board = Chess.parseBoard(fenstring);
+    const board = new ChessBoard(fenstring);
     let longString = `<speak><p><s>${Ans.board2()}</s></p>\n`;
-    for (let i = board.length / 2; i < board.length; ++i) {
-      longString += showRow(board, i + 1);
+    for (let i = chessBoardSize / 2 + 1; i < chessBoardSize + 1; ++i) {
+      longString += showRow(board.row(i), i);
     }
     longString += '</speak>';
     conv.contexts.set('turn-intent', 1);
@@ -196,7 +198,7 @@ function rowHandler(
     conv.ask(Ask.askToNewGame());
     return;
   }
-  const board = Chess.parseBoard(fenstring);
+  const board = new ChessBoard(fenstring);
   // parseInt
   const rowNum = num ? num : ord;
   if (!isNaN(rowNum)) {
@@ -206,7 +208,7 @@ function rowHandler(
       conv.ask(Ask.askRowNumber());
     }
     conv.data.row = rowNum;
-    conv.ask(`<speak>${showRow(board, rowNum)}</speak>`);
+    conv.ask(`<speak>${showRow(board.row(rowNum), rowNum)}</speak>`);
     conv.ask(Ask.askToGoNext());
     conv.contexts.set('row-followup', 1);
   } else {
@@ -231,10 +233,10 @@ app.intent(
     }
     conv.contexts.set('row-followup', 1);
     const fenstring = conv.user.storage.fen;
-    const board = Chess.parseBoard(fenstring);
+    const board = new ChessBoard(fenstring);
     const thisRow = lastRow + 1;
     conv.data.row = thisRow;
-    conv.ask(`<speak>${showRow(board, thisRow)}</speak>`);
+    conv.ask(`<speak>${showRow(board.row(thisRow), thisRow)}</speak>`);
     if (thisRow === 8) {
       conv.ask(Ask.whatToDo());
     } else {

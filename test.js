@@ -1,22 +1,22 @@
 /* eslint-disable max-len */
-const id = 0;
-// const stockfish = require('stockfish');
 
-// const engine = stockfish('node_modules/stockfish/src/stockfish.wasm');
+const readline = require('readline');
 
-const loadEngine = require('stockfish');
-const Chess = require('./functions/src/chess');
-const Ans = require('./functions/src/answer');
-const {upFirst} = require('./functions/src/helpers');
+const loadEngine = require('./functions/node_modules/stockfish');
+const Chess = require('./functions/lib/chess');
+const Ans = require('./functions/lib/answer');
+const {upFirst} = require('./functions/lib/helpers');
 
-const stockfish = loadEngine('node_modules/stockfish/src/stockfish.wasm');
-console.log(stockfish);
+const stockfish = loadEngine('./functions/node_modules/stockfish/src/stockfish.wasm');
 
-let fenstring = 'rnbqkbnr/ppp1pppp/3p4/8/8/4P3/PPPP1PPP/RNBQKBNR w KQkq - 0 2';
+
+let fenstring = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 let bestMove = null;
 let on = null;
+
 stockfish.onmessage = function(e) {
   if (typeof e !== 'string') return;
+  console.log(e);
   if (e.startsWith('Fen')) {
     console.log(e);
     fenstring = e.slice(5);
@@ -26,10 +26,10 @@ stockfish.onmessage = function(e) {
     console.log(moves);
     console.log(e);
   } else if (e.startsWith('bestmove')) {
-    bestMove = e.slice(9, 13);
+    bestMove = e.slice(9, 14);
+    console.log(`position fen ${fenstring} moves ${bestMove}`);
     stockfish.postMessage(`position fen ${fenstring} moves ${bestMove}`);
-    console.log('|' + bestMove + '|');
-    console.log('2');
+    stockfish.postMessage('d');
     if (on) {
       on(e);
     }
@@ -41,35 +41,51 @@ stockfish.postMessage('isready');
 stockfish.postMessage(`position fen ${fenstring}`);
 stockfish.postMessage('d');
 
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+
 /**
  * Send
  */
-async function send() {
+async function makeMove(depth) {
   return new Promise((resolve) => {
     on = (e) => resolve(e);
-    console.log('1');
-    stockfish.postMessage('go ponder depth 8 movetime 10000');
+    stockfish.postMessage(`go depth ${depth} movetime 2000`);
   });
 }
 
-Ans.setLanguage('en');
-
-const board = Chess.parseBoard(fenstring);
-let longString = '<speak>\n';
-for (let i = 0; i < board.length; ++i) {
-  if (board[i].every((el) => el.val === null)) {
-    const emptyRowString = upFirst(Ans.emptyRow(i + 1));
-    longString += emptyRowString + '.\n';
-  } else {
-    longString += Ans.nRow(i + 1) + ': ';
-    for (let j = 0; j < board[i].length; ++j) {
-      const cell = board[i][j];
-      if (cell.val !== null) {
-        longString += Ans.coloredPieceOnPosition(cell.val, cell.pos) + ', ';
+function testAnswers() {
+  Ans.setLanguage('en');
+  const board = Chess.parseBoard(fenstring);
+  let longString = '<speak>\n';
+  for (let i = 0; i < board.length; ++i) {
+    if (board[i].every((el) => el.val === null)) {
+      const emptyRowString = upFirst(Ans.emptyRow(i + 1));
+      longString += emptyRowString + '.\n';
+    } else {
+      longString += Ans.nRow(i + 1) + ': ';
+      for (let j = 0; j < board[i].length; ++j) {
+        const cell = board[i][j];
+        if (cell.val !== null) {
+          longString += Ans.coloredPieceOnPosition(cell.val, cell.pos) + ', ';
+        }
       }
+      longString = longString.slice(0, -2) + '.\n';
     }
-    longString = longString.slice(0, -2) + '.\n';
   }
+  longString += '</speak>';
+  console.log(longString.length);
 }
-longString += '</speak>';
-console.log(longString.length);
+
+let moveNumber = 1;
+async function nextMove() {
+  console.log(`Move ${moveNumber++}`);
+  await makeMove(1);
+  await makeMove(10);
+  await nextMove();
+}
+
+nextMove();
