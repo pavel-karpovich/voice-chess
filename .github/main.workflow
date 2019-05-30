@@ -4,7 +4,7 @@ workflow "New workflow" {
 }
 
 action "Install Dependencies" {
-  uses = "Tgjmjgj/npm"
+  uses = "Tgjmjgj/npm@specify-workspace-directory"
   args = "install"
   env = {
     DIR = "./functions"
