@@ -6,12 +6,19 @@ workflow "New workflow" {
 action "Install Dependencies" {
   uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
   args = "install"
+  env = {
+    GITHUB_WORKSPACE = "/github/workspace/functions"
+  }
 }
 
 action "Build project" {
   uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
-  args = "run build"
   needs = ["Install Dependencies"]
+  args = "run build"
+  env = {
+    GITHUB_WORKSPACE = "/github/workspace/functions"
+  }
+  
 }
 
 action "Deploy on Firebase" {
@@ -19,4 +26,7 @@ action "Deploy on Firebase" {
   needs = ["Build project"]
   secrets = ["FIREBASE_TOKEN"]
   args = "deploy --only functions"
+  env = {
+    GITHUB_WORKSPACE = "/github/workspace/functions"
+  }
 }
