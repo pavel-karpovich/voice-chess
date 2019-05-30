@@ -4,15 +4,17 @@ workflow "New workflow" {
 }
 
 action "Install Dependencies" {
-  uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
+  uses = "Tgjmjgj/npm"
   args = "install"
+  env = {
+    DIR = "./functions"
+  }
 }
 
 action "Build project" {
   uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
   needs = ["Install Dependencies"]
   args = "run build"
-  
 }
 
 action "Deploy on Firebase" {
