@@ -262,6 +262,7 @@ app.intent(
     const fenstring = conv.user.storage.fen;
     const difficulty = conv.user.storage.difficulty;
     const chess = new Chess(fenstring, difficulty);
+    await chess.updateGameState();
     if (chess.currentGameState === ChessGameState.CHECKMATE) {
       conv.ask(Ans.youLose());
       conv.ask(Ask.askToNewGame());

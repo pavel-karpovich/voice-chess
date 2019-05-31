@@ -60,6 +60,7 @@ export class Chess {
         this.onChangeGameState = null;
       }
     };
+    
   }
 
   /**
