@@ -16,7 +16,7 @@ let on = null;
 
 stockfish.onmessage = function(e) {
   if (typeof e !== 'string') return;
-  //console.log(e);
+  console.log(e);
   if (e.startsWith('Fen')) {
     console.log(e);
     fenstring = e.slice(5);

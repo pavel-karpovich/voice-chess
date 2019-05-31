@@ -603,4 +603,18 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static fiftymove(): string {
+    return rand(
+      ({
+        en: [
+          'It is fifty-move rule!',
+          'For 50 moves in a row there was not a single capture of any piece or pawn movement.',
+        ],
+        ru: [
+          'Правило 50 ходов!',
+          'Уже 50 ходов подряд не было ни одного взятия фигуры или передвижения пешки!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }

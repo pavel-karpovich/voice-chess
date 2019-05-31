@@ -9,6 +9,7 @@ export enum ChessGameState {
   CHECK = 2,
   CHECKMATE = 3,
   STALEMATE = 4,
+  FIFTYMOVEDRAW = 5,
 }
 
 /**
@@ -22,6 +23,7 @@ export class Chess {
   private onChangeGameState: () => void;
   private enemy: string;
   private depth: number;
+  private memorizedState: ChessGameState;
   /**
    * Chess game with initial board state
    * @param {string} fenstring
@@ -129,19 +131,20 @@ export class Chess {
   }
 
   get currentGameState(): ChessGameState {
-    if (this.checkers.length === 0) {
-      if (this.moves.length === 0) {
-        return ChessGameState.STALEMATE;
-      } else {
-        return ChessGameState.OK;
-      }
-    } else {
-      if (this.moves.length === 0) {
-        return ChessGameState.CHECKMATE;
-      } else {
-        return ChessGameState.CHECK;
-      }
+    if (this.memorizedState) {
+      return this.memorizedState;
     }
+    if (this.checkers.length === 0 && this.moves.length === 0) {
+      return ChessGameState.STALEMATE;
+    }
+    if (this.checkers.length !== 0 && this.moves.length === 0) {
+      return ChessGameState.CHECKMATE;
+    }
+    const fNum = Number(this.fen.match(/(\d+) (\d+)/)[1]);
+    if (fNum >= 50) {
+      return ChessGameState.FIFTYMOVEDRAW;
+    }
+    return ChessGameState.CHECK;
   }
 
   /**

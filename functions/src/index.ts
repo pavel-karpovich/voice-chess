@@ -284,6 +284,14 @@ app.intent(
         // need to check
         conv.contexts.delete('game');
         return;
+      } else if (chess.currentGameState === ChessGameState.FIFTYMOVEDRAW) {
+        speak(conv, `${ask} \n${Ans.fiftymove()} \n${Ans.draw()}`);
+        speak(conv, Ask.askToNewGame());
+        conv.contexts.set('ask-to-new-game', 1);
+        conv.user.storage.fen = null;
+        // need to check
+        conv.contexts.delete('game');
+        return;
       } else if (chess.currentGameState === ChessGameState.CHECK) {
         ask += '\n' + Ans.checkToEnemy();
       }
@@ -303,6 +311,13 @@ app.intent(
         return;
       } else if ((chess.currentGameState as ChessGameState) === ChessGameState.STALEMATE) {
         speak(conv, `${enemyStr} \n${Ans.stalemateToPlayer()} \n${Ans.draw()} \n${Ask.askToNewGame()}`);
+        conv.contexts.set('ask-to-new-game', 1);
+        conv.user.storage.fen = null;
+        // need to check
+        conv.contexts.delete('game');
+        return;
+      } else if ((chess.currentGameState as ChessGameState) === ChessGameState.FIFTYMOVEDRAW) {
+        speak(conv, `${enemyStr} \n${Ans.fiftymove()} \n${Ans.draw()} \n${Ask.askToNewGame()}`);
         conv.contexts.set('ask-to-new-game', 1);
         conv.user.storage.fen = null;
         // need to check
