@@ -16,46 +16,44 @@ let on = null;
 
 stockfish.onmessage = function(e) {
   if (typeof e !== 'string') return;
-  console.log(e);
+  //console.log(e);
   if (e.startsWith('Fen')) {
     console.log(e);
     fenstring = e.slice(5);
     console.log(fenstring);
   } else if (e.startsWith('Checkers')) {
-      checkers = e.slice(10).split(' ');
-      checkers.pop();
-      console.log(checkers);
+    checkers = e.slice(10).split(' ');
+    checkers.pop();
+    console.log(checkers);
   } else if (e.startsWith('Legal uci moves')) {
     const moves = e.slice(17).split(' ');
     moves.pop();
     console.log(moves);
     console.log(e);
+    if (on) {
+      on(e);
+    }
   } else if (e.startsWith('bestmove')) {
     bestMove = e.slice(9, 14);
     console.log(`position fen ${fenstring} moves ${bestMove}`);
     stockfish.postMessage(`position fen ${fenstring} moves ${bestMove}`);
     stockfish.postMessage('d');
-    if (on) {
-      on(e);
-    }
-    // stockfish.postMessage('d');
   }
 };
 stockfish.postMessage('ucinewgame');
 stockfish.postMessage('isready');
 stockfish.postMessage(`position fen ${fenstring}`);
-stockfish.postMessage('d');
-stockfish.postMessage(`go depth 2 movetime 2000`);
 
 /**
  * Send
  */
-async function makeMove(depth) {
+async function moveAuto(depth) {
   return new Promise((resolve) => {
     on = (e) => resolve(e);
     stockfish.postMessage(`go depth ${depth} movetime 2000`);
   });
 }
+
 
 function testAnswers() {
   Ans.setLanguage('en');
@@ -80,12 +78,25 @@ function testAnswers() {
   console.log(longString.length);
 }
 
+async function move(pos) {
+  return new Promise((resolve) => {
+    on = (e) => resolve(e);
+    stockfish.postMessage(`position fen ${fenstring} moves ${pos}`);
+    stockfish.postMessage('d');
+  });
+}
+
 let moveNumber = 1;
 async function nextMove() {
   console.log(`Move ${moveNumber++}`);
-  await makeMove(1);
-  await makeMove(10);
-  await nextMove();
+  await move('f2f3');
+  console.log(`Move ${moveNumber++}`);
+  await moveAuto(10);
+  console.log(`Move ${moveNumber++}`);
+  await move('g2g4');
+  console.log(`Move ${moveNumber++}`);
+  await moveAuto(10);
+  // await nextMove();
 }
 
 nextMove();

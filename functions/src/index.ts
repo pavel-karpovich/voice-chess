@@ -294,7 +294,7 @@ app.intent(
         enemyStr += '\n' + Ans.checkToPlayer();
       }
       const askYouStr = Ask.nowYouNeedToMove();
-      conv.ask(`<speak>${enemyStr}\n${askYouStr}</speak>`);
+      conv.ask(`<speak>${enemyStr} \n${askYouStr}</speak>`);
       conv.user.storage.fen = chess.fenstring;
     } else {
       const fiftyFifty = Math.random();

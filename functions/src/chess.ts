@@ -130,12 +130,14 @@ export class Chess {
   }
 
   get currentGameState(): ChessGameState {
-    if (this.checkers.length !== 0) {
-      return ChessGameState.CHECK;
-    } else if (this.checkers.length !== 0 && this.moves.length === 0) {
-      return ChessGameState.CHECKMATE;
-    } else {
+    if (this.checkers.length === 0) {
       return ChessGameState.OK;
+    } else {
+      if (this.moves.length === 0) {
+        return ChessGameState.CHECKMATE;
+      } else {
+        return ChessGameState.CHECK;
+      }
     }
   }
 
