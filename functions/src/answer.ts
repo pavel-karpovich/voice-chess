@@ -1,4 +1,4 @@
-import { rand, LocalizationObject, WordForms, char } from './helpers';
+import { rand, LocalizationObject, WordForms, char, pause } from './helpers';
 
 export class Answer {
   private static lang: string;
@@ -224,50 +224,42 @@ export class Answer {
   static enemyMove(from: string, to: string, details: any): string {
     if (details.piece) {
       const piece = Answer.piece(details.piece);
-      return rand(
-        ({
-          en: [
-            `<break time="2s"/>I would move a ${piece} from ${char(
-              from
-            )} to ${char(to)}!`,
-            `<break time="2s"/>${piece} from ${char(from)} to ${char(
-              to
-            )}! And what do you say to that?`,
-            `<break time="2s"/>I move my ${piece} from ${char(from)} to ${char(
-              to
-            )}.`,
-          ],
-          ru: [
-            `<break time="2s"/>Мой ход таков: ${piece} с ${char(
-              from
-            )} на ${char(to)}.`,
-            `<break time="2s"/>Хм... Пожалуй, я отвечу ${piece} ${char(
-              from
-            )} ${char(to)}.`,
-            `<break time="2s"/>Я сделаю ход ${piece} с ${char(from)} на ${char(
-              to
-            )}!`,
-          ],
-        } as LocalizationObject<string[]>)[this.lang]
+      return (
+        pause +
+        rand(
+          ({
+            en: [
+              `I would move a ${piece} from ${char(from)} to ${char(to)}!`,
+              `${piece} from ${char(from)} to ${char(
+                to
+              )}! And what do you say to that?`,
+              `I move my ${piece} from ${char(from)} to ${char(to)}.`,
+            ],
+            ru: [
+              `Мой ход таков: ${piece} с ${char(from)} на ${char(to)}.`,
+              `Хм... Пожалуй, я отвечу ${piece} ${char(from)} ${char(to)}.`,
+              `Я сделаю ход ${piece} с ${char(from)} на ${char(to)}!`,
+            ],
+          } as LocalizationObject<string[]>)[this.lang]
+        )
       );
     } else {
-      return rand(
-        ({
-          en: [
-            `<break time="2s"/>I would move from ${char(from)} to ${char(to)}!`,
-            `<break time="2s"/>${char(from)} ${char(
-              to
-            )}! And what do you say to that?`,
-            `<break time="2s"/>I move ${char(from)} to ${char(to)}.`,
-          ],
-          ru: [
-            `<break time="2s"/>Мой ход таков: с ${char(from)} на ${char(to)}.`,
-            `<break time="2s"/>Хм... Пожалуй, я отвечу ${char(from)} ${char(
-              to
-            )}.`,
-            `<break time="2s"/>Я сделаю ход с ${char(from)} на ${char(to)}!`,
-          ],
-        } as LocalizationObject<string[]>)[this.lang]
+      return (
+        pause +
+        rand(
+          ({
+            en: [
+              `I would move from ${char(from)} to ${char(to)}!`,
+              `${char(from)} ${char(to)}! And what do you say to that?`,
+              `I move ${char(from)} to ${char(to)}.`,
+            ],
+            ru: [
+              `Мой ход таков: с ${char(from)} на ${char(to)}.`,
+              `Хм... Пожалуй, я отвечу ${char(from)} ${char(to)}.`,
+              `Я сделаю ход с ${char(from)} на ${char(to)}!`,
+            ],
+          } as LocalizationObject<string[]>)[this.lang]
+        )
       );
     }
   }
