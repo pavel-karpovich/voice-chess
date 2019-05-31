@@ -8,6 +8,7 @@ export enum ChessGameState {
   OK = 1,
   CHECK = 2,
   CHECKMATE = 3,
+  STALEMATE = 4,
 }
 
 /**
@@ -129,7 +130,11 @@ export class Chess {
 
   get currentGameState(): ChessGameState {
     if (this.checkers.length === 0) {
-      return ChessGameState.OK;
+      if (this.moves.length === 0) {
+        return ChessGameState.STALEMATE;
+      } else {
+        return ChessGameState.OK;
+      }
     } else {
       if (this.moves.length === 0) {
         return ChessGameState.CHECKMATE;

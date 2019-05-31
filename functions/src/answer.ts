@@ -539,6 +539,22 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static draw(): string {
+    return rand(
+      ({
+        en: [
+          'It seems like a draw.',
+          'It\'s a draw. The game is over.',
+          'Draw, well played. Now it\'s over.',
+        ],
+        ru: [
+          'Похоже, у нас ничья!',
+          'И это ничья! Партия окончена.',
+          'Ничья. Дальше играть некуда.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
   static checkToEnemy(): string {
     return rand(
       ({
@@ -552,6 +568,38 @@ export class Answer {
       ({
         en: ['Check to your king!'],
         ru: ['Вам шах.'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static stalemateToEnemy(): string {
+    return rand(
+      ({
+        en: [
+          'Stalemate situation!',
+          'Stalemate! I have nothing to move.',
+          'You gave me a stalemate!',
+        ],
+        ru: [
+          'Патовая ситуация!',
+          'Пат! Мне нечем ходить.',
+          'Вы поставили мне пат!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static stalemateToPlayer(): string {
+    return rand(
+      ({
+        en: [
+          'It is a stalemate situation!',
+          'Stalemate! You don\'t have any piece to legal move.',
+          'I put you a stalemate!',
+        ],
+        ru: [
+          'Вам пат!',
+          'Пат! У вас нет легальных ходов.',
+          'Похоже, я поставил вам пат!',
+        ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
