@@ -32,3 +32,7 @@ export interface WordForms {
   fem: string;
   na: string;
 }
+
+export function char(str: string): string {
+  return `<say-as interpret-as="characters">${str}</say-as>`;
+}

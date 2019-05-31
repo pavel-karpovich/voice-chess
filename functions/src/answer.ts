@@ -1,4 +1,4 @@
-import { rand, LocalizationObject, WordForms } from './helpers';
+import { rand, LocalizationObject, WordForms, char } from './helpers';
 
 export class Answer {
   private static lang: string;
@@ -174,18 +174,18 @@ export class Answer {
     return rand(
       ({
         en: [
-          'You can\'t!',
-          'You can\'t do this move!',
-          `You can't move <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>!`,
+          "You can't!",
+          "You can't do this move!",
+          `You can't move ${char(from)} ${char(to)}!`,
           'This makes no sense!\nYou need to come up with another move.',
-          'Sorry, but you can\'t move like that...',
+          "Sorry, but you can't move like that...",
         ],
         ru: [
           'Вы не можете так походить!',
           'Вы не можете сделать такой ход!',
-          `Вы не можете ходить с <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>.`,
+          `Вы не можете ходить с ${char(from)} на ${char(to)}.`,
           'Нельзя так ходить!',
-          `<say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>... Это некорректный ход.`,
+          `${char(from)} ${char(to)}... Это некорректный ход.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -197,12 +197,12 @@ export class Answer {
           en: [
             `<p><s>The move is made!</s><s>You move ${
               details.piece
-            } from <say-as interpret-as="characters">${from}</say-as> to <say-as interpret-as="characters">${to}</say-as>.</s></p>`,
+            } from ${char(from)} to ${char(to)}.</s></p>`,
           ],
           ru: [
             `<p><s>Ход сделан!</s><s>Вы передвинули ${
               details.piece
-            } с позиции <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>.</s></p>`,
+            } с позиции ${char(from)} на ${char(to)}.</s></p>`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -210,30 +210,66 @@ export class Answer {
       return rand(
         ({
           en: [
-            `<p><s>The move is made!</s><s>Your move: <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>.</s></p>`,
+            `<p><s>The move is made!</s><s>Your move: ${char(from)} ${char(
+              to
+            )}.</s></p>`,
           ],
           ru: [
-            `<p><s>Принято!</s><s>Ваш ход: <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>.</s></p>`,
+            `<p><s>Принято!</s><s>Ваш ход: ${char(from)} ${char(to)}.</s></p>`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
     }
   }
   static enemyMove(from: string, to: string, details: any): string {
-    return rand(
-      ({
-        en: [
-          `<break time="2s"/>I would move from <say-as interpret-as="characters">${from}</say-as> to <say-as interpret-as="characters">${to}</say-as>!`,
-          `<break time="2s"/><say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>! And what do you say to that?`,
-          `<break time="2s"/>I move <say-as interpret-as="characters">${from}</say-as> to <say-as interpret-as="characters">${to}</say-as>.`,
-        ],
-        ru: [
-          `<break time="2s"/>Мой ход таков: с <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>.`,
-          `<break time="2s"/>Хм... Пожалуй, я отвечу <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>.`,
-          `<break time="2s"/>Я сделаю ход с <say-as interpret-as="characters">${from}</say-as> на <say-as interpret-as="characters">${to}</say-as>!`,
-        ],
-      } as LocalizationObject<string[]>)[this.lang]
-    );
+    if (details.piece) {
+      const piece = Answer.piece(details.piece);
+      return rand(
+        ({
+          en: [
+            `<break time="2s"/>I would move a ${piece} from ${char(
+              from
+            )} to ${char(to)}!`,
+            `<break time="2s"/>${piece} from ${char(from)} to ${char(
+              to
+            )}! And what do you say to that?`,
+            `<break time="2s"/>I move my ${piece} from ${char(from)} to ${char(
+              to
+            )}.`,
+          ],
+          ru: [
+            `<break time="2s"/>Мой ход таков: ${piece} с ${char(
+              from
+            )} на ${char(to)}.`,
+            `<break time="2s"/>Хм... Пожалуй, я отвечу ${piece} ${char(
+              from
+            )} ${char(to)}.`,
+            `<break time="2s"/>Я сделаю ход ${piece} с ${char(from)} на ${char(
+              to
+            )}!`,
+          ],
+        } as LocalizationObject<string[]>)[this.lang]
+      );
+    } else {
+      return rand(
+        ({
+          en: [
+            `<break time="2s"/>I would move from ${char(from)} to ${char(to)}!`,
+            `<break time="2s"/>${char(from)} ${char(
+              to
+            )}! And what do you say to that?`,
+            `<break time="2s"/>I move ${char(from)} to ${char(to)}.`,
+          ],
+          ru: [
+            `<break time="2s"/>Мой ход таков: с ${char(from)} на ${char(to)}.`,
+            `<break time="2s"/>Хм... Пожалуй, я отвечу ${char(from)} ${char(
+              to
+            )}.`,
+            `<break time="2s"/>Я сделаю ход с ${char(from)} на ${char(to)}!`,
+          ],
+        } as LocalizationObject<string[]>)[this.lang]
+      );
+    }
   }
   static color(code: string, opt = 'mus'): string {
     if (code === code.toUpperCase()) {
@@ -382,26 +418,16 @@ export class Answer {
   static coloredPieceOnPosition(code: string, pos: string): string {
     return rand(
       ({
-        en: [
-          `on <say-as interpret-as="characters">${pos}</say-as> ${this.coloredPiece(
-            code
-          )}`,
-        ],
-        ru: [
-          `на <say-as interpret-as="characters">${pos}</say-as> ${this.coloredPiece(
-            code
-          )}`,
-        ],
+        en: [`on ${char(pos)} ${this.coloredPiece(code)}`],
+        ru: [`на ${char(pos)} ${this.coloredPiece(code)}`],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
   static emptyPosition(pos: string): string {
     return rand(
       ({
-        en: [`<say-as interpret-as="characters">${pos}</say-as> is free.`],
-        ru: [
-          `Клетка <say-as interpret-as="characters">${pos}</say-as> свободна.`,
-        ],
+        en: [`${char(pos)} is free.`],
+        ru: [`Клетка ${char(pos)} свободна.`],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -504,12 +530,8 @@ export class Answer {
   static youLose(): string {
     return rand(
       ({
-        en: [
-          'You checkmate! Don\'t worry, next time you get!',
-        ],
-        ru: [
-          'Вы проиграли, шах и мат! Ничего, в другой раз всё получится.',
-        ],
+        en: ["You checkmate! Don't worry, next time you get!"],
+        ru: ['Вы проиграли, шах и мат! Ничего, в другой раз всё получится.'],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -528,24 +550,16 @@ export class Answer {
   static checkToEnemy(): string {
     return rand(
       ({
-        en: [
-          'And you set me a check!',
-        ],
-        ru: [
-          'И тем самым вы ставите мне шах!',
-        ],
+        en: ['And you set me a check!'],
+        ru: ['И тем самым вы ставите мне шах!'],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
   static checkToPlayer(): string {
     return rand(
       ({
-        en: [
-          'Check to your king!',
-        ],
-        ru: [
-          'Вам шах.',
-        ],
+        en: ['Check to your king!'],
+        ru: ['Вам шах.'],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }

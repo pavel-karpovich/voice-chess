@@ -274,7 +274,9 @@ app.intent(
     if (isLegal) {
       await chess.move(move);
       let ask = Ans.playerMove(from, to, { piece });
-      if (chess.currentGameState as ChessGameState === ChessGameState.CHECKMATE) {
+      if (
+        (chess.currentGameState as ChessGameState) === ChessGameState.CHECKMATE
+      ) {
         speak(conv, ask + '\n' + Ans.youWin());
         speak(conv, Ask.askToNewGame());
         conv.contexts.set('ask-to-new-game', 1);
@@ -286,8 +288,12 @@ app.intent(
       await chess.moveAuto();
       const enemyFrom = chess.enemyMove.slice(0, 2);
       const enemyTo = chess.enemyMove.slice(2);
-      let enemyStr = Ans.enemyMove(enemyFrom, enemyTo, {});
-      if (chess.currentGameState as ChessGameState === ChessGameState.CHECKMATE) {
+      const board = new ChessBoard(chess.fenstring);
+      const enemyPiece = board.pos(enemyTo);
+      let enemyStr = Ans.enemyMove(enemyFrom, enemyTo, { piece: enemyPiece });
+      if (
+        (chess.currentGameState as ChessGameState) === ChessGameState.CHECKMATE
+      ) {
         speak(conv, `${enemyStr}\n${Ans.youLose()}\n${Ask.askToNewGame()}`);
         conv.contexts.set('ask-to-new-game', 1);
         return;
@@ -332,7 +338,9 @@ app.intent(
       const enemyFrom = chess.enemyMove.slice(0, 2);
       const enemyTo = chess.enemyMove.slice(2);
       conv.user.storage.fen = chess.fenstring;
-      const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, {});
+      const board = new ChessBoard(chess.fenstring);
+      const enemyPiece = board.pos(enemyTo);
+      const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, { piece: enemyPiece });
       const askYouStr = Ask.nowYouNeedToMove();
       speak(conv, enemyStr + '\n' + askYouStr);
     }

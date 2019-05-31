@@ -4,7 +4,6 @@ const stockfishPath = '../node_modules/stockfish/src/stockfish.wasm';
 
 export const chessBoardSize = 8;
 
-
 export enum ChessGameState {
   OK = 1,
   CHECK = 2,
@@ -60,7 +59,6 @@ export class Chess {
         this.onChangeGameState = null;
       }
     };
-    
   }
 
   /**
