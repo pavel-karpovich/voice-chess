@@ -44,35 +44,35 @@ export class Ask {
   static ingameTips(): string {
     return ({
       en:
-        '<speak><p><s>You are now in the game..</s>' +
+        '<p><s>You are now in the game..</s>' +
         "<s>And I'm wait when you make your next move.</s>" +
         '<s>If you want, you can ask me about the current state of the chessboard.</s>' +
         '<s>I can tell you about a specific row of the board, or about all the white or black pieces.</s>' +
         '<s>You can also start a new game, or change the difficulty level.</s></p>' +
-        '<p><s>And what do you want to do?</s></p></speak>',
+        '<p><s>And what do you want to do?</s></p>',
       ru:
-        '<speak><p><s>Вы сейчас в процессе игры.</s>' +
+        '<p><s>Вы сейчас в процессе игры.</s>' +
         '<s>И я ожидаю, когда вы сделаете свой следующий ход.</s>' +
         '<s>Если хотите, вы можете спросить меня о состоянии шахматной доски на текущий момент.</s>' +
         '<s>Я могу рассказать о конкретном ряде доски или обо всех белых или чёрных фигурах.</s>' +
         '<s>Вы также можете начать новую игру, или изменить уровень сложности.</s></p>' +
-        '<p><s>И что из этого вы хотите сделать?</s></p></speak>',
+        '<p><s>И что из этого вы хотите сделать?</s></p>',
     } as LocalizationObject<string>)[this.lang];
   }
   static nogameTips(): string {
     return ({
       en:
-        '<speak><p><s>You do not have a running game now.</s>' +
+        '<p><s>You do not have a running game now.</s>' +
         '<s>You can start a new game.</s>' +
         '<s>Or continue the old one if you have an unfinished game.</s>' +
         '<s>Also, if you want, you can configure the level of difficulty.</s></p>' +
-        '<p><s>And what do you want to do?</s></p></speak>',
+        '<p><s>And what do you want to do?</s></p>',
       ru:
-        '<speak><p><s>У вас сейчас нет запущенной игровой партии.</s>' +
+        '<p><s>У вас сейчас нет запущенной игровой партии.</s>' +
         '<s>Вы можете начать новую игру.</s>' +
         '<s>Или продолжить старую, если у вас есть незаконченная партия.</s>' +
         '<s>Также, если хотите, можно отрегулировать уровень сложности.</s></p>' +
-        '<p><s>И что из этого вы выбираете?</s></p></speak>',
+        '<p><s>И что из этого вы выбираете?</s></p>',
     } as LocalizationObject<string>)[this.lang];
   }
   static askToRemindBoard(): string {

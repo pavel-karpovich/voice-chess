@@ -210,10 +210,10 @@ export class Answer {
       return rand(
         ({
           en: [
-            `<speak><p><s>The move is made!</s><s>Your move: <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>.</s></p></speak>`,
+            `<p><s>The move is made!</s><s>Your move: <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>.</s></p>`,
           ],
           ru: [
-            `<speak><p><s>Принято!</s><s>Ваш ход: <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>.</s></p></speak>`,
+            `<p><s>Принято!</s><s>Ваш ход: <say-as interpret-as="characters">${from}</say-as> <say-as interpret-as="characters">${to}</say-as>.</s></p>`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
