@@ -12,6 +12,11 @@ export enum ChessGameState {
   FIFTYMOVEDRAW = 5,
 }
 
+export enum ChessSide {
+  WHITE = 1,
+  BLACK = 2,
+}
+
 /**
  * Class for making move in chess
  */
@@ -40,9 +45,10 @@ export class Chess {
     this.stockfish.postMessage('ucinewgame');
     this.stockfish.postMessage('isready');
     this.configureDifficulty(difficulty);
-    if (this.fen) {
-      this.stockfish.postMessage(`position fen ${this.fen}`);
+    if (this.fen === undefined) {
+      this.fen = Chess.initialFen;
     }
+    this.stockfish.postMessage(`position fen ${this.fen}`);
 
     this.stockfish.onmessage = (e: any) => {
       if (typeof e !== 'string') return;
@@ -65,7 +71,6 @@ export class Chess {
       }
     };
   }
-
   /**
    * Set given level of difficulty in the Stockfish Engine
    * @param {number} level
@@ -108,7 +113,9 @@ export class Chess {
    * @param {string} move
    */
   async isMoveLegal(move: string): Promise<boolean> {
-    await this.updateGameState();
+    if (!this.moves) {
+      throw new Error('isMoveLagel() first requires updateGameState()');
+    }
     return this.moves.indexOf(move) !== -1;
   }
 
@@ -163,4 +170,14 @@ export class Chess {
   get enemyMove(): string {
     return this.enemy;
   }
+
+  get whoseTurn(): ChessSide {
+    const side = this.fen.split(' ')[1];
+    if (side === 'w') {
+      return ChessSide.WHITE;
+    } else {
+      return ChessSide.BLACK;
+    }
+  }
+
 }

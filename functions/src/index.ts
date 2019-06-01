@@ -3,7 +3,7 @@ import { dialogflow, DialogflowConversation } from 'actions-on-google';
 
 import { Answer as Ans } from './answer';
 import { Ask } from './ask';
-import { Chess, chessBoardSize, ChessGameState } from './chess';
+import { Chess, chessBoardSize, ChessGameState, ChessSide } from './chess';
 import { ChessBoard, ChessCellInfo } from './chessboard';
 import { upFirst } from './helpers';
 
@@ -17,7 +17,7 @@ interface ConversationData {
 interface LongStorageData {
   difficulty?: number;
   fen?: string;
-  side?: string;
+  side?: ChessSide;
 }
 
 type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
@@ -191,12 +191,6 @@ function rowHandler(
   console.log('Single row');
   console.log(`Ordinal: ${ord}, number: ${num}`);
   const fenstring = conv.user.storage.fen;
-  if (!fenstring) {
-    speak(conv, Ans.noboard());
-    speak(conv, Ask.askToNewGame());
-    conv.contexts.set('ask-to-new-game', 1);
-    return;
-  }
   const board = new ChessBoard(fenstring);
   // parseInt
   const rowNum = num ? num : ord;
@@ -257,9 +251,13 @@ app.intent(
     console.log(`From: ${from}, to: ${to}`);
     const fenstring = conv.user.storage.fen;
     const difficulty = conv.user.storage.difficulty;
+    const playerSide = conv.user.storage.side;
     const chess = new Chess(fenstring, difficulty);
+    if (chess.whoseTurn !== playerSide) {
+      throw new Error('Something is wrong. The player and server sides are messed.');
+    }
     await chess.updateGameState();
-    const isLegal = await chess.isMoveLegal(move);
+    const isLegal = chess.isMoveLegal(move);
     if (isLegal) {
       await chess.move(move);
       if (!piece) {
@@ -347,10 +345,10 @@ app.intent(
     if (side === Ans.white()) {
       speak(conv, Ans.whiteSide());
       speak(conv, Ask.askToMove());
-      conv.user.storage.side = 'w';
+      conv.user.storage.side = ChessSide.WHITE;
     } else {
       speak(conv, Ans.blackSide());
-      conv.user.storage.side = 'b';
+      conv.user.storage.side = ChessSide.BLACK;
       const fenstring = conv.user.storage.fen;
       const difficulty = conv.user.storage.difficulty;
       const chess = new Chess(fenstring, difficulty);
