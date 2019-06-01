@@ -254,9 +254,7 @@ app.intent(
     const playerSide = conv.user.storage.side;
     const chess = new Chess(fenstring, difficulty);
     if (chess.whoseTurn !== playerSide) {
-      // throw new Error('Something is wrong. The player and server sides are messed.');
-      console.log('Something is wrong. The player and server sides are messed.');
-      return;
+      throw new Error('Something is wrong. The player and server sides are messed.');
     }
     await chess.updateGameState();
     const isLegal = chess.isMoveLegal(move);

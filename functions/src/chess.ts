@@ -112,7 +112,7 @@ export class Chess {
    * Checks if this move is allowed
    * @param {string} move
    */
-  async isMoveLegal(move: string): Promise<boolean> {
+  isMoveLegal(move: string): boolean {
     if (!this.moves) {
       throw new Error('isMoveLagel() first requires updateGameState()');
     }
