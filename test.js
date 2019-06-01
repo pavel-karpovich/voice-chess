@@ -4,6 +4,7 @@ const readline = require('readline');
 
 const loadEngine = require('./functions/node_modules/stockfish');
 const Chess = require('./functions/lib/chess');
+const ChessBoard = require('./functions/lib/chessboard');
 const Ans = require('./functions/lib/answer');
 const {upFirst} = require('./functions/lib/helpers');
 
@@ -99,4 +100,6 @@ async function nextMove() {
   // await nextMove();
 }
 
-nextMove();
+// nextMove();
+
+const fn = "rnbqkbnr/pppp1ppp/4p3/8/3P4/4P3/PPP2PPP/RNBQKBNR b KQkq - 0 2";
