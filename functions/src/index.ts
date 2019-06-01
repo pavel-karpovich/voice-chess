@@ -269,7 +269,7 @@ app.intent(
       await chess.move(move);
       if (!piece) {
         const board = new ChessBoard(chess.fenstring);
-        piece = board.pos(to);
+        piece = Ans.piece(board.pos(to));
       }
       let ask = Ans.playerMove(from, to, { piece });
       if (chess.currentGameState === ChessGameState.CHECKMATE) {
@@ -297,9 +297,11 @@ app.intent(
         ask += '\n' + Ans.checkToEnemy();
       }
       speak(conv, ask);
+      console.log(`Fen before move: ${chess.fenstring}`);
       await chess.moveAuto();
       const enemyFrom = chess.enemyMove.slice(0, 2);
       const enemyTo = chess.enemyMove.slice(2);
+      console.log(`Fen after move: ${chess.fenstring}`);
       const board = new ChessBoard(chess.fenstring);
       const enemyPiece = board.pos(enemyTo);
       console.log(`Enemy piece: ${enemyPiece}`);
