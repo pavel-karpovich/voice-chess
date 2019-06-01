@@ -78,7 +78,7 @@ app.intent(
       speak(conv, Ans.firstPlay());
       speak(conv, Ask.askToNewGame());
       conv.contexts.set('ask-to-new-game', 1);
-    } else if (conv.user.storage.fen === undefined) {
+    } else if (conv.user.storage.fen === undefined || conv.user.storage.fen === null) {
       speak(conv, Ans.welcome());
       speak(conv, Ask.askToNewGame());
       conv.contexts.set('ask-to-new-game', 1);
