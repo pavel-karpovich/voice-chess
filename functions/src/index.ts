@@ -266,7 +266,9 @@ app.intent(
     await chess.updateGameState();
     const isLegal = await chess.isMoveLegal(move);
     if (isLegal) {
+      console.log(`Fen1: ${chess.fenstring}`);
       await chess.move(move);
+      console.log(`Fen2: ${chess.fenstring}`);
       if (!piece) {
         const board = new ChessBoard(chess.fenstring);
         piece = Ans.piece(board.pos(to));

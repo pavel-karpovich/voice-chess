@@ -40,7 +40,6 @@ export class ChessBoard {
   }
 
   pos(pos: string): string {
-    console.dir(this.board.entries());
     if (!this.board.has(pos)) {
       return null;
     } else {
