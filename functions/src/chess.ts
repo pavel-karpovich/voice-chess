@@ -36,6 +36,7 @@ export class Chess {
     this.fen = fenstring;
     this.onChangeGameState = null;
     this.enemy = null;
+    this.memorizedState = null;
     this.stockfish.postMessage('ucinewgame');
     this.stockfish.postMessage('isready');
     this.configureDifficulty(difficulty);
@@ -58,6 +59,7 @@ export class Chess {
       } else if (e.startsWith('Legal uci moves')) {
         this.moves = e.slice(17).split(' ');
         this.moves.pop();
+        this.memorizedState = null;
         this.onChangeGameState();
         this.onChangeGameState = null;
       }
@@ -135,16 +137,17 @@ export class Chess {
       return this.memorizedState;
     }
     if (this.checkers.length === 0 && this.moves.length === 0) {
-      return ChessGameState.STALEMATE;
+      this.memorizedState = ChessGameState.STALEMATE;
+    } else if (this.checkers.length !== 0 && this.moves.length === 0) {
+      this.memorizedState = ChessGameState.CHECKMATE;
+    } else if (Number(this.fen.match(/(\d+) (\d+)/)[1]) >= 50) {
+      this.memorizedState = ChessGameState.FIFTYMOVEDRAW;
+    } else if (this.checkers.length !== 0 && this.moves.length !== 0) {
+      this.memorizedState = ChessGameState.CHECK;
+    } else {
+      this.memorizedState = ChessGameState.OK;
     }
-    if (this.checkers.length !== 0 && this.moves.length === 0) {
-      return ChessGameState.CHECKMATE;
-    }
-    const fNum = Number(this.fen.match(/(\d+) (\d+)/)[1]);
-    if (fNum >= 50) {
-      return ChessGameState.FIFTYMOVEDRAW;
-    }
-    return ChessGameState.CHECK;
+    return this.memorizedState;
   }
 
   /**
