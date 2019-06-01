@@ -13,16 +13,16 @@ export class ChessBoard {
   constructor(fen: string) {
     this.board = new Map();
     const fenRows = fen.split(/[// ]/);
-    for (let i = 0; i < chessBoardSize; ++i) {
+    for (let i = 1; i <= chessBoardSize; i++) {
       let j = 0;
-      for (const code of fenRows[i]) {
+      for (const code of fenRows[chessBoardSize - i]) {
         const int = Number(code);
         if (isNaN(int)) {
-          this.board.set(columns[j] + (i + 1), code);
+          this.board.set(columns[j] + i, code);
           ++j;
         } else {
           for (let k = 0; k < int; ++k, ++j) {
-            this.board.set(columns[j] + (i + 1), null);
+            this.board.set(columns[j] + i, null);
           }
         }
       }

@@ -266,9 +266,7 @@ app.intent(
     await chess.updateGameState();
     const isLegal = await chess.isMoveLegal(move);
     if (isLegal) {
-      console.log(`Fen1: ${chess.fenstring}`);
       await chess.move(move);
-      console.log(`Fen2: ${chess.fenstring}`);
       if (!piece) {
         const board = new ChessBoard(chess.fenstring);
         piece = Ans.piece(board.pos(to));
@@ -299,14 +297,11 @@ app.intent(
         ask += '\n' + Ans.checkToEnemy();
       }
       speak(conv, ask);
-      console.log(`Fen before move: ${chess.fenstring}`);
       await chess.moveAuto();
       const enemyFrom = chess.enemyMove.slice(0, 2);
       const enemyTo = chess.enemyMove.slice(2);
-      console.log(`Fen after move: ${chess.fenstring}`);
       const board = new ChessBoard(chess.fenstring);
       const enemyPiece = board.pos(enemyTo);
-      console.log(`Enemy piece: ${enemyPiece}`);
       let enemyStr = Ans.enemyMove(enemyFrom, enemyTo, { piece: enemyPiece });
       if ((chess.currentGameState as ChessGameState) === ChessGameState.CHECKMATE) {
         speak(conv, `${enemyStr} \n${Ans.youLose()} \n${Ask.askToNewGame()}`);
