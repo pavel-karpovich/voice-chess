@@ -37,4 +37,6 @@ export function char(str: string): string {
   return `<say-as interpret-as="characters">${str}</say-as>`;
 }
 
-export const pause = '<break time="2s"/>';
+export function pause(interval: number): string {
+  return `<break time="${interval}"/>`;
+}

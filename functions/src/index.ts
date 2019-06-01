@@ -5,7 +5,7 @@ import { Answer as Ans } from './answer';
 import { Ask } from './ask';
 import { Chess, chessBoardSize, ChessGameState, ChessSide } from './chess';
 import { ChessBoard, ChessCellInfo } from './chessboard';
-import { upFirst } from './helpers';
+import { upFirst, pause } from './helpers';
 
 process.env.DEBUG = 'dialogflow:debug';
 
@@ -93,6 +93,7 @@ app.intent(
 function fallbackHandler(conv: VoiceChessConv): void {
   console.log('fallback');
   for (const context of conv.contexts) {
+    console.dir(context);
     context.lifespan++;
   }
   const fallbacks = conv.data.fallbackCount;
@@ -315,16 +316,16 @@ app.intent(
         conv.contexts.delete('game');
         return;
       } else if (chess.currentGameState === ChessGameState.CHECK) {
-        enemyStr += '\n' + Ans.checkToPlayer();
+        enemyStr += '\n' + Ans.checkToPlayer() + pause(1);
       }
       const askYouStr = Ask.nowYouNeedToMove();
-      speak(conv, enemyStr + '\n' + askYouStr);
+      speak(conv, `${pause(2)}${enemyStr}\n${askYouStr}`);
       conv.user.storage.fen = chess.fenstring;
     } else {
       const fiftyFifty = Math.random();
       let illegal = Ans.illegalMove(from, to, { piece });
       if (chess.currentGameState === ChessGameState.CHECK) {
-        illegal = Ans.checkToPlayer() + '\n' + illegal;
+        illegal = `${Ans.checkToPlayer()}${pause(2)}\n${illegal}`;
       }
       speak(conv, illegal);
       if (fiftyFifty < 0.5) {
