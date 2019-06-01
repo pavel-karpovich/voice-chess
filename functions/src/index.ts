@@ -267,13 +267,16 @@ app.intent(
     const isLegal = await chess.isMoveLegal(move);
     if (isLegal) {
       await chess.move(move);
+      if (!piece) {
+        const board = new ChessBoard(chess.fenstring);
+        piece = board.pos(to);
+      }
       let ask = Ans.playerMove(from, to, { piece });
       if (chess.currentGameState === ChessGameState.CHECKMATE) {
         speak(conv, ask + '\n' + Ans.youWin());
         speak(conv, Ask.askToNewGame());
         conv.contexts.set('ask-to-new-game', 1);
         conv.user.storage.fen = null;
-        // need to check
         conv.contexts.delete('game');
         return;
       } else if (chess.currentGameState === ChessGameState.STALEMATE) {
@@ -281,7 +284,6 @@ app.intent(
         speak(conv, Ask.askToNewGame());
         conv.contexts.set('ask-to-new-game', 1);
         conv.user.storage.fen = null;
-        // need to check
         conv.contexts.delete('game');
         return;
       } else if (chess.currentGameState === ChessGameState.FIFTYMOVEDRAW) {
@@ -289,7 +291,6 @@ app.intent(
         speak(conv, Ask.askToNewGame());
         conv.contexts.set('ask-to-new-game', 1);
         conv.user.storage.fen = null;
-        // need to check
         conv.contexts.delete('game');
         return;
       } else if (chess.currentGameState === ChessGameState.CHECK) {
@@ -301,26 +302,24 @@ app.intent(
       const enemyTo = chess.enemyMove.slice(2);
       const board = new ChessBoard(chess.fenstring);
       const enemyPiece = board.pos(enemyTo);
+      console.log(`Enemy piece: ${enemyPiece}`);
       let enemyStr = Ans.enemyMove(enemyFrom, enemyTo, { piece: enemyPiece });
       if ((chess.currentGameState as ChessGameState) === ChessGameState.CHECKMATE) {
         speak(conv, `${enemyStr} \n${Ans.youLose()} \n${Ask.askToNewGame()}`);
         conv.contexts.set('ask-to-new-game', 1);
         conv.user.storage.fen = null;
-        // need to check
         conv.contexts.delete('game');
         return;
       } else if ((chess.currentGameState as ChessGameState) === ChessGameState.STALEMATE) {
         speak(conv, `${enemyStr} \n${Ans.stalemateToPlayer()} \n${Ans.draw()} \n${Ask.askToNewGame()}`);
         conv.contexts.set('ask-to-new-game', 1);
         conv.user.storage.fen = null;
-        // need to check
         conv.contexts.delete('game');
         return;
       } else if ((chess.currentGameState as ChessGameState) === ChessGameState.FIFTYMOVEDRAW) {
         speak(conv, `${enemyStr} \n${Ans.fiftymove()} \n${Ans.draw()} \n${Ask.askToNewGame()}`);
         conv.contexts.set('ask-to-new-game', 1);
         conv.user.storage.fen = null;
-        // need to check
         conv.contexts.delete('game');
         return;
       } else if (chess.currentGameState === ChessGameState.CHECK) {
