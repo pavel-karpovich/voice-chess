@@ -61,7 +61,6 @@ function safeGameContext(conv: VoiceChessConv): void {
 }
 
 function whatDoYouWantWithTips(conv: VoiceChessConv): void {
-  console.log('what to do with tips');
   if (conv.contexts.get('game')) {
     speak(conv, Ask.ingameTips());
   } else {
@@ -93,6 +92,7 @@ app.intent(
 function fallbackHandler(conv: VoiceChessConv): void {
   console.log('fallback');
   for (const context of conv.contexts) {
+    console.log('context: ' + context);
     console.dir(context);
     context.lifespan++;
   }
