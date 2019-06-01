@@ -230,7 +230,7 @@ export class Answer {
           ({
             en: [
               `I would move a ${piece} from ${char(from)} to ${char(to)}!`,
-              `${piece} from ${char(from)} to ${char(
+              `My move is a ${piece} from ${char(from)} to ${char(
                 to
               )}! And what do you say to that?`,
               `I move my ${piece} from ${char(from)} to ${char(to)}.`,
@@ -263,23 +263,29 @@ export class Answer {
       );
     }
   }
+  static black(opt = 'mus'): string {
+    return ({
+      en: 'black',
+      ru: ({
+        mus: 'чёрный',
+        fem: 'чёрная',
+      } as WordForms)[opt],
+    } as LocalizationObject<string>)[this.lang];
+  }
+  static white(opt = 'mus'): string {
+    return ({
+      en: 'white',
+      ru: ({
+        mus: 'белый',
+        fem: 'белая',
+      } as WordForms)[opt],
+    } as LocalizationObject<string>)[this.lang];
+  }
   static color(code: string, opt = 'mus'): string {
     if (code === code.toUpperCase()) {
-      return ({
-        en: 'black',
-        ru: ({
-          mus: 'чёрный',
-          fem: 'чёрная',
-        } as WordForms)[opt],
-      } as LocalizationObject<string>)[this.lang];
+      return Answer.white(opt);
     } else {
-      return ({
-        en: 'white',
-        ru: ({
-          mus: 'белый',
-          fem: 'белая',
-        } as WordForms)[opt],
-      } as LocalizationObject<string>)[this.lang];
+      return Answer.black(opt);
     }
   }
   static piece(code: string): string {

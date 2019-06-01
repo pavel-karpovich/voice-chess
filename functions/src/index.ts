@@ -117,6 +117,7 @@ function startNewGame(conv: VoiceChessConv): void {
   conv.user.storage.fen = Chess.initialFen;
   speak(conv, Ans.newgame());
   speak(conv, Ask.chooseSide());
+  conv.contexts.set('ask-side', 1);
 }
 app.intent('New Game', startNewGame);
 
@@ -347,15 +348,14 @@ app.intent(
 app.intent(
   'Choose Side',
   async (conv: VoiceChessConv, { side }: { side: string }): Promise<void> => {
-    console.log('choosing side: ' + side);
+    console.log('Choose side: ' + side);
     side = side.toLowerCase();
-    if (side === 'white') {
+    if (side === Ans.white()) {
       speak(conv, Ans.whiteSide());
       speak(conv, Ask.askToMove());
     } else {
       speak(conv, Ans.blackSide());
       const fenstring = conv.user.storage.fen;
-      // const difficulty = parseInt(conv.user.storage.difficulty);
       const difficulty = conv.user.storage.difficulty;
       const chess = new Chess(fenstring, difficulty);
       await chess.moveAuto();
