@@ -17,6 +17,7 @@ interface ConversationData {
 interface LongStorageData {
   difficulty?: number;
   fen?: string;
+  side?: string;
 }
 
 type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
@@ -117,7 +118,6 @@ function startNewGame(conv: VoiceChessConv): void {
   conv.user.storage.fen = Chess.initialFen;
   speak(conv, Ans.newgame());
   speak(conv, Ask.chooseSide());
-  conv.contexts.set('ask-side', 1);
 }
 app.intent('New Game', startNewGame);
 
@@ -157,15 +157,9 @@ function showRow(row: ChessCellInfo[], rowNum: number): string {
 function beginShowingTheBoard(conv: VoiceChessConv): void {
   console.log('viewing the board');
   const fenstring = conv.user.storage.fen;
-  if (!fenstring) {
-    speak(conv, Ans.noboard());
-    speak(conv, Ask.askToNewGame());
-    conv.contexts.set('ask-to-new-game', 1);
-    return;
-  }
   const board = new ChessBoard(fenstring);
   let longString = `<p><s>${Ans.board1()}</s></p>\n`;
-  for (let i = 1; i < chessBoardSize + 1; ++i) {
+  for (let i = 1; i <= (chessBoardSize + 1) / 2; ++i) {
     longString += showRow(board.row(i), i);
   }
   conv.contexts.set('board-followup', 1);
@@ -181,7 +175,7 @@ app.intent(
     const fenstring = conv.user.storage.fen;
     const board = new ChessBoard(fenstring);
     let longString = `<p><s>${Ans.board2()}</s></p>\n`;
-    for (let i = chessBoardSize / 2 + 1; i < chessBoardSize + 1; ++i) {
+    for (let i = chessBoardSize / 2 + 1; i <= chessBoardSize; ++i) {
       longString += showRow(board.row(i), i);
     }
     conv.contexts.set('turn-intent', 1);
@@ -353,8 +347,10 @@ app.intent(
     if (side === Ans.white()) {
       speak(conv, Ans.whiteSide());
       speak(conv, Ask.askToMove());
+      conv.user.storage.side = 'w';
     } else {
       speak(conv, Ans.blackSide());
+      conv.user.storage.side = 'b';
       const fenstring = conv.user.storage.fen;
       const difficulty = conv.user.storage.difficulty;
       const chess = new Chess(fenstring, difficulty);

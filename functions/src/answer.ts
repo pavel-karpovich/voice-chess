@@ -154,6 +154,22 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static board(): string {
+    return rand(
+      ({
+        en: [
+          'And this is on our chessboard: ',
+          'So, chessboard: ',
+          'And what\'s on the board? Listen: ',
+        ],
+        ru: [
+          'Вот что у нас сейчас на доске: ',
+          'Итак, шахматная доска: ',
+          'Что же происходит на доске? Слушайте: ',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
   static noboard(): string {
     return rand(
       ({
