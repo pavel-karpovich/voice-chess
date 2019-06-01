@@ -22,7 +22,7 @@ interface LongStorageData {
 type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
 
 function speak(conv: VoiceChessConv, text: string) {
-  speak(conv, `<speak>${text}</speak>`);
+  conv.ask(`<speak>${text}</speak>`);
 }
 
 const app = dialogflow<ConversationData, LongStorageData>();
