@@ -1,4 +1,4 @@
-import { rand, LocalizationObject, WordForms, char} from './helpers';
+import { rand, LocalizationObject, WordForms, char } from './helpers';
 
 export class Answer {
   private static lang: string;
@@ -160,7 +160,7 @@ export class Answer {
         en: [
           'And this is on our chessboard: ',
           'So, chessboard: ',
-          'And what\'s on the board? Listen: ',
+          "And what's on the board? Listen: ",
         ],
         ru: [
           'Вот что у нас сейчас на доске: ',
@@ -186,7 +186,7 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static illegalMove(from: string, to: string, details: object): string {
+  static illegalMove(from: string, to: string, details?: object): string {
     return rand(
       ({
         en: [
@@ -206,7 +206,7 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static playerMove(from: string, to: string, details: any): string {
+  static playerMove(from: string, to: string, details?: any): string {
     if (details.piece) {
       return rand(
         ({
@@ -237,7 +237,7 @@ export class Answer {
       );
     }
   }
-  static enemyMove(from: string, to: string, details: any): string {
+  static enemyMove(from: string, to: string, details?: any): string {
     if (details.piece) {
       const piece = Answer.piece(details.piece);
       return rand(
@@ -332,7 +332,7 @@ export class Answer {
           ru: 'Король',
         } as LocalizationObject<string>)[this.lang];
       default:
-        return 'Error';
+        return null;
     }
   }
   static coloredPiece(code: string): string {
@@ -560,8 +560,8 @@ export class Answer {
       ({
         en: [
           'It seems like a draw.',
-          'It\'s a draw. The game is over.',
-          'Draw, well played. Now it\'s over.',
+          "It's a draw. The game is over.",
+          "Draw, well played. Now it's over.",
         ],
         ru: [
           'Похоже, у нас ничья!',
@@ -608,7 +608,7 @@ export class Answer {
       ({
         en: [
           'It is a stalemate situation!',
-          'Stalemate! You don\'t have any piece to legal move.',
+          "Stalemate! You don't have any piece to legal move.",
           'I put you a stalemate!',
         ],
         ru: [
@@ -629,6 +629,67 @@ export class Answer {
         ru: [
           'Правило 50 ходов!',
           'Уже 50 ходов подряд не было ни одного взятия фигуры или передвижения пешки!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static cellIsEmpty(cell: string, details?: any): string {
+    if (details.piece) {
+      return rand(
+        ({
+          en: [
+            `There is no ${details.piece} on the square ${cell}! It's empty.`,
+            `${details.piece} from ${char(cell)}? Are you sure? ${char(
+              cell
+            )} is empty!`,
+            `You confused something. In the square ${char(
+              cell
+            )} no chess pieces.`,
+          ],
+          ru: [
+            `Но клетка ${char(cell)} пустая. На ней нет ${details.piece}!`,
+            `${details.piece} на ${char(cell)}? Но на клетке ${char(
+              cell
+            )} ничего нет.`,
+            `На клетке ${char(cell)} нет ${
+              details.piece
+            }, на ней вообще нет фигур - это свободная клетка.`,
+          ],
+        } as LocalizationObject<string[]>)[this.lang]
+      );
+    } else {
+      return rand(
+        ({
+          en: [
+            `But the square ${char(cell)} is empty. There are no pieces!`,
+            `Sorry, but there are no pieces on the square ${char(cell)}.`,
+            `The position is incorrect. The square ${char(cell)} is empty!`,
+          ],
+          ru: [
+            `Но клетка ${char(cell)} пустая. На ней нет фигур.`,
+            `На клетке ${char(cell)} нет фигур.`,
+            `Это некорректная позиция. На клетке ${char(cell)} ничего нет.`,
+          ],
+        } as LocalizationObject<string[]>)[this.lang]
+      );
+    }
+  }
+  static piecesDontMatch(
+    playerPiece: string,
+    actualPiece: string,
+    cell: string
+  ): string {
+    return rand(
+      ({
+        en: [
+          `But on the square ${char(cell)} is not ${playerPiece}, but ${actualPiece}.`,
+          `On the square ${char(cell)} is ${actualPiece}, not ${playerPiece}.`,
+          `On ${char(cell)} is not ${playerPiece}, but ${actualPiece}.`,
+        ],
+        ru: [
+          `Но на клетке ${char(cell)} стоит не ${playerPiece}, a ${actualPiece}.`,
+          `Только на клетке ${char(cell)} находится ${actualPiece}, а не ${playerPiece}.`,
+          `На ${char(cell)} не ${playerPiece}, а ${actualPiece}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

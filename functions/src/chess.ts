@@ -108,15 +108,18 @@ export class Chess {
     });
   }
 
+  isQueenning;
   /**
    * Checks if this move is allowed
    * @param {string} move
    */
   isMoveLegal(move: string): boolean {
     if (!this.moves) {
-      throw new Error('isMoveLagel() first requires updateGameState()');
+      throw new Error('isMoveLagel() first requires updateGameState() call!');
     }
-    return this.moves.indexOf(move) !== -1;
+    return (
+      this.moves.indexOf(move) !== -1 || this.moves.indexOf(move + 'q') !== -1
+    );
   }
 
   /**
@@ -179,5 +182,4 @@ export class Chess {
       return ChessSide.BLACK;
     }
   }
-
 }

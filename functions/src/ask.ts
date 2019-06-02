@@ -1,4 +1,4 @@
-import { rand, LocalizationObject } from './helpers';
+import { rand, LocalizationObject, char } from './helpers';
 
 export class Ask {
   private static lang: string;
@@ -169,13 +169,13 @@ export class Ask {
     return rand(
       ({
         en: [
-          'You can think and answer me later.',
+          'You can think your move and answer me later.',
           'Do you have another option?',
           'Choose the correct move.',
           'Try something else...',
         ],
         ru: [
-          'Вы можете подумать, и ответить мне попозже.',
+          'Вы можете подумать над своим ходом, и ответить мне попозже.',
           'У вас есть другой вариант?',
           'Есть что ещё в запасе?',
           'Назовите корректный ход.',
@@ -210,7 +210,7 @@ export class Ask {
       ({
         en: [
           'Now will you make a move?',
-          "Ok, what's next? Maybe make your move?",
+          'Ok, what\'s next? Maybe make your move?',
           'I am awaiting your turn. Have you decided where to go?',
           'Now are you ready to make your move?',
           'I am waiting for your turn. What will you do?',
@@ -276,12 +276,32 @@ export class Ask {
       ({
         en: [
           'Sorry, can you repeat the level value?',
-          "Repeat please... I didn't understand the number.",
+          'Repeat please... I didn\'t understand the number.',
         ],
         ru: [
           'Повторите пожалуйста, я не расслышал номер...',
           'Простите, не могли бы вы повторить, какой уровень сложности поставить?',
           'Ещё раз, какой уровень сложности поставить?',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static moveWithoutPiecesMatch(actualPiece: string, playerPiece: string, from: string, to: string) {
+    return rand(
+      ({
+        en: [
+          `Are you confused? Will you move ${actualPiece}?`,
+          `But move is legal. Save it?`,
+          `But move is legal. Confirm it with ${actualPiece}?`,
+          `Did you want to say ${actualPiece}?`,
+          `Then, your move is ${actualPiece} from ${char(from)} to ${char(to)}?`,
+        ],
+        ru: [
+          `Вы просто перепутали? Будете ходить ${actualPiece}?`,
+          `Но сам ход корректный. Оставляем его?`,
+          `Вы хотели сказать ${actualPiece} с ${char(from)} на ${char(to)}?`,
+          `Будете ходить ${actualPiece} с ${char(from)} на ${char(to)}?`,
+          `Значит, ${actualPiece} ${char(from)} ${char(to)}?`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

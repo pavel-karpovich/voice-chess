@@ -10,13 +10,13 @@ const {upFirst} = require('./functions/lib/helpers');
 const stockfish = loadEngine('./functions/node_modules/stockfish/src/stockfish.wasm');
 
 
-let fenstring = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+let fenstring = '8/1P6/8/8/8/5k2/8/8 w KQkq - 0 1';
 let bestMove = null;
 let on = null;
 
 stockfish.onmessage = function(e) {
   if (typeof e !== 'string') return;
-  console.log(e);
+  // console.log(e);
   if (e.startsWith('Fen')) {
     console.log(e);
     fenstring = e.slice(5);
@@ -89,20 +89,14 @@ async function move(pos) {
 let moveNumber = 1;
 async function nextMove() {
   console.log(`Move ${moveNumber++}`);
-  await move('f2f3');
+  await move('b7b8q');
   console.log(`Move ${moveNumber++}`);
   await moveAuto(10);
   console.log(`Move ${moveNumber++}`);
-  await move('g2g4');
+  await moveAuto(1);
   console.log(`Move ${moveNumber++}`);
   await moveAuto(10);
   // await nextMove();
 }
 
-// nextMove();
-
-const fn = "rnbqkbnr/pppp1ppp/4p3/8/3P4/4P3/PPP2PPP/RNBQKBNR b KQkq - 0 2";
-const board = new ChessBoard(fn);
-board.pos('e3');
-const ar = Array.from(board.board.entries());
-console.dir(ar);
+nextMove();
