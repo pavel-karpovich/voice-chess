@@ -694,4 +694,39 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static promotion(from: string, to: string): string {
+    return rand(
+      ({
+        en: [
+          `Your pawn reaches the last row! Now you need to use promotion!`,
+          `When your pawn moves from ${char(from)} to ${char(to)}, there will be a promotion!`,
+          `It is time to Pawn promotion!`,
+          `Pawn promotion!`,
+        ],
+        ru: [
+          `Ваша Пешка дошла до последнего ряда. Теперь её можно превратить в другую фигуру!`,
+          `При переходе Пешки с ${char(from)} на ${char(to)} происходит превращение!`,
+          `Время превращения пешки!`,
+          `Повышение пешки!`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static moveWithPromotion(pieceCode: string): string {
+    const piece = Answer.piece(pieceCode);
+    return rand(
+      ({
+        en: [
+          `And pawn transforms to ${piece}!`,
+          `And now it\'s a ${piece}!`,
+          `Pawn promotes into a ${piece}!`,
+        ],
+        ru: [
+          `И пешка становится ${piece}!`,
+          `Теперь это ${piece}!`,
+          `Пешка превратилась в ${piece}!`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }

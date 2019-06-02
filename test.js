@@ -16,7 +16,7 @@ let on = null;
 
 stockfish.onmessage = function(e) {
   if (typeof e !== 'string') return;
-  // console.log(e);
+  console.log(e);
   if (e.startsWith('Fen')) {
     console.log(e);
     fenstring = e.slice(5);
@@ -34,6 +34,7 @@ stockfish.onmessage = function(e) {
       on(e);
     }
   } else if (e.startsWith('bestmove')) {
+    console.log(e);
     bestMove = e.slice(9, 14);
     console.log(`position fen ${fenstring} moves ${bestMove}`);
     stockfish.postMessage(`position fen ${fenstring} moves ${bestMove}`);
@@ -89,7 +90,7 @@ async function move(pos) {
 let moveNumber = 1;
 async function nextMove() {
   console.log(`Move ${moveNumber++}`);
-  await move('b7b8q');
+  await move('b7b8k');
   console.log(`Move ${moveNumber++}`);
   await moveAuto(10);
   console.log(`Move ${moveNumber++}`);

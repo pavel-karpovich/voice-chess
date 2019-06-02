@@ -306,4 +306,22 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static promotion(): string {
+    return rand(
+      ({
+        en: [
+          'In which piece?',
+          'In which piece do you want to promote the pawn?',
+          'How to promote? In a queen, rock, knight or bishop?',
+          'Choose: queen, rock, knight or bishop.',
+        ],
+        ru: [
+          'В какую фигуру?',
+          'В какую фигуру вы превратите свою пешку?',
+          'В кого превращать? Ферзь, слон, конь, ладья?',
+          'Ферзь, слон, конь, ладья. Выбирайте!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }

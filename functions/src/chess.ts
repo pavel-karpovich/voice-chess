@@ -53,8 +53,8 @@ export class Chess {
     this.stockfish.onmessage = (e: any) => {
       if (typeof e !== 'string') return;
       if (e.startsWith('bestmove')) {
-        this.enemy = e.slice(9, 13);
-        const command = `position fen ${this.fen} moves ${this.enemyMove}`;
+        this.enemy = e.split(' ')[1];
+        const command = `position fen ${this.fen} moves ${this.enemy}`;
         this.stockfish.postMessage(command);
         this.stockfish.postMessage('d');
       } else if (e.startsWith('Fen')) {
@@ -108,7 +108,9 @@ export class Chess {
     });
   }
 
-  isQueenning;
+  isPromotion(move: string): boolean {
+    return this.isMoveLegal(move + 'q');
+  }
   /**
    * Checks if this move is allowed
    * @param {string} move
