@@ -22,6 +22,17 @@ interface LongStorageData {
 
 type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
 
+const restorableContexts = [
+  'ask-side',
+  'row-followup',
+  'difficulty-followup',
+  'board-followup',
+  'ask-to-new-game',
+  'ask-to-continue',
+  'turn-intent',
+  'turn-showboard',
+];
+
 function speak(conv: VoiceChessConv, text: string) {
   conv.ask(`<speak>${text}</speak>`);
 }
@@ -90,14 +101,10 @@ app.intent(
 );
 
 function fallbackHandler(conv: VoiceChessConv): void {
-  console.log('fallback');
-  console.log('Contexts: ' + conv.contexts);
-  console.log('Input contexts: ' + conv.contexts.input);
-  console.log('ask-side context: ' + conv.contexts.get('ask-side'));
-  for (const context of conv.contexts) {
-    console.log('Context name: ' + context.name);
-    console.log('Context lifespan: ' + context.lifespan);
-    context.lifespan++;
+  for (const context of restorableContexts) {
+    if (conv.contexts.get(context)) {
+      conv.contexts.set(context, 1);
+    }
   }
   const fallbacks = conv.data.fallbackCount;
   if (isNaN(fallbacks) || fallbacks < 2) {
@@ -166,7 +173,6 @@ function beginShowingTheBoard(conv: VoiceChessConv): void {
   for (let i = 1; i <= (chessBoardSize + 1) / 2; ++i) {
     longString += showRow(board.row(i), i);
   }
-  conv.contexts.set('board-followup', 1);
   speak(conv, longString);
   speak(conv, Ask.askToGoNext());
 }
@@ -374,9 +380,7 @@ app.intent(
   (conv: VoiceChessConv): void => {
     console.log('difficulty');
     safeGameContext(conv);
-    //const currentDifficulty = parseInt(conv.user.storage.difficulty);
     const currentDifficulty = conv.user.storage.difficulty;
-    conv.contexts.set('difficulty-followup', 1);
     speak(conv, Ans.showDifficulty(currentDifficulty));
     speak(conv, Ask.askToChangeDifficulty());
   }
@@ -391,8 +395,6 @@ app.intent(
     console.log('difficulte - number');
     safeGameContext(conv);
     if (ord || num) {
-      // const currentDifficulty = parseInt(conv.user.storage.difficulty);
-      // const newDifficulty = parseInt(number ? number : ordinal);
       const currentDifficulty = conv.user.storage.difficulty;
       const newDifficulty = num ? num : ord;
       if (currentDifficulty === newDifficulty) {
