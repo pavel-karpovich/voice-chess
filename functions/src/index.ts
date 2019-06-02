@@ -92,8 +92,8 @@ app.intent(
 function fallbackHandler(conv: VoiceChessConv): void {
   console.log('fallback');
   for (const context of conv.contexts) {
-    console.log('context: ' + context);
-    console.dir(context);
+    console.log('context-name: ' + context.name);
+    console.log('context-lifespan: ' + context.lifespan);
     context.lifespan++;
   }
   const fallbacks = conv.data.fallbackCount;
