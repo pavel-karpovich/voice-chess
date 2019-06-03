@@ -299,6 +299,9 @@ export class Answer {
     }
   }
   static piece(code: string): string {
+    if (!code) {
+      return null;
+    }
     code = code.toLowerCase();
     switch (code) {
       case 'p':
@@ -412,7 +415,7 @@ export class Answer {
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       default:
-        return 'Error';
+        return null;
     }
   }
   static emptyRow(n: number): string {
