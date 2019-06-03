@@ -90,9 +90,9 @@ async function move(pos) {
 let moveNumber = 1;
 async function nextMove() {
   console.log(`Move ${moveNumber++}`);
-  await move('b7b8k');
+  await move('b7b8q');
   console.log(`Move ${moveNumber++}`);
-  await moveAuto(10);
+  await moveAuto(2);
   console.log(`Move ${moveNumber++}`);
   await moveAuto(1);
   console.log(`Move ${moveNumber++}`);
@@ -100,4 +100,12 @@ async function nextMove() {
   // await nextMove();
 }
 
-nextMove();
+// nextMove();
+
+const chess = new Chess(fenstring, 2);
+async function game() {
+  await chess.move('b7b8q');
+  await chess.moveAuto();
+}
+
+game();

@@ -272,10 +272,10 @@ async function moveSequence(
   const from = move.slice(0, 2);
   const to = move.slice(2, 4);
   await chess.move(move);
-  let ask = Ans.playerMove(from, to, { piece });
+  let ask = Ans.playerMove(from, to, piece);
   if (move.length === 5) {
     const pieceCode = move[4];
-    ask += ' \n' + Ans.moveWithPromotion(pieceCode);
+    ask += ' ' + Ans.moveWithPromotion(pieceCode);
   }
   if (chess.currentGameState === ChessGameState.CHECKMATE) {
     speak(conv, ask + ' \n' + Ans.youWin());
@@ -309,10 +309,10 @@ async function moveSequence(
   const enemyPiece = board.pos(enemyTo);
   let enemyStr = null;
   if (chess.enemyMove.length === 5) {
-    enemyStr = Ans.enemyMove(enemyFrom, enemyTo, { piece: Ans.piece('p') });
-    enemyStr += ' \n' + Ans.moveWithPromotion(enemyPiece);
+    enemyStr = Ans.enemyMove(enemyFrom, enemyTo, 'p');
+    enemyStr += ' ' + Ans.moveWithPromotion(enemyPiece);
   } else {
-    enemyStr = Ans.enemyMove(enemyFrom, enemyTo, { piece: enemyPiece });
+    enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
   }
   if ((chess.currentGameState as ChessGameState) === ChessGameState.CHECKMATE) {
     speak(conv, `${enemyStr} \n${Ans.youLose()} \n${Ask.askToNewGame()}`);
@@ -467,7 +467,7 @@ app.intent(
       conv.user.storage.fen = chess.fenstring;
       const board = new ChessBoard(chess.fenstring);
       const enemyPiece = board.pos(enemyTo);
-      const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, { piece: enemyPiece });
+      const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
       const askYouStr = Ask.nowYouNeedToMove();
       speak(conv, enemyStr + '\n' + askYouStr);
     }
