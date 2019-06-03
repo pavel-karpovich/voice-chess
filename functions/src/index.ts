@@ -442,7 +442,7 @@ app.intent(
     const fenstring = conv.user.storage.fen;
     const difficulty = conv.user.storage.difficulty;
     const chess = new Chess(fenstring, difficulty);
-    moveSequence(conv, chess, move, piece);
+    await moveSequence(conv, chess, move, piece);
   }
 );
 
