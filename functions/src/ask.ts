@@ -210,7 +210,7 @@ export class Ask {
       ({
         en: [
           'Now will you make a move?',
-          'Ok, what\'s next? Maybe make your move?',
+          "Ok, what's next? Maybe make your move?",
           'I am awaiting your turn. Have you decided where to go?',
           'Now are you ready to make your move?',
           'I am waiting for your turn. What will you do?',
@@ -276,7 +276,7 @@ export class Ask {
       ({
         en: [
           'Sorry, can you repeat the level value?',
-          'Repeat please... I didn\'t understand the number.',
+          "Repeat please... I didn't understand the number.",
         ],
         ru: [
           'Повторите пожалуйста, я не расслышал номер...',
@@ -286,7 +286,12 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static moveWithoutPiecesMatch(actualPiece: string, playerPiece: string, from: string, to: string) {
+  static moveWithoutPiecesMatch(
+    actualPiece: string,
+    playerPiece: string,
+    from: string,
+    to: string
+  ) {
     return rand(
       ({
         en: [
@@ -294,7 +299,9 @@ export class Ask {
           `But move is legal. Save it?`,
           `But move is legal. Confirm it with ${actualPiece}?`,
           `Did you want to say ${actualPiece}?`,
-          `Then, your move is ${actualPiece} from ${char(from)} to ${char(to)}?`,
+          `Then, your move is ${actualPiece} from ${char(from)} to ${char(
+            to
+          )}?`,
         ],
         ru: [
           `Вы просто перепутали? Будете ходить ${actualPiece}?`,

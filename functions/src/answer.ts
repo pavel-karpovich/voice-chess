@@ -636,13 +636,13 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static cellIsEmpty(cell: string, details?: any): string {
-    if (details.piece) {
+  static cellIsEmpty(cell: string, piece?: string): string {
+    if (piece) {
       return rand(
         ({
           en: [
-            `There is no ${details.piece} on the square ${cell}! It's empty.`,
-            `${details.piece} from ${char(cell)}? Are you sure? ${char(
+            `There is no ${piece} on the square ${cell}! It's empty.`,
+            `${piece} from ${char(cell)}? Are you sure? ${char(
               cell
             )} is empty!`,
             `You confused something. In the square ${char(
@@ -650,13 +650,11 @@ export class Answer {
             )} no chess pieces.`,
           ],
           ru: [
-            `Но клетка ${char(cell)} пустая. На ней нет ${details.piece}!`,
-            `${details.piece} на ${char(cell)}? Но на клетке ${char(
+            `Но клетка ${char(cell)} пустая. На ней нет ${piece}!`,
+            `${piece} на ${char(cell)}? Но на клетке ${char(cell)} ничего нет.`,
+            `На клетке ${char(
               cell
-            )} ничего нет.`,
-            `На клетке ${char(cell)} нет ${
-              details.piece
-            }, на ней вообще нет фигур - это свободная клетка.`,
+            )} нет ${piece}, на ней вообще нет фигур - это свободная клетка.`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -685,13 +683,19 @@ export class Answer {
     return rand(
       ({
         en: [
-          `But on the square ${char(cell)} is not ${playerPiece}, but ${actualPiece}.`,
+          `But on the square ${char(
+            cell
+          )} is not ${playerPiece}, but ${actualPiece}.`,
           `On the square ${char(cell)} is ${actualPiece}, not ${playerPiece}.`,
           `On ${char(cell)} is not ${playerPiece}, but ${actualPiece}.`,
         ],
         ru: [
-          `Но на клетке ${char(cell)} стоит не ${playerPiece}, a ${actualPiece}.`,
-          `Только на клетке ${char(cell)} находится ${actualPiece}, а не ${playerPiece}.`,
+          `Но на клетке ${char(
+            cell
+          )} стоит не ${playerPiece}, a ${actualPiece}.`,
+          `Только на клетке ${char(
+            cell
+          )} находится ${actualPiece}, а не ${playerPiece}.`,
           `На ${char(cell)} не ${playerPiece}, а ${actualPiece}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
@@ -702,13 +706,17 @@ export class Answer {
       ({
         en: [
           `Your pawn reaches the last row! Now you need to use promotion!`,
-          `When your pawn moves from ${char(from)} to ${char(to)}, there will be a promotion!`,
+          `When your pawn moves from ${char(from)} to ${char(
+            to
+          )}, there will be a promotion!`,
           `It is time to Pawn promotion!`,
           `Pawn promotion!`,
         ],
         ru: [
           `Ваша Пешка дошла до последнего ряда. Теперь её можно превратить в другую фигуру!`,
-          `При переходе Пешки с ${char(from)} на ${char(to)} происходит превращение!`,
+          `При переходе Пешки с ${char(from)} на ${char(
+            to
+          )} происходит превращение!`,
           `Время превращения пешки!`,
           `Повышение пешки!`,
         ],

@@ -263,7 +263,12 @@ function askOrRemind(conv: VoiceChessConv): void {
   }
 }
 
-async function moveSequence(conv: VoiceChessConv, chess: Chess, move: string, piece: string): Promise<void> {
+async function moveSequence(
+  conv: VoiceChessConv,
+  chess: Chess,
+  move: string,
+  piece: string
+): Promise<void> {
   const from = move.slice(0, 2);
   const to = move.slice(2, 4);
   await chess.move(move);
@@ -309,9 +314,7 @@ async function moveSequence(conv: VoiceChessConv, chess: Chess, move: string, pi
   } else {
     enemyStr = Ans.enemyMove(enemyFrom, enemyTo, { piece: enemyPiece });
   }
-  if (
-    (chess.currentGameState as ChessGameState) === ChessGameState.CHECKMATE
-  ) {
+  if ((chess.currentGameState as ChessGameState) === ChessGameState.CHECKMATE) {
     speak(conv, `${enemyStr} \n${Ans.youLose()} \n${Ask.askToNewGame()}`);
     conv.contexts.set('ask-to-new-game', 1);
     conv.user.storage.fen = null;
@@ -329,8 +332,7 @@ async function moveSequence(conv: VoiceChessConv, chess: Chess, move: string, pi
     conv.contexts.delete('game');
     return;
   } else if (
-    (chess.currentGameState as ChessGameState) ===
-    ChessGameState.FIFTYMOVEDRAW
+    (chess.currentGameState as ChessGameState) === ChessGameState.FIFTYMOVEDRAW
   ) {
     speak(
       conv,
@@ -376,7 +378,7 @@ app.intent(
       askOrRemind(conv);
       return;
     } else if (piece && !actualPiece) {
-      speak(conv, Ans.cellIsEmpty(from, { piece }));
+      speak(conv, Ans.cellIsEmpty(from, piece));
       askOrRemind(conv);
       return;
     } else if (piece !== actualPiece) {
@@ -413,7 +415,10 @@ app.intent(
 
 app.intent(
   'Promotion',
-  async (conv: VoiceChessConv, { piece2 }: { piece2: string }): Promise<void> => {
+  async (
+    conv: VoiceChessConv,
+    { piece2 }: { piece2: string }
+  ): Promise<void> => {
     console.log('Pawn promotion to the ' + piece2);
     const promContext = conv.contexts.get('ask-to-promotion');
     const piece = promContext.parameters.piece as string;
@@ -438,7 +443,8 @@ app.intent(
     const difficulty = conv.user.storage.difficulty;
     const chess = new Chess(fenstring, difficulty);
     moveSequence(conv, chess, move, piece);
-});
+  }
+);
 
 app.intent(
   'Choose Side',
@@ -526,7 +532,6 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       speak(conv, Ask.askToMove());
     } else if (conv.contexts.get('confirm-move')) {
-      
     } else {
       isFallback = true;
       fallbackHandler(conv);
@@ -552,7 +557,6 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       beginShowingTheBoard(conv);
     } else if (conv.contexts.get('confirm-move')) {
-      
     } else {
       isFallback = true;
       fallbackHandler(conv);
