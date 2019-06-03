@@ -1,5 +1,6 @@
 const loadEngine = require('stockfish');
 import * as path from 'path';
+import { ChessBoard } from './chessboard';
 const stockfishPath = '../node_modules/stockfish/src/stockfish.wasm';
 
 export const chessBoardSize = 8;
@@ -15,6 +16,21 @@ export enum ChessGameState {
 export enum ChessSide {
   WHITE = 1,
   BLACK = 2,
+}
+
+interface Move {
+  move: string;
+  beat: string;
+}
+interface PieceMoves {
+  type: string;
+  pos: string;
+  moves: Move[];
+}
+interface MovesBulk {
+  end: boolean;
+  next: number;
+  pieces: PieceMoves[];
 }
 
 /**
@@ -160,6 +176,97 @@ export class Chess {
       this.memorizedState = ChessGameState.OK;
     }
     return this.memorizedState;
+  }
+
+  getBulkOfMoves(n: number, sorted = true): MovesBulk {
+    if (!this.moves) {
+      throw new Error(
+        'getBulkOfMoves() first requires updateGameState() call!'
+      );
+    }
+    const ret = { end: true, next: n, pieces: [] as PieceMoves[] };
+    if (n >= this.moves.length) {
+      return ret;
+    }
+    const board = new ChessBoard(this.fen);
+    if (sorted) {
+      this.moves.sort((move1, move2) => {
+        const to1 = board.pos(move1.slice(2, 4));
+        const to2 = board.pos(move2.slice(2, 4));
+        if (to1 === null && to2 !== null) return 1;
+        else if (to1 !== null && to2 === null) return -1;
+        else return move1.localeCompare(move2);
+      });
+    } else {
+      this.moves.sort((move1, move2) => move1.localeCompare(move2));
+    }
+    console.log(this.moves.join(', '));
+    const standardSize = 10;
+    const permissibleVariation = 5;
+    const maxN = n + standardSize + permissibleVariation;
+    if (maxN > this.moves.length) {
+      ret.next = this.moves.length;
+      let lastPos = this.moves[n].slice(0, 2);
+      let posTo = this.moves[n].slice(2, 4);
+      let mv = { move: this.moves[n], beat: board.pos(posTo) };
+      let piece = {
+        pos: lastPos,
+        type: board.pos(lastPos),
+        moves: [mv],
+      };
+      for (let i = n + 1; i < this.moves.length; ++i) {
+        const currentPos = this.moves[i].slice(0, 2);
+        posTo = this.moves[i].slice(2, 4);
+        mv = { move: this.moves[i], beat: board.pos(posTo) };
+        if (currentPos === lastPos) {
+          piece.moves.push(mv);
+        } else {
+          ret.pieces.push(piece);
+          lastPos = currentPos;
+          piece = { pos: lastPos, type: board.pos(lastPos), moves: [mv] };
+        }
+      }
+      ret.pieces.push(piece);
+    } else {
+      ret.end = false;
+      let lastPos = this.moves[n].slice(0, 2);
+      let posTo = this.moves[n].slice(2, 4);
+      let mv = { move: this.moves[n], beat: board.pos(posTo) };
+      let piece = {
+        pos: lastPos,
+        type: board.pos(lastPos),
+        moves: [mv],
+      };
+      let i;
+      for (i = n + 1; i < maxN + 1; ++i) {
+        const currentPos = this.moves[i].slice(0, 2);
+        posTo = this.moves[i].slice(2, 4);
+        mv = { move: this.moves[i], beat: board.pos(posTo) };
+        if (currentPos === lastPos) {
+          if (i === maxN) {
+            if (
+              piece.moves.length === i - n ||
+              piece.moves.length >= 2 * permissibleVariation
+            ) {
+              ret.pieces.push(piece);
+            } else {
+              i -= piece.moves.length;
+            }
+            break;
+          }
+          piece.moves.push(mv);
+        } else {
+          ret.pieces.push(piece);
+          if (i >= n + standardSize) {
+            break;
+          }
+          lastPos = currentPos;
+          piece = { pos: lastPos, type: board.pos(lastPos), moves: [mv] };
+        }
+      }
+      ret.next = i;
+    }
+    return ret;
   }
 
   /**

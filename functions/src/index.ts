@@ -33,6 +33,7 @@ const restorableContexts = [
   'turn-showboard',
   'confirm-move',
   'ask-to-promotion',
+  'moves-next',
 ];
 
 function speak(conv: VoiceChessConv, text: string) {
@@ -513,6 +514,32 @@ app.intent(
       speak(conv, Ask.difficultyWithoutValue());
       conv.contexts.set('difficulty-followup', 1);
     }
+  }
+);
+
+app.intent(
+  'Legal moves',
+  async (conv: VoiceChessConv): Promise<void> => {
+    console.log('legal moves');
+    const fenstring = conv.user.storage.fen;
+    const difficulty = conv.user.storage.difficulty;
+    const chess = new Chess(fenstring, difficulty);
+    await chess.updateGameState();
+    const bulkOfMoves = chess.getBulkOfMoves(0);
+    if (bulkOfMoves.pieces.length === 0) {
+      throw new Error("Checkmate/stalemate in this place can't be!");
+    }
+    if (bulkOfMoves.end) {
+      speak(conv, Ask.waitMove());
+    } else {
+    }
+  }
+);
+
+app.intent(
+  'Legal moves - next',
+  (conv: VoiceChessConv): void => {
+    console.log('moves - next');
   }
 );
 

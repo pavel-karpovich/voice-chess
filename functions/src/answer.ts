@@ -211,14 +211,14 @@ export class Answer {
       return rand(
         ({
           en: [
-            `<p><s>The move is made!</s><s>You move ${
-              piece
-            } from ${char(from)} to ${char(to)}.</s></p>`,
+            `<p><s>The move is made!</s><s>You move ${piece} from ${char(
+              from
+            )} to ${char(to)}.</s></p>`,
           ],
           ru: [
-            `<p><s>Ход сделан!</s><s>Вы передвинули ${
-              piece
-            } с позиции ${char(from)} на ${char(to)}.</s></p>`,
+            `<p><s>Ход сделан!</s><s>Вы передвинули ${piece} с позиции ${char(
+              from
+            )} на ${char(to)}.</s></p>`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
