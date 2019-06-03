@@ -381,10 +381,10 @@ app.intent(
       speak(conv, Ans.cellIsEmpty(from, piece));
       askOrRemind(conv);
       return;
-    } else if (piece !== actualPiece) {
-      piecesMatch = false;
     } else if (!piece && actualPiece) {
       piece = actualPiece;
+    } else if (piece !== actualPiece) {
+      piecesMatch = false;
     }
     await chess.updateGameState();
     const isLegal = chess.isMoveLegal(move);
