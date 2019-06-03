@@ -641,7 +641,7 @@ export class Answer {
       return rand(
         ({
           en: [
-            `There is no ${piece} on the square ${cell}! It's empty.`,
+            `There is no ${piece} on the square ${char(cell)}! It's empty.`,
             `${piece} from ${char(cell)}? Are you sure? ${char(
               cell
             )} is empty!`,
