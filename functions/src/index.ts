@@ -418,7 +418,7 @@ app.intent(
     const promContext = conv.contexts.get('ask-to-promotion');
     const piece = promContext.parameters.piece as string;
     let move = promContext.parameters.move as string;
-    switch (upFirst(piece2)) {
+    switch (piece2) {
       case Ans.piece('q'):
         move += 'q';
         break;
