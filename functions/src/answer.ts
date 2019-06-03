@@ -206,18 +206,18 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static playerMove(from: string, to: string, details?: any): string {
-    if (details.piece) {
+  static playerMove(from: string, to: string, piece?: string): string {
+    if (piece) {
       return rand(
         ({
           en: [
             `<p><s>The move is made!</s><s>You move ${
-              details.piece
+              piece
             } from ${char(from)} to ${char(to)}.</s></p>`,
           ],
           ru: [
             `<p><s>Ход сделан!</s><s>Вы передвинули ${
-              details.piece
+              piece
             } с позиции ${char(from)} на ${char(to)}.</s></p>`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
@@ -237,9 +237,9 @@ export class Answer {
       );
     }
   }
-  static enemyMove(from: string, to: string, details?: any): string {
-    if (details.piece) {
-      const piece = Answer.piece(details.piece);
+  static enemyMove(from: string, to: string, pieceCode?: string): string {
+    if (pieceCode) {
+      const piece = Answer.piece(pieceCode);
       return rand(
         ({
           en: [
