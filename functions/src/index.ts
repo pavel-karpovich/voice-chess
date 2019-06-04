@@ -539,12 +539,12 @@ async function listOfMoves(conv: VoiceChessConv, startNumber: number): Promise<v
 }
 
 app.intent('Legal moves', async (conv: VoiceChessConv) => {
-  listOfMoves(conv, 0);
+  await listOfMoves(conv, 0);
 });
 
 app.intent('Legal moves - next', async (conv: VoiceChessConv) => {
   const context = conv.contexts.get('moves-next');
-  listOfMoves(conv, Number(context.parameters.start));
+  await listOfMoves(conv, Number(context.parameters.start));
 });
 
 app.intent(
