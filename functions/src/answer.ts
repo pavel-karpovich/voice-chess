@@ -1,4 +1,11 @@
-import { rand, LocalizationObject, WordForms, char, upFirst, pause } from './helpers';
+import {
+  rand,
+  LocalizationObject,
+  WordForms,
+  char,
+  upFirst,
+  pause,
+} from './helpers';
 import { PieceMoves, Move, ChessSide } from './chess';
 
 export class Answer {

@@ -166,7 +166,7 @@ function showRow(row: ChessCellInfo[], rowNum: number): string {
     resultString += Ans.nRow(rowNum) + ': ';
     for (const cell of row) {
       if (cell.val !== null) {
-        resultString += Ans.coloredPieceOnPosition(cell.val, cell.pos) + ', ' + pause(0.3);
+        resultString += Ans.coloredPieceOnPosition(cell.val, cell.pos) + ', '; // + pause(0.3);
       }
     }
     resultString = resultString.slice(0, -2) + '.\n';
@@ -176,10 +176,11 @@ function showRow(row: ChessCellInfo[], rowNum: number): string {
 
 function showRows(fen: string, fromRow: number, toRow: number): string {
   const board = new ChessBoard(fen);
-  let result = ' ';
+  let result = '<p>';
   for (let i = fromRow; i <= toRow; ++i) {
-    result += showRow(board.row(i), i) + pause(0.7);
+    result += `<s>${showRow(board.row(i), i)}</s>${pause(0.7)}`;
   }
+  result += '</p>';
   return result;
 }
 
