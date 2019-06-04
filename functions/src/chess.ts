@@ -111,7 +111,7 @@ export class Chess {
    * The const fen string value of te start chess position
    */
   static get initialFen(): string {
-    return '8/1P6/8/8/8/5k2/4p3/8 w KQkq - 0 1';
+    return '4k3/7P/2Q5/4p1p1/p2P4/1P3N2/3K4/8 w KQkq - 0 1';
   }
 
   /**
