@@ -29,7 +29,7 @@ export class Ask {
         en: [
           'You have a game with me. Want to continue?',
           'Wanna continue our game?',
-          "We have an unfinished game. Let's continue?",
+          'We have an unfinished game. Let\'s continue?',
           'We have an unfinished game. Is it time to continue?',
         ],
         ru: [
@@ -45,7 +45,7 @@ export class Ask {
     return ({
       en:
         '<p><s>You are now in the game..</s>' +
-        "<s>And I'm wait when you make your next move.</s>" +
+        '<s>And I\'m wait when you make your next move.</s>' +
         '<s>If you want, you can ask me about the current state of the chessboard.</s>' +
         '<s>I can tell you about a specific row of the board, or about all the white or black pieces.</s>' +
         '<s>You can also start a new game, or change the difficulty level.</s></p>' +
@@ -210,7 +210,7 @@ export class Ask {
       ({
         en: [
           'Now will you make a move?',
-          "Ok, what's next? Maybe make your move?",
+          'Ok, what\'s next? Maybe make your move?',
           'I am awaiting your turn. Have you decided where to go?',
           'Now are you ready to make your move?',
           'I am waiting for your turn. What will you do?',
