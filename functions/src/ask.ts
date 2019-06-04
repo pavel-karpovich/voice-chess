@@ -313,7 +313,7 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static promotion(): string {
+  static howToPromote(): string {
     return rand(
       ({
         en: [

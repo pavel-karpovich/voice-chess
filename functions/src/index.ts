@@ -24,9 +24,9 @@ type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
 
 const restorableContexts = [
   'ask-side',
-  'row-followup',
+  'row-next',
   'difficulty-followup',
-  'board-followup',
+  'board-next',
   'ask-to-new-game',
   'ask-to-continue',
   'turn-intent',
@@ -219,7 +219,7 @@ function rowHandler(
     conv.data.row = rowNum;
     speak(conv, showRow(board.row(rowNum), rowNum));
     speak(conv, Ask.askToGoNext());
-    conv.contexts.set('row-followup', 1);
+    conv.contexts.set('row-next', 1);
   } else {
     speak(conv, Ask.askRowNumber());
     conv.data.row = undefined;
@@ -235,7 +235,7 @@ function giveNextRow(conv: VoiceChessConv): void {
     conv.contexts.set('turn-intent', 1);
     return;
   }
-  conv.contexts.set('row-followup', 1);
+  conv.contexts.set('row-next', 1);
   const fenstring = conv.user.storage.fen;
   const board = new ChessBoard(fenstring);
   const thisRow = lastRow + 1;
@@ -397,7 +397,7 @@ app.intent(
       }
       if (chess.isPromotion(move)) {
         speak(conv, Ans.promotion(from, to));
-        speak(conv, Ask.promotion());
+        speak(conv, Ask.howToPromote());
         conv.contexts.set('ask-to-promotion', 1, { move, piece });
         return;
       }
@@ -545,9 +545,9 @@ app.intent('Next', async (conv: VoiceChessConv) => {
   let isFallback = false;
   if (conv.contexts.get('moves-next')) {
     await listOfMoves(conv, Number(conv.contexts.get('moves-next').parameters.start)); 
-  } else if (conv.contexts.get('Board-followup')) {
+  } else if (conv.contexts.get('board-next')) {
     giveSecondPartOfTheBoard(conv);
-  } else if (conv.contexts.get('Row-followup')) {
+  } else if (conv.contexts.get('row-next')) {
     giveNextRow(conv);
   } else {
     isFallback = true;
@@ -568,9 +568,9 @@ app.intent(
       speak(conv, Ask.askWhatever());
     } else if (conv.contexts.get('moves-next')) {
       speak(conv, Ask.waitMove());
-    } else if (conv.contexts.get('Board-followup')) {
+    } else if (conv.contexts.get('board-next')) {
       speak(conv, Ask.waitMove());
-    } else if (conv.contexts.get('Row-followup')) {
+    } else if (conv.contexts.get('row-next')) {
       speak(conv, Ask.waitMove());
     } else if (conv.contexts.get('ask-to-new-game')) {
       speak(conv, Ask.whatToDo());
@@ -601,9 +601,9 @@ app.intent(
       speak(conv, Ask.askToMove());
     } else if (conv.contexts.get('moves-next')) {
       await listOfMoves(conv, Number(conv.contexts.get('moves-next').parameters.start)); 
-    } else if (conv.contexts.get('Board-followup')) {
+    } else if (conv.contexts.get('board-next')) {
       giveSecondPartOfTheBoard(conv);
-    } else if (conv.contexts.get('Row-followup')) {
+    } else if (conv.contexts.get('row-next')) {
       giveNextRow(conv);
     } else if (conv.contexts.get('ask-to-new-game')) {
       startNewGame(conv);
