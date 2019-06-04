@@ -320,7 +320,8 @@ export class Answer {
         ru: [
           `Мой ход таков: ${piece} с ${char(from)} на ${char(to)}.`,
           `Так. Пожалуй, я отвечу ${piece} ${char(from)} ${char(to)}.`,
-          `Я сделаю ход ${piece} с ${char(from)} на ${char(to)}!`,
+          `Я сделаю ход ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}!`,
+          `А я похожу ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -391,6 +392,7 @@ export class Answer {
             sin: 'Пешка',
             rod: 'Пешки',
             vin: 'Пешку',
+            tvr: 'Пешкой',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'r':
@@ -400,6 +402,7 @@ export class Answer {
             sin: 'Ладья',
             rod: 'Ладьи',
             vin: 'Ладью',
+            tvr: 'Ладьёй',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'n':
@@ -409,6 +412,7 @@ export class Answer {
             sin: 'Конь',
             rod: 'Коня',
             vin: 'Коня',
+            tvt: 'Конём',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'b':
@@ -418,6 +422,7 @@ export class Answer {
             sin: 'Слон',
             rod: 'Слона',
             vin: 'Слона',
+            tvr: 'Слоном',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'q':
@@ -427,6 +432,7 @@ export class Answer {
             sin: 'Ферзь',
             rod: 'Ферзя',
             vin: 'Ферзя',
+            tvr: 'Ферзём',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'k':
@@ -436,6 +442,7 @@ export class Answer {
             sin: 'Король',
             rod: 'Короля',
             vin: 'Короля',
+            tvr: 'Королём',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       default:
