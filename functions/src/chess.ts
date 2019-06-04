@@ -18,11 +18,11 @@ export enum ChessSide {
   BLACK = 2,
 }
 
-interface Move {
-  move: string;
+export interface Move {
+  to: string;
   beat: string;
 }
-interface PieceMoves {
+export interface PieceMoves {
   type: string;
   pos: string;
   moves: Move[];
@@ -208,7 +208,7 @@ export class Chess {
       ret.next = this.moves.length;
       let lastPos = this.moves[n].slice(0, 2);
       let posTo = this.moves[n].slice(2, 4);
-      let mv = { move: this.moves[n], beat: board.pos(posTo) };
+      let mv = { to: posTo, beat: board.pos(posTo) };
       let piece = {
         pos: lastPos,
         type: board.pos(lastPos),
@@ -217,7 +217,7 @@ export class Chess {
       for (let i = n + 1; i < this.moves.length; ++i) {
         const currentPos = this.moves[i].slice(0, 2);
         posTo = this.moves[i].slice(2, 4);
-        mv = { move: this.moves[i], beat: board.pos(posTo) };
+        mv = { to: posTo, beat: board.pos(posTo) };
         if (currentPos === lastPos) {
           piece.moves.push(mv);
         } else {
@@ -231,7 +231,7 @@ export class Chess {
       ret.end = false;
       let lastPos = this.moves[n].slice(0, 2);
       let posTo = this.moves[n].slice(2, 4);
-      let mv = { move: this.moves[n], beat: board.pos(posTo) };
+      let mv = { to: posTo, beat: board.pos(posTo) };
       let piece = {
         pos: lastPos,
         type: board.pos(lastPos),
@@ -241,7 +241,7 @@ export class Chess {
       for (i = n + 1; i < maxN + 1; ++i) {
         const currentPos = this.moves[i].slice(0, 2);
         posTo = this.moves[i].slice(2, 4);
-        mv = { move: this.moves[i], beat: board.pos(posTo) };
+        mv = { to: posTo, beat: board.pos(posTo) };
         if (currentPos === lastPos) {
           if (i === maxN) {
             if (

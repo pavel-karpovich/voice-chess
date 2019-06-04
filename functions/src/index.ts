@@ -517,31 +517,35 @@ app.intent(
   }
 );
 
-app.intent(
-  'Legal moves',
-  async (conv: VoiceChessConv): Promise<void> => {
-    console.log('legal moves');
-    const fenstring = conv.user.storage.fen;
-    const difficulty = conv.user.storage.difficulty;
-    const chess = new Chess(fenstring, difficulty);
-    await chess.updateGameState();
-    const bulkOfMoves = chess.getBulkOfMoves(0);
-    if (bulkOfMoves.pieces.length === 0) {
-      throw new Error("Checkmate/stalemate in this place can't be!");
-    }
-    if (bulkOfMoves.end) {
-      speak(conv, Ask.waitMove());
-    } else {
-    }
+async function listOfMoves(conv: VoiceChessConv, startNumber: number): Promise<void> {
+  console.log('legal moves');
+  const fenstring = conv.user.storage.fen;
+  const difficulty = conv.user.storage.difficulty;
+  const chess = new Chess(fenstring, difficulty);
+  await chess.updateGameState();
+  const bulkOfMoves = chess.getBulkOfMoves(startNumber);
+  if (bulkOfMoves.pieces.length === 0) {
+    throw new Error("Checkmate/stalemate in this place can't be!");
   }
-);
+  if (bulkOfMoves.end) {
+    const ans = Ans.listMoves(bulkOfMoves.pieces) + Ans.itsAll();
+    speak(conv, ans);
+    speak(conv, Ask.waitMove());
+  } else {
+    speak(conv, Ans.listMoves(bulkOfMoves.pieces));
+    speak(conv, Ask.askToGoNext());
+    conv.contexts.set('moves-next', 1, { start: bulkOfMoves.next });
+  }
+}
 
-app.intent(
-  'Legal moves - next',
-  (conv: VoiceChessConv): void => {
-    console.log('moves - next');
-  }
-);
+app.intent('Legal moves', async (conv: VoiceChessConv) => {
+  listOfMoves(conv, 0);
+});
+
+app.intent('Legal moves - next', async (conv: VoiceChessConv) => {
+  const context = conv.contexts.get('moves-next');
+  listOfMoves(conv, Number(context.parameters.start));
+});
 
 app.intent(
   'No',

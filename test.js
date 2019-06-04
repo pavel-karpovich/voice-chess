@@ -5,7 +5,7 @@ const util = require('util');
 const loadEngine = require('./functions/node_modules/stockfish');
 const {Chess} = require('./functions/lib/chess');
 const {ChessBoard} = require('./functions/lib/chessboard');
-const {Ans} = require('./functions/lib/answer');
+const {Answer} = require('./functions/lib/answer');
 const {upFirst} = require('./functions/lib/helpers');
 
 const stockfish = loadEngine('./functions/node_modules/stockfish/src/stockfish.wasm');
@@ -104,6 +104,7 @@ async function nextMove() {
 // nextMove();
 
 const chess = new Chess(fenstring, 2);
+Answer.setLanguage('ru');
 
 async function game() {
   await chess.updateGameState();
@@ -112,6 +113,7 @@ async function game() {
   do {
     bulk = chess.getBulkOfMoves(n);
     console.log(util.inspect(bulk, { depth: 5 }));
+    console.log(Answer.listMoves(bulk.pieces));
     n = bulk.next;
   } while(!bulk.end);
 }

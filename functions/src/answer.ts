@@ -1,4 +1,5 @@
-import { rand, LocalizationObject, WordForms, char } from './helpers';
+import { rand, LocalizationObject, WordForms, char, upFirst } from './helpers';
+import { PieceMoves, Move } from './chess';
 
 export class Answer {
   private static lang: string;
@@ -239,7 +240,7 @@ export class Answer {
   }
   static enemyMove(from: string, to: string, pieceCode?: string): string {
     if (pieceCode) {
-      const piece = Answer.piece(pieceCode);
+      const piece = this.piece(pieceCode);
       return rand(
         ({
           en: [
@@ -293,12 +294,12 @@ export class Answer {
   }
   static color(code: string, opt = 'mus'): string {
     if (code === code.toUpperCase()) {
-      return Answer.white(opt);
+      return this.white(opt);
     } else {
-      return Answer.black(opt);
+      return this.black(opt);
     }
   }
-  static piece(code: string): string {
+  static piece(code: string, opt = 'sin'): string {
     if (!code) {
       return null;
     }
@@ -307,32 +308,50 @@ export class Answer {
       case 'p':
         return ({
           en: 'Pawn',
-          ru: 'Пешка',
+          ru: ({
+            sin: 'Пешка',
+            vin: 'Пешку',
+          } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'r':
         return ({
           en: 'Rook',
-          ru: 'Слон',
+          ru: ({
+            sin: 'Слон',
+            vin: 'Слона',
+          } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'n':
         return ({
           en: 'Knight',
-          ru: 'Конь',
+          ru: ({
+            sin: 'Конь',
+            vin: 'Коня',
+          } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'b':
         return ({
           en: 'Bishop',
-          ru: 'Ладья',
+          ru: ({
+            sin: 'Ладья',
+            vin: 'ладью',
+          } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'q':
         return ({
           en: 'Queen',
-          ru: 'Ферзь',
+          ru: ({
+            sin: 'Ферзь',
+            vin: 'Ферзя',
+          } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'k':
         return ({
           en: 'King',
-          ru: 'Король',
+          ru: ({
+            sin: 'Король',
+            vin: 'Короля',
+          } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       default:
         return null;
@@ -431,6 +450,22 @@ export class Answer {
       ({
         en: [`on ${char(pos)} ${this.coloredPiece(code)}`],
         ru: [`на ${char(pos)} ${this.coloredPiece(code)}`],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static pieceOnPosition(code: string, pos: string): string {
+    return rand(
+      ({
+        en: [
+          `${this.piece(code)} on ${char(pos)}`,
+          `${this.piece(code)} from the square ${char(pos)}`,
+          `${this.piece(code)} ${char(pos)}`,
+        ],
+        ru: [
+          `${this.piece(code)} с ${char(pos)}`,
+          `${this.piece(code)} на позиции ${char(pos)}`,
+          `${this.piece(code)} ${char(pos)}`,
+        ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -724,7 +759,7 @@ export class Answer {
     );
   }
   static moveWithPromotion(pieceCode: string): string {
-    const piece = Answer.piece(pieceCode);
+    const piece = this.piece(pieceCode);
     return rand(
       ({
         en: [
@@ -739,5 +774,152 @@ export class Answer {
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
+  }
+  static itsAll(): string {
+    return rand(
+      ({
+        en: [
+          'It\'s all.',
+          'And it is the end.',
+          'And that was the last item.',
+        ],
+        ru: [
+          'И это всё.',
+          'Все, это конец.',
+          'Это всё, что есть.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static on(): string {
+    return rand(
+      ({
+        en: ['on'],
+        ru: ['на'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static or(): string {
+    return rand(
+      ({
+        en: ['or'],
+        ru: ['или'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static and(): string {
+    return rand(
+      ({
+        en: ['and'],
+        ru: ['и'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static canAttack(): string {
+    return rand(
+      ({
+        en: ['can attack'],
+        ru: ['может атаковать'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static enemy(opt = 'mus'): string {
+    return ({
+      en: 'enemy',
+      ru: ({
+        mus: 'вражеского',
+        fem: 'вражескую',
+      } as WordForms)[opt],
+    } as LocalizationObject<string>)[this.lang];
+  }
+  static enemyPiece(pieceCode: string) {
+    pieceCode = pieceCode.toLowerCase();
+    if (pieceCode === 'p' || pieceCode === 'b') {
+      return this.enemy('fem');
+    } else {
+      return this.enemy('mus');
+    }
+  }
+  static canMove(): string {
+    return rand(
+      ({
+        en: ['can move'],
+        ru: ['может ходить'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static beats(targets: Move[]) {
+    let result = ' ' + this.canAttack() + ' ' + this.enemyPiece(targets[0].beat);
+    for (let i = 0; i < targets.length; ++i) {
+      if (i !== 0 && i === targets.length - 1) {
+        result += ' ' + this.or();
+      }
+      result += ` ${this.piece(targets[i].beat, 'vin')} ${this.on()} ${char(targets[i].to)}`;
+      if (i < targets.length - 1) {
+        result += ',';
+      }
+    }
+    return result;
+  }
+  static moves(targets: string[]) {
+    let result = ' ' + this.canMove();
+    for (let i = 0; i < targets.length; ++i) {
+      if (i !== 0 && i === targets.length - 1) {
+        result += ' ' + this.or();
+      }
+      result += ` ${this.on()} ${char(targets[i])}`;
+      if (i < targets.length - 1) {
+        result += ',';
+      }
+    }
+    return result;
+  }
+  static onePosFromBulk(pos: PieceMoves): string {
+    let result = upFirst(this.pieceOnPosition(pos.type, pos.pos));
+    let isBeats = false;
+    let startIndex = 0;
+    let endIndex = 0;
+    let end = false;
+    let first = true;
+    for (let i = 0; i < pos.moves.length; ++i) {
+      if (i === 0) {
+        isBeats = Boolean(pos.moves[i].beat);
+      }
+      if (Boolean(pos.moves[i].beat) !== isBeats) {
+        end = true;
+        startIndex = i;
+      }
+      if (i === pos.moves.length - 1) {
+        end = true;
+        endIndex = i + 1;
+      } else {
+        endIndex = i;
+      }
+      if (end) {
+        end = false;
+        if (!first) {
+          result += ' ' + this.and();
+        } else {
+          first = false;
+        }
+        if (isBeats) {
+          result += this.beats(pos.moves.slice(startIndex, endIndex));
+          isBeats = false;
+        } else {
+          const movesArr = pos.moves.slice(startIndex, endIndex).map(m => m.to);
+          result += this.moves(movesArr);
+          isBeats = true;
+        }
+      }
+    }
+    result += '.';
+    return result;
+  }
+  static listMoves(bulk: PieceMoves[]): string {
+    let result = '';
+    for (const move of bulk) {
+      result += this.onePosFromBulk(move) + ' ';
+    }
+    return result;
   }
 }

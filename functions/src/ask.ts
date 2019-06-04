@@ -100,8 +100,8 @@ export class Ask {
   static askToGoNext(): string {
     return rand(
       ({
-        en: ['Next?', 'Continue?', 'Go ahead?'],
-        ru: ['Дальше?', 'Продолжать?', 'Следующая часть?'],
+        en: ['Next?', 'Do you want more?', 'Continue?', 'Go ahead?'],
+        ru: ['Дальше?', 'Ещё?', 'Продолжать?', 'Следующая часть?'],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
