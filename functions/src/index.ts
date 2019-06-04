@@ -166,7 +166,7 @@ function showRow(row: ChessCellInfo[], rowNum: number): string {
     resultString += Ans.nRow(rowNum) + ': ';
     for (const cell of row) {
       if (cell.val !== null) {
-        resultString += Ans.coloredPieceOnPosition(cell.val, cell.pos) + ', ';
+        resultString += Ans.coloredPieceOnPosition(cell.val, cell.pos) + ', ' + pause(0.3);
       }
     }
     resultString = resultString.slice(0, -2) + '.\n';
@@ -174,14 +174,20 @@ function showRow(row: ChessCellInfo[], rowNum: number): string {
   return resultString;
 }
 
+function showRows(fen: string, fromRow: number, toRow: number): string {
+  const board = new ChessBoard(fen);
+  let result = ' ';
+  for (let i = fromRow; i <= toRow; ++i) {
+    result += showRow(board.row(i), i) + pause(0.7);
+  }
+  return result;
+}
+
 function beginShowingTheBoard(conv: VoiceChessConv): void {
   console.log('viewing the board');
   const fenstring = conv.user.storage.fen;
-  const board = new ChessBoard(fenstring);
   let longString = `<p><s>${Ans.board1()}</s></p>\n`;
-  for (let i = 1; i <= (chessBoardSize + 1) / 2; ++i) {
-    longString += showRow(board.row(i), i);
-  }
+  longString += showRows(fenstring, 1, chessBoardSize / 2);
   speak(conv, longString);
   speak(conv, Ask.askToGoNext());
   conv.contexts.set('board-next', 1);
@@ -190,11 +196,8 @@ function beginShowingTheBoard(conv: VoiceChessConv): void {
 function giveSecondPartOfTheBoard(conv: VoiceChessConv): void {
   console.log('board - next');
   const fenstring = conv.user.storage.fen;
-  const board = new ChessBoard(fenstring);
   let longString = `<p><s>${Ans.board2()}</s></p>\n`;
-  for (let i = chessBoardSize / 2 + 1; i <= chessBoardSize; ++i) {
-    longString += showRow(board.row(i), i);
-  }
+  longString += showRows(fenstring, chessBoardSize / 2 + 1, chessBoardSize);
   conv.contexts.set('turn-intent', 1);
   speak(conv, longString);
   speak(conv, Ask.waitMove());
@@ -211,7 +214,6 @@ function rowHandler(
   console.log(`Ordinal: ${ord}, number: ${num}`);
   const fenstring = conv.user.storage.fen;
   const board = new ChessBoard(fenstring);
-  // parseInt
   const rowNum = num ? num : ord;
   if (!isNaN(rowNum)) {
     if (rowNum < 1 || rowNum > 8) {

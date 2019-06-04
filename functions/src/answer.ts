@@ -1,4 +1,4 @@
-import { rand, LocalizationObject, WordForms, char, upFirst } from './helpers';
+import { rand, LocalizationObject, WordForms, char, upFirst, pause } from './helpers';
 import { PieceMoves, Move, ChessSide } from './chess';
 
 export class Answer {
@@ -938,7 +938,7 @@ export class Answer {
   static listMoves(bulk: PieceMoves[]): string {
     let result = '';
     for (const move of bulk) {
-      result += this.onePosFromBulk(move) + ' ';
+      result += this.onePosFromBulk(move) + pause(1) + ' ';
     }
     return result;
   }
