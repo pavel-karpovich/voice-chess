@@ -41,7 +41,7 @@ export class Chess {
   private fen: string;
   private moves: string[];
   private checkers: string[];
-  private onChangeGameState: () => void;
+  private asyncHandler: () => void;
   private enemy: string;
   private depth: number;
   private memorizedState: ChessGameState;
@@ -55,7 +55,7 @@ export class Chess {
     const stockfishWasm = stockfishPath;
     this.stockfish = loadEngine(path.join(__dirname, stockfishWasm));
     this.fen = fenstring;
-    this.onChangeGameState = null;
+    this.asyncHandler = null;
     this.enemy = null;
     this.memorizedState = null;
     this.stockfish.postMessage('ucinewgame');
@@ -82,8 +82,7 @@ export class Chess {
         this.moves = e.slice(17).split(' ');
         this.moves.pop();
         this.memorizedState = null;
-        this.onChangeGameState();
-        this.onChangeGameState = null;
+        this.asyncHandler();
       }
     };
   }
@@ -269,6 +268,12 @@ export class Chess {
     return ret;
   }
 
+  set onChangeGameState(handler: () => void) {
+    this.asyncHandler = () => {
+      this.asyncHandler = null;
+      handler();
+    };
+  }
   /**
    * Get fen string - chess board state representation in string
    */
