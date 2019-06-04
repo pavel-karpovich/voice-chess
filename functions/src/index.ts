@@ -289,18 +289,20 @@ async function moveSequence(
   const piece = board.pos(from);
   let beatedPiece = board.pos(to);
   await chess.move(move);
-  let historyItem;
-  if (beatedPiece) {
-    historyItem = { type: piece, move, beat: beatedPiece };
-  } else {
-    historyItem = { type: piece, move };
-  }
-  conv.user.storage.history.push(historyItem);
   let ask = Ans.playerMove(from, to, piece);
   if (move.length === 5) {
     const pieceCode = move[4];
     ask += ' ' + Ans.moveWithPromotion(pieceCode);
   }
+  let historyItem;
+  if (beatedPiece) {
+    historyItem = { type: piece, move, beat: beatedPiece };
+    ask += Ans.playerBeat(beatedPiece);
+  } else {
+    historyItem = { type: piece, move };
+  }
+  // history.info for castling and En passant
+  conv.user.storage.history.push(historyItem);
   if (chess.currentGameState === ChessGameState.CHECKMATE) {
     speak(conv, ask + ' \n' + Ans.youWin());
     speak(conv, Ask.askToNewGame());
@@ -333,13 +335,6 @@ async function moveSequence(
   beatedPiece = board.pos(enemyTo);
   board = new ChessBoard(chess.fenstring);
   const enemyPiece = board.pos(enemyTo);
-  if (beatedPiece) {
-    historyItem = { type: enemyPiece, move: chess.enemyMove, beat: beatedPiece };
-  } else {
-    historyItem = { type: enemyPiece, move: chess.enemyMove };
-  }
-  // history.info for castling and En passant
-  conv.user.storage.history.push(historyItem);
   let enemyStr = null;
   if (chess.enemyMove.length === 5) {
     enemyStr = Ans.enemyMove(enemyFrom, enemyTo, 'p');
@@ -347,6 +342,14 @@ async function moveSequence(
   } else {
     enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
   }
+  if (beatedPiece) {
+    historyItem = { type: enemyPiece, move: chess.enemyMove, beat: beatedPiece };
+    enemyStr += Ans.enemyBeat(beatedPiece);
+  } else {
+    historyItem = { type: enemyPiece, move: chess.enemyMove };
+  }
+  // history.info for castling and En passant
+  conv.user.storage.history.push(historyItem);
   if ((chess.currentGameState as ChessGameState) === ChessGameState.CHECKMATE) {
     speak(conv, `${enemyStr} \n${Ans.youLose()} \n${Ask.askToNewGame()}`);
     conv.contexts.set('ask-to-new-game', 1);
@@ -425,13 +428,14 @@ app.intent(
       if (!piecesMatch) {
         speak(conv, Ans.piecesDontMatch(piece, actualPiece, from));
         speak(conv, Ask.moveWithoutPiecesMatch(actualPiece, piece, from, to));
-        conv.contexts.set('confirm-move', 1);
+        conv.contexts.set('confirm-move', 1, { move });
+        // TODO: if it's a promotion?
         return;
       }
       if (chess.isPromotion(move)) {
         speak(conv, Ans.promotion(from, to));
         speak(conv, Ask.howToPromote());
-        conv.contexts.set('ask-to-promotion', 1, { move, piece });
+        conv.contexts.set('ask-to-promotion', 1, { move });
         return;
       }
       await moveSequence(conv, chess, move);
@@ -454,7 +458,6 @@ app.intent(
   ): Promise<void> => {
     console.log('Pawn promotion to the ' + piece2);
     const promContext = conv.contexts.get('ask-to-promotion');
-    const piece = promContext.parameters.piece as string;
     let move = promContext.parameters.move as string;
     switch (piece2) {
       case Ans.piece('q'):
@@ -621,6 +624,7 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       speak(conv, Ask.askToMove());
     } else if (conv.contexts.get('confirm-move')) {
+
     } else {
       isFallback = true;
       fallbackHandler(conv);
@@ -655,6 +659,7 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       beginShowingTheBoard(conv);
     } else if (conv.contexts.get('confirm-move')) {
+
     } else {
       isFallback = true;
       fallbackHandler(conv);
