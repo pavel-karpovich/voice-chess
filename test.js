@@ -11,7 +11,7 @@ const {upFirst} = require('./functions/lib/helpers');
 const stockfish = loadEngine('./functions/node_modules/stockfish/src/stockfish.wasm');
 
 
-let fenstring = '4k3/8/2Q5/4p1p1/p2P4/1P3N2/3K4/8 w KQkq - 0 1';
+let fenstring = '4k3/7P/8/4p1p1/p2P4/1P3N2/3K4/1Q6 w - - 0 1';
 let bestMove = null;
 let on = null;
 
@@ -88,25 +88,31 @@ async function move(pos) {
   });
 }
 
-let moveNumber = 1;
-async function nextMove() {
-  console.log(`Move ${moveNumber++}`);
-  await move('b7b8q');
-  console.log(`Move ${moveNumber++}`);
-  await moveAuto(2);
-  console.log(`Move ${moveNumber++}`);
-  await moveAuto(1);
-  console.log(`Move ${moveNumber++}`);
-  await moveAuto(10);
-  // await nextMove();
-}
+
 
 // nextMove();
 
 const chess = new Chess(fenstring, 2);
 Answer.setLanguage('ru');
 
-async function game() {
+let maxMoves = 3;
+async function testMoves() {
+  await chess.updateGameState();
+  console.log(`\nInitial:`);
+  console.log(`Move: ${chess.enemyMove}`);
+  console.log(`Fen: ${chess.fenstring}`);
+  console.log(`State: ${chess.currentGameState}`);
+  for (let i = 1; i <= maxMoves; ++i) {
+    console.log(`\nMove ${i}:`);
+    await chess.moveAuto();
+    console.log(`Move: ${chess.enemyMove}`);
+    console.log(`Fen: ${chess.fenstring}`);
+    console.log(`State: ${chess.currentGameState}`);
+  }
+}
+testMoves();
+
+async function testMovesList() {
   await chess.updateGameState();
   let n = 0;
   let bulk = null;
@@ -118,4 +124,3 @@ async function game() {
   } while(!bulk.end);
 }
 
-game();
