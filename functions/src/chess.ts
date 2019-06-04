@@ -179,7 +179,7 @@ export class Chess {
     return this.memorizedState;
   }
 
-  getBulkOfMoves(n: number, sorted = true): MovesBulk {
+  getBulkOfMoves(n: number, beatsSorted = true): MovesBulk {
     if (!this.moves) {
       throw new Error(
         'getBulkOfMoves() first requires updateGameState() call!'
@@ -190,10 +190,11 @@ export class Chess {
       return ret;
     }
     const board = new ChessBoard(this.fen);
-    if (sorted) {
+    if (beatsSorted) {
       this.moves.sort((move1, move2) => {
         const to1 = board.pos(move1.slice(2, 4));
         const to2 = board.pos(move2.slice(2, 4));
+        
         if (to1 === null && to2 !== null) return 1;
         else if (to1 !== null && to2 === null) return -1;
         else return move1.localeCompare(move2);
