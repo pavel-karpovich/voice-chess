@@ -166,7 +166,7 @@ function showRow(row: ChessCellInfo[], rowNum: number): string {
     resultString += Ans.nRow(rowNum) + ': ';
     for (const cell of row) {
       if (cell.val !== null) {
-        resultString += Ans.coloredPieceOnPosition(cell.val, cell.pos) + ', ' + pause(0.3);
+        resultString += Ans.coloredPieceOnPosition(cell.val, cell.pos) + ', ';
       }
     }
     resultString = resultString.slice(0, -2) + '.\n';
