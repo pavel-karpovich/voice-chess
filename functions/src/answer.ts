@@ -412,7 +412,7 @@ export class Answer {
             sin: 'Конь',
             rod: 'Коня',
             vin: 'Коня',
-            tvt: 'Конём',
+            tvr: 'Конём',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'b':
