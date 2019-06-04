@@ -146,6 +146,7 @@ function startNewGame(conv: VoiceChessConv): void {
   conv.user.storage.history = [];
   speak(conv, Ans.newgame());
   speak(conv, Ask.chooseSide());
+  conv.contexts.set('ask-side', 1);
 }
 app.intent('New Game', startNewGame);
 
