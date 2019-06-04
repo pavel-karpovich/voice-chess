@@ -33,6 +33,8 @@ export interface WordForms {
   na?: string;
   sin?: string;
   vin?: string;
+  'plr/rod'?: string;
+  'plr/tvr'?: string;
 }
 
 export function char(str: string): string {

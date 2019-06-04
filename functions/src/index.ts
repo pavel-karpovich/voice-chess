@@ -151,7 +151,8 @@ function continueGame(conv: VoiceChessConv): void {
   }
   conv.contexts.set('game', 5);
   conv.contexts.set('turn-showboard', 1);
-  speak(conv, Ans.continueGame());
+  const playerSide = conv.user.storage.side;
+  speak(conv, Ans.continueGame(playerSide));
   speak(conv, Ask.askToRemindBoard());
 }
 app.intent('Continue Game', continueGame);
@@ -518,7 +519,10 @@ app.intent(
   }
 );
 
-async function listOfMoves(conv: VoiceChessConv, startNumber: number): Promise<void> {
+async function listOfMoves(
+  conv: VoiceChessConv,
+  startNumber: number
+): Promise<void> {
   console.log('legal moves');
   const fenstring = conv.user.storage.fen;
   const difficulty = conv.user.storage.difficulty;
@@ -546,7 +550,10 @@ app.intent('Legal moves', async (conv: VoiceChessConv) => {
 app.intent('Next', async (conv: VoiceChessConv) => {
   let isFallback = false;
   if (conv.contexts.get('moves-next')) {
-    await listOfMoves(conv, Number(conv.contexts.get('moves-next').parameters.start)); 
+    await listOfMoves(
+      conv,
+      Number(conv.contexts.get('moves-next').parameters.start)
+    );
   } else if (conv.contexts.get('board-next')) {
     giveSecondPartOfTheBoard(conv);
   } else if (conv.contexts.get('row-next')) {
@@ -582,7 +589,6 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       speak(conv, Ask.askToMove());
     } else if (conv.contexts.get('confirm-move')) {
-      
     } else {
       isFallback = true;
       fallbackHandler(conv);
@@ -602,7 +608,10 @@ app.intent(
     if (conv.contexts.get('turn-intent')) {
       speak(conv, Ask.askToMove());
     } else if (conv.contexts.get('moves-next')) {
-      await listOfMoves(conv, Number(conv.contexts.get('moves-next').parameters.start)); 
+      await listOfMoves(
+        conv,
+        Number(conv.contexts.get('moves-next').parameters.start)
+      );
     } else if (conv.contexts.get('board-next')) {
       giveSecondPartOfTheBoard(conv);
     } else if (conv.contexts.get('row-next')) {
@@ -614,7 +623,6 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       beginShowingTheBoard(conv);
     } else if (conv.contexts.get('confirm-move')) {
-
     } else {
       isFallback = true;
       fallbackHandler(conv);

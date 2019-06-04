@@ -1,5 +1,5 @@
 import { rand, LocalizationObject, WordForms, char, upFirst } from './helpers';
-import { PieceMoves, Move } from './chess';
+import { PieceMoves, Move, ChessSide } from './chess';
 
 export class Answer {
   private static lang: string;
@@ -38,18 +38,33 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static continueGame(): string {
+  static side(side: ChessSide, opt = 'mus'): string {
+    if (side === ChessSide.BLACK) {
+      return this.black(opt);
+    } else {
+      return this.white(opt);
+    }
+  }
+  static continueGame(side: ChessSide): string {
     return rand(
       ({
         en: [
-          "I was waiting for you! Now it's your turn.",
-          "Let's go! Your turn.",
-          "It's time! And your turn.",
+          `I was waiting for you! You play ${this.side(
+            side
+          )}. Now it's your turn.`,
+          `Let's go! Your turn. I remind, that you play ${this.side(side)}.`,
+          `It's time! You are ${this.side(side, 'plr')}. And your move.`,
         ],
         ru: [
-          'Я ждал вас! Сейчас ваш ход.',
-          'Поехали! Вам ходить.',
-          'Давно пора! Ваш ход.',
+          `Я ждал вас! Вы играете за ${this.side(
+            side,
+            'plr/rod'
+          )}, и сейчас ваш ход.`,
+          `Поехали! Вам ходить. Напоминаю, что вы за ${this.side(
+            side,
+            'plr/rod'
+          )}.`,
+          `Давно пора! Ваш ход. Вы играете ${this.side(side, 'plr/tvr')}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -276,19 +291,29 @@ export class Answer {
   }
   static black(opt = 'mus'): string {
     return ({
-      en: 'black',
+      en: ({
+        mus: 'black',
+        plr: 'blacks',
+      } as WordForms)[opt],
       ru: ({
         mus: 'чёрный',
         fem: 'чёрная',
+        'plr/rod': 'чёрных',
+        'plr/tvr': 'чёрными',
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
   static white(opt = 'mus'): string {
     return ({
-      en: 'white',
+      en: ({
+        mus: 'white',
+        plr: 'whites',
+      } as WordForms)[opt],
       ru: ({
         mus: 'белый',
         fem: 'белая',
+        'plr/rod': 'белых',
+        'plr/tvr': 'белыми',
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
@@ -778,16 +803,8 @@ export class Answer {
   static itsAll(): string {
     return rand(
       ({
-        en: [
-          'It\'s all.',
-          'And it is the end.',
-          'And that was the last item.',
-        ],
-        ru: [
-          'И это всё.',
-          'Все, это конец.',
-          'Это всё, что есть.',
-        ],
+        en: ["It's all.", 'And it is the end.', 'And that was the last item.'],
+        ru: ['И это всё.', 'Все, это конец.', 'Это всё, что есть.'],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -849,12 +866,15 @@ export class Answer {
     );
   }
   static beats(targets: Move[]) {
-    let result = ' ' + this.canAttack() + ' ' + this.enemyPiece(targets[0].beat);
+    let result =
+      ' ' + this.canAttack() + ' ' + this.enemyPiece(targets[0].beat);
     for (let i = 0; i < targets.length; ++i) {
       if (i !== 0 && i === targets.length - 1) {
         result += ' ' + this.or();
       }
-      result += ` ${this.piece(targets[i].beat, 'vin')} ${this.on()} ${char(targets[i].to)}`;
+      result += ` ${this.piece(targets[i].beat, 'vin')} ${this.on()} ${char(
+        targets[i].to
+      )}`;
       if (i < targets.length - 1) {
         result += ',';
       }
