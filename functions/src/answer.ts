@@ -229,16 +229,16 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static playerMove(from: string, to: string, piece: string): string {
+  static playerMove(from: string, to: string, pieceCode: string): string {
     return rand(
       ({
         en: [
-          `The move is made! You move ${piece} from ${char(from)} to ${char(to)}.`,
-          `Okay, you move ${piece} from ${char(from)} to ${char(to)}.`,
+          `The move is made! You move ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}.`,
+          `Okay, you move ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}.`,
         ],
         ru: [
-          `Ход сделан! Вы передвинули ${piece} с позиции ${char(from)} на ${char(to)}.`,
-          `Ладно, значит вы ходите ${piece} с ${char(from)} на ${char(to)}.`,
+          `Ход сделан! Вы передвинули ${this.piece(pieceCode, 'vin')} с позиции ${char(from)} на ${char(to)}.`,
+          `Ладно, значит вы ходите ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
