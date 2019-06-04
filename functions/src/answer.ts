@@ -1,4 +1,12 @@
-import { rand, LocalizationObject, WordForms, char } from './helpers';
+import {
+  rand,
+  LocalizationObject,
+  WordForms,
+  char,
+  upFirst,
+  pause,
+} from './helpers';
+import { PieceMoves, Move, ChessSide } from './chess';
 
 export class Answer {
   private static lang: string;
@@ -37,18 +45,33 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static continueGame(): string {
+  static side(side: ChessSide, opt = 'mus'): string {
+    if (side === ChessSide.BLACK) {
+      return this.black(opt);
+    } else {
+      return this.white(opt);
+    }
+  }
+  static continueGame(side: ChessSide): string {
     return rand(
       ({
         en: [
-          "I was waiting for you! Now it's your turn.",
-          "Let's go! Your turn.",
-          "It's time! And your turn.",
+          `I was waiting for you! You play ${this.side(
+            side
+          )}. Now it's your turn.`,
+          `Let's go! Your turn. I remind, that you play ${this.side(side)}.`,
+          `It's time! You are ${this.side(side, 'plr')}. And your move.`,
         ],
         ru: [
-          'Я ждал вас! Сейчас ваш ход.',
-          'Поехали! Вам ходить.',
-          'Давно пора! Ваш ход.',
+          `Я ждал вас! Вы играете за ${this.side(
+            side,
+            'plr/rod'
+          )}, и сейчас ваш ход.`,
+          `Поехали! Вам ходить. Напоминаю, что вы за ${this.side(
+            side,
+            'plr/rod'
+          )}.`,
+          `Давно пора! Ваш ход. Вы играете ${this.side(side, 'plr/tvr')}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -206,99 +229,156 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static playerMove(from: string, to: string, piece?: string): string {
-    if (piece) {
-      return rand(
-        ({
-          en: [
-            `<p><s>The move is made!</s><s>You move ${
-              piece
-            } from ${char(from)} to ${char(to)}.</s></p>`,
-          ],
-          ru: [
-            `<p><s>Ход сделан!</s><s>Вы передвинули ${
-              piece
-            } с позиции ${char(from)} на ${char(to)}.</s></p>`,
-          ],
-        } as LocalizationObject<string[]>)[this.lang]
-      );
+  static playerMove(from: string, to: string, piece: string): string {
+    return rand(
+      ({
+        en: [
+          `The move is made! You move ${piece} from ${char(from)} to ${char(to)}.`,
+          `Okay, you move ${piece} from ${char(from)} to ${char(to)}.`,
+        ],
+        ru: [
+          `Ход сделан! Вы передвинули ${piece} с позиции ${char(from)} на ${char(to)}.`,
+          `Ладно, значит вы ходите ${piece} с ${char(from)} на ${char(to)}.`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static my(opt = 'mus'): string {
+    return ({
+      en: 'my',
+      ru: ({
+        mus: 'мой',
+        fem: 'моя',
+        'mus/sin': 'мой',
+        'fem/sin': 'моя',
+        'mus/vin': 'моего',
+        'fem/vin': 'мою',
+        'mus/rod': 'моего',
+        'fem/rod': 'моей',
+      } as WordForms)[opt],
+    } as LocalizationObject<string>)[this.lang];
+  }
+  static pieceGender(pieceCode: string): string {
+    pieceCode = pieceCode.toLowerCase();
+    if (pieceCode === 'p' || pieceCode === 'r') {
+      return 'fem';
     } else {
-      return rand(
-        ({
-          en: [
-            `<p><s>The move is made!</s><s>Your move: ${char(from)} ${char(
-              to
-            )}.</s></p>`,
-          ],
-          ru: [
-            `<p><s>Принято!</s><s>Ваш ход: ${char(from)} ${char(to)}.</s></p>`,
-          ],
-        } as LocalizationObject<string[]>)[this.lang]
-      );
+      return 'mus';
     }
   }
-  static enemyMove(from: string, to: string, pieceCode?: string): string {
-    if (pieceCode) {
-      const piece = Answer.piece(pieceCode);
-      return rand(
-        ({
-          en: [
-            `I would move a ${piece} from ${char(from)} to ${char(to)}!`,
-            `My move is a ${piece} from ${char(from)} to ${char(
-              to
-            )}! And what do you say to that?`,
-            `I move my ${piece} from ${char(from)} to ${char(to)}.`,
-          ],
-          ru: [
-            `Мой ход таков: ${piece} с ${char(from)} на ${char(to)}.`,
-            `Так. Пожалуй, я отвечу ${piece} ${char(from)} ${char(to)}.`,
-            `Я сделаю ход ${piece} с ${char(from)} на ${char(to)}!`,
-          ],
-        } as LocalizationObject<string[]>)[this.lang]
-      );
-    } else {
-      return rand(
-        ({
-          en: [
-            `I would move from ${char(from)} to ${char(to)}!`,
-            `${char(from)} ${char(to)}! And what do you say to that?`,
-            `I move ${char(from)} to ${char(to)}.`,
-          ],
-          ru: [
-            `Мой ход таков: с ${char(from)} на ${char(to)}.`,
-            `Так. Пожалуй, я отвечу ${char(from)} ${char(to)}.`,
-            `Я сделаю ход с ${char(from)} на ${char(to)}!`,
-          ],
-        } as LocalizationObject<string[]>)[this.lang]
-      );
-    }
+  static your(opt = 'mus'): string {
+    return ({
+      en: 'your',
+      ru: ({
+        mus: 'ваш',
+        'mus/sin': 'ваш',
+        'fem/sin': 'ваша',
+        'mus/vin': 'вашего',
+        'fem/vin': 'вашу',
+        'mus/rod': 'вашего',
+        'fem/rod': 'вашей',
+      } as WordForms)[opt],
+    } as LocalizationObject<string>)[this.lang];
+  }
+  static myPiece(pieceCode: string, opt = 'sin'): string {
+    pieceCode = pieceCode.toLowerCase();
+    const gen = this.pieceGender(pieceCode);
+    return this.my(`${gen}/${opt}`) + ' ' + this.piece(pieceCode, opt);
+  }
+  static yourPiece(pieceCode: string, opt = 'sin'): string {
+    pieceCode = pieceCode.toLowerCase();
+    const gen = this.pieceGender(pieceCode);
+    return this.your(`${gen}/${opt}`) + ' ' + this.piece(pieceCode, opt);
+  }
+  static playerBeat(beatedPieceCode: string): string {
+    return rand(
+      ({
+        en: [
+          `And grab ${this.myPiece(beatedPieceCode, 'vin')}.`,
+          `And you take off ${this.myPiece(beatedPieceCode, 'vin')}.`,
+          `And I loose ${this.myPiece(beatedPieceCode, 'vin')}!`,
+        ],
+        ru: [
+          `Ко всему прочему я теряю ${this.myPiece(beatedPieceCode, 'vin')}.`,
+          `И вы забираете ${this.myPiece(beatedPieceCode, 'vin')}, чёрт...`,
+          `И я лишаюсь ${this.myPiece(beatedPieceCode, 'rod')}!`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static enemyMove(from: string, to: string, pieceCode: string): string {
+    const piece = this.piece(pieceCode);
+    return rand(
+      ({
+        en: [
+          `I would move a ${piece} from ${char(from)} to ${char(to)}!`,
+          `My move is a ${piece} from ${char(from)} to ${char(
+            to
+          )}! And what do you say to that?`,
+          `I move my ${piece} from ${char(from)} to ${char(to)}.`,
+        ],
+        ru: [
+          `Мой ход таков: ${piece} с ${char(from)} на ${char(to)}.`,
+          `Так. Пожалуй, я отвечу ${piece} ${char(from)} ${char(to)}.`,
+          `Я сделаю ход ${piece} с ${char(from)} на ${char(to)}!`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static enemyBeat(beatedPieceCode: string): string {
+    return rand(
+      ({
+        en: [
+          `I beat ${this.yourPiece(beatedPieceCode, 'vin')}!`,
+          `And I will take ${this.yourPiece(beatedPieceCode, 'vin')}!`,
+          `Minus ${this.yourPiece(beatedPieceCode, 'vin')}.`,
+        ],
+        ru: [
+          `${upFirst(this.yourPiece(beatedPieceCode, 'sin'))} теперь ${this.my(this.pieceGender(beatedPieceCode))}!`,
+          `И я лишу вас ${this.piece(beatedPieceCode, 'rod')}.`,
+          `И я забираю ${this.yourPiece(beatedPieceCode, 'vin')}.`,
+          `${upFirst(this.yourPiece(beatedPieceCode, 'vin'))} в минусе.`,
+          `С вашего позволения, я забираю ${this.yourPiece(beatedPieceCode, 'vin')}.`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
   }
   static black(opt = 'mus'): string {
     return ({
-      en: 'black',
+      en: ({
+        mus: 'black',
+        plr: 'blacks',
+      } as WordForms)[opt],
       ru: ({
         mus: 'чёрный',
         fem: 'чёрная',
+        'plr/rod': 'чёрных',
+        'plr/tvr': 'чёрными',
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
   static white(opt = 'mus'): string {
     return ({
-      en: 'white',
+      en: ({
+        mus: 'white',
+        plr: 'whites',
+      } as WordForms)[opt],
       ru: ({
         mus: 'белый',
         fem: 'белая',
+        'plr/rod': 'белых',
+        'plr/tvr': 'белыми',
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
   static color(code: string, opt = 'mus'): string {
     if (code === code.toUpperCase()) {
-      return Answer.white(opt);
+      return this.white(opt);
     } else {
-      return Answer.black(opt);
+      return this.black(opt);
     }
   }
-  static piece(code: string): string {
+  static piece(code: string, opt = 'sin'): string {
     if (!code) {
       return null;
     }
@@ -307,32 +387,56 @@ export class Answer {
       case 'p':
         return ({
           en: 'Pawn',
-          ru: 'Пешка',
+          ru: ({
+            sin: 'Пешка',
+            rod: 'Пешки',
+            vin: 'Пешку',
+          } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'r':
         return ({
           en: 'Rook',
-          ru: 'Слон',
+          ru: ({
+            sin: 'Ладья',
+            rod: 'Ладьи',
+            vin: 'Ладью',
+          } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'n':
         return ({
           en: 'Knight',
-          ru: 'Конь',
+          ru: ({
+            sin: 'Конь',
+            rod: 'Коня',
+            vin: 'Коня',
+          } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'b':
         return ({
           en: 'Bishop',
-          ru: 'Ладья',
+          ru: ({
+            sin: 'Слон',
+            rod: 'Слона',
+            vin: 'Слона',
+          } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'q':
         return ({
           en: 'Queen',
-          ru: 'Ферзь',
+          ru: ({
+            sin: 'Ферзь',
+            rod: 'Ферзя',
+            vin: 'Ферзя',
+          } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'k':
         return ({
           en: 'King',
-          ru: 'Король',
+          ru: ({
+            sin: 'Король',
+            rod: 'Короля',
+            vin: 'Короля',
+          } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       default:
         return null;
@@ -431,6 +535,22 @@ export class Answer {
       ({
         en: [`on ${char(pos)} ${this.coloredPiece(code)}`],
         ru: [`на ${char(pos)} ${this.coloredPiece(code)}`],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static pieceOnPosition(code: string, pos: string): string {
+    return rand(
+      ({
+        en: [
+          `${this.piece(code)} on ${char(pos)}`,
+          `${this.piece(code)} from the square ${char(pos)}`,
+          `${this.piece(code)} ${char(pos)}`,
+        ],
+        ru: [
+          `${this.piece(code)} с ${char(pos)}`,
+          `${this.piece(code)} на позиции ${char(pos)}`,
+          `${this.piece(code)} ${char(pos)}`,
+        ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -724,7 +844,7 @@ export class Answer {
     );
   }
   static moveWithPromotion(pieceCode: string): string {
-    const piece = Answer.piece(pieceCode);
+    const piece = this.piece(pieceCode);
     return rand(
       ({
         en: [
@@ -739,5 +859,139 @@ export class Answer {
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
+  }
+  static itsAll(): string {
+    return rand(
+      ({
+        en: ["It's all.", 'And it is the end.', 'And that was the last item.'],
+        ru: ['И это всё.', 'Все, это конец.', 'Это всё, что есть.'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static on(): string {
+    return rand(
+      ({
+        en: ['on'],
+        ru: ['на'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static or(): string {
+    return rand(
+      ({
+        en: ['or'],
+        ru: ['или'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static and(): string {
+    return rand(
+      ({
+        en: ['and'],
+        ru: ['и'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static canAttack(): string {
+    return rand(
+      ({
+        en: ['can attack'],
+        ru: ['может атаковать'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static enemy(opt = 'mus'): string {
+    return ({
+      en: 'enemy',
+      ru: ({
+        mus: 'вражеского',
+        fem: 'вражескую',
+      } as WordForms)[opt],
+    } as LocalizationObject<string>)[this.lang];
+  }
+  static canMove(): string {
+    return rand(
+      ({
+        en: ['can move'],
+        ru: ['может ходить'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static beats(targets: Move[]) {
+    let result =
+      ' ' + this.canAttack() + ' ' + this.enemy(this.pieceGender(targets[0].beat));
+    for (let i = 0; i < targets.length; ++i) {
+      if (i !== 0 && i === targets.length - 1) {
+        result += ' ' + this.or();
+      }
+      result += ` ${this.piece(targets[i].beat, 'vin')} ${this.on()} ${char(
+        targets[i].to
+      )}`;
+      if (i < targets.length - 1) {
+        result += ',';
+      }
+    }
+    return result;
+  }
+  static moves(targets: string[]) {
+    let result = ' ' + this.canMove();
+    for (let i = 0; i < targets.length; ++i) {
+      if (i !== 0 && i === targets.length - 1) {
+        result += ' ' + this.or();
+      }
+      result += ` ${this.on()} ${char(targets[i])}`;
+      if (i < targets.length - 1) {
+        result += ',';
+      }
+    }
+    return result;
+  }
+  static onePosFromBulk(pos: PieceMoves): string {
+    let result = upFirst(this.pieceOnPosition(pos.type, pos.pos));
+    let isBeats = false;
+    let startIndex = 0;
+    let endIndex = 0;
+    let end = false;
+    let first = true;
+    for (let i = 0; i < pos.moves.length; ++i) {
+      if (i === 0) {
+        isBeats = Boolean(pos.moves[i].beat);
+      }
+      if (Boolean(pos.moves[i].beat) !== isBeats) {
+        end = true;
+        startIndex = i;
+      }
+      if (i === pos.moves.length - 1) {
+        end = true;
+        endIndex = i + 1;
+      } else {
+        endIndex = i;
+      }
+      if (end) {
+        end = false;
+        if (!first) {
+          result += ' ' + this.and();
+        } else {
+          first = false;
+        }
+        if (isBeats) {
+          result += this.beats(pos.moves.slice(startIndex, endIndex));
+          isBeats = false;
+        } else {
+          const movesArr = pos.moves.slice(startIndex, endIndex).map(m => m.to);
+          result += this.moves(movesArr);
+          isBeats = true;
+        }
+      }
+    }
+    result += '.';
+    return result;
+  }
+  static listMoves(bulk: PieceMoves[]): string {
+    let result = '';
+    for (const move of bulk) {
+      result += this.onePosFromBulk(move) + pause(1) + ' ';
+    }
+    return result;
   }
 }

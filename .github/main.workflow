@@ -1,4 +1,4 @@
-workflow "New workflow" {
+workflow "Build and Deploy" {
   on = "push"
   resolves = ["Deploy on Firebase"]
 }

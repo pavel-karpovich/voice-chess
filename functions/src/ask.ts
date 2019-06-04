@@ -92,7 +92,7 @@ export class Ask {
           'Напомнить, где какие фигуры?',
           'Напомнить, где какие фигуры стоят на доске?',
           'Напомнить расположение фигур?',
-          'Я могу напомнить вам позиции на доске, если нужно',
+          'Я могу напомнить вам позиции на доске, если нужно.',
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -100,8 +100,8 @@ export class Ask {
   static askToGoNext(): string {
     return rand(
       ({
-        en: ['Next?', 'Continue?', 'Go ahead?'],
-        ru: ['Дальше?', 'Продолжать?', 'Следующая часть?'],
+        en: ['Next?', 'Do you want more?', 'Continue?', 'Go ahead?'],
+        ru: ['Дальше?', 'Ещё?', 'Продолжать?', 'Следующая часть?'],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -313,7 +313,7 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static promotion(): string {
+  static howToPromote(): string {
     return rand(
       ({
         en: [

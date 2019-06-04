@@ -28,9 +28,19 @@ export interface LocalizationObject<T> {
 
 export interface WordForms {
   [key: string]: string;
-  mus: string;
-  fem: string;
-  na: string;
+  mus?: string;
+  fem?: string;
+  na?: string;
+  sin?: string;
+  vin?: string;
+  'plr/rod'?: string;
+  'plr/tvr'?: string;
+  'mus/vin'?: string;
+  'fem/vin'?: string;
+  'mus/sin'?: string;
+  'fem/sin'?: string;
+  'mus/rod'?: string;
+  'fem/rod'?: string;
 }
 
 export function char(str: string): string {

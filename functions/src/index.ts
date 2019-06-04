@@ -9,6 +9,13 @@ import { upFirst, pause } from './helpers';
 
 process.env.DEBUG = 'dialogflow:debug';
 
+interface HistoryFrame {
+  type: string;
+  move: string;
+  beat?: string;
+  info?: string;
+}
+
 interface ConversationData {
   fallbackCount?: number;
   row?: number;
@@ -18,21 +25,23 @@ interface LongStorageData {
   difficulty?: number;
   fen?: string;
   side?: ChessSide;
+  history?: HistoryFrame[];
 }
 
 type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
 
 const restorableContexts = [
   'ask-side',
-  'row-followup',
+  'row-next',
   'difficulty-followup',
-  'board-followup',
+  'board-next',
   'ask-to-new-game',
   'ask-to-continue',
   'turn-intent',
   'turn-showboard',
   'confirm-move',
   'ask-to-promotion',
+  'moves-next',
 ];
 
 function speak(conv: VoiceChessConv, text: string) {
@@ -59,7 +68,8 @@ app.middleware(
     if (
       conv.intent !== 'Default Fallback Intent' &&
       conv.intent !== 'Yes' &&
-      conv.intent !== 'No'
+      conv.intent !== 'No' &&
+      conv.intent !== 'Next'
     ) {
       conv.data.fallbackCount = 0;
     }
@@ -106,6 +116,7 @@ app.intent(
 );
 
 function fallbackHandler(conv: VoiceChessConv): void {
+  console.log('fallback');
   for (const context of restorableContexts) {
     if (conv.contexts.get(context)) {
       conv.contexts.set(context, 1);
@@ -132,6 +143,7 @@ app.intent('Default Fallback Intent', fallbackHandler);
 function startNewGame(conv: VoiceChessConv): void {
   console.log('new game');
   conv.user.storage.fen = Chess.initialFen;
+  conv.user.storage.history = [];
   speak(conv, Ans.newgame());
   speak(conv, Ask.chooseSide());
 }
@@ -148,10 +160,11 @@ function continueGame(conv: VoiceChessConv): void {
   }
   conv.contexts.set('game', 5);
   conv.contexts.set('turn-showboard', 1);
-  speak(conv, Ans.continueGame());
+  const playerSide = conv.user.storage.side;
+  speak(conv, Ans.continueGame(playerSide));
   speak(conv, Ask.askToRemindBoard());
 }
-app.intent('Continue', continueGame);
+app.intent('Continue Game', continueGame);
 
 function showRow(row: ChessCellInfo[], rowNum: number): string {
   let resultString = '';
@@ -170,34 +183,38 @@ function showRow(row: ChessCellInfo[], rowNum: number): string {
   return resultString;
 }
 
+function showRows(fen: string, fromRow: number, toRow: number): string {
+  const board = new ChessBoard(fen);
+  let result = '<p>';
+  for (let i = fromRow; i <= toRow; ++i) {
+    result += `<s>${showRow(board.row(i), i)}</s>${pause(0.7)}`;
+  }
+  result += '</p>';
+  return result;
+}
+
 function beginShowingTheBoard(conv: VoiceChessConv): void {
   console.log('viewing the board');
   const fenstring = conv.user.storage.fen;
-  const board = new ChessBoard(fenstring);
   let longString = `<p><s>${Ans.board1()}</s></p>\n`;
-  for (let i = 1; i <= (chessBoardSize + 1) / 2; ++i) {
-    longString += showRow(board.row(i), i);
-  }
+  longString += showRows(fenstring, 1, chessBoardSize / 2);
   speak(conv, longString);
   speak(conv, Ask.askToGoNext());
+  conv.contexts.set('board-next', 1);
 }
-app.intent('Board', beginShowingTheBoard);
 
-app.intent(
-  'Board - next',
-  (conv: VoiceChessConv): void => {
-    console.log('board - next');
-    const fenstring = conv.user.storage.fen;
-    const board = new ChessBoard(fenstring);
-    let longString = `<p><s>${Ans.board2()}</s></p>\n`;
-    for (let i = chessBoardSize / 2 + 1; i <= chessBoardSize; ++i) {
-      longString += showRow(board.row(i), i);
-    }
-    conv.contexts.set('turn-intent', 1);
-    speak(conv, longString);
-    speak(conv, Ask.waitMove());
-  }
-);
+function giveSecondPartOfTheBoard(conv: VoiceChessConv): void {
+  console.log('board - next');
+  const fenstring = conv.user.storage.fen;
+  let longString = `<p><s>${Ans.board2()}</s></p>\n`;
+  longString += showRows(fenstring, chessBoardSize / 2 + 1, chessBoardSize);
+  conv.contexts.set('turn-intent', 1);
+  speak(conv, longString);
+  speak(conv, Ask.waitMove());
+}
+
+app.intent('Board', beginShowingTheBoard);
+app.intent('Board - next', giveSecondPartOfTheBoard);
 
 function rowHandler(
   conv: VoiceChessConv,
@@ -207,7 +224,6 @@ function rowHandler(
   console.log(`Ordinal: ${ord}, number: ${num}`);
   const fenstring = conv.user.storage.fen;
   const board = new ChessBoard(fenstring);
-  // parseInt
   const rowNum = num ? num : ord;
   if (!isNaN(rowNum)) {
     if (rowNum < 1 || rowNum > 8) {
@@ -218,40 +234,39 @@ function rowHandler(
     conv.data.row = rowNum;
     speak(conv, showRow(board.row(rowNum), rowNum));
     speak(conv, Ask.askToGoNext());
-    conv.contexts.set('row-followup', 1);
+    conv.contexts.set('row-next', 1);
   } else {
     speak(conv, Ask.askRowNumber());
     conv.data.row = undefined;
   }
 }
 
+function giveNextRow(conv: VoiceChessConv): void {
+  console.log('next row');
+  const lastRow = conv.data.row;
+  if (lastRow === 8) {
+    speak(conv, Ans.noNextRow());
+    speak(conv, Ask.waitMove());
+    conv.contexts.set('turn-intent', 1);
+    return;
+  }
+  conv.contexts.set('row-next', 1);
+  const fenstring = conv.user.storage.fen;
+  const board = new ChessBoard(fenstring);
+  const thisRow = lastRow + 1;
+  conv.data.row = thisRow;
+  speak(conv, showRow(board.row(thisRow), thisRow));
+  if (thisRow === 8) {
+    speak(conv, Ask.whatToDo());
+  } else {
+    speak(conv, Ask.askToGoNext());
+  }
+}
+
 app.intent('Row', rowHandler);
 app.intent('Row - number', rowHandler);
 
-app.intent(
-  'Row - next',
-  (conv: VoiceChessConv): void => {
-    console.log('next row');
-    const lastRow = conv.data.row;
-    if (lastRow === 8) {
-      speak(conv, Ans.noNextRow());
-      speak(conv, Ask.waitMove());
-      conv.contexts.set('turn-intent', 1);
-      return;
-    }
-    conv.contexts.set('row-followup', 1);
-    const fenstring = conv.user.storage.fen;
-    const board = new ChessBoard(fenstring);
-    const thisRow = lastRow + 1;
-    conv.data.row = thisRow;
-    speak(conv, showRow(board.row(thisRow), thisRow));
-    if (thisRow === 8) {
-      speak(conv, Ask.whatToDo());
-    } else {
-      speak(conv, Ask.askToGoNext());
-    }
-  }
-);
+app.intent('Row - next', giveNextRow);
 
 function askOrRemind(conv: VoiceChessConv): void {
   const fiftyFifty = Math.random();
@@ -266,17 +281,28 @@ function askOrRemind(conv: VoiceChessConv): void {
 async function moveSequence(
   conv: VoiceChessConv,
   chess: Chess,
-  move: string,
-  piece: string
+  move: string
 ): Promise<void> {
   const from = move.slice(0, 2);
   const to = move.slice(2, 4);
+  let board = new ChessBoard(chess.fenstring);
+  const piece = board.pos(from);
+  let beatedPiece = board.pos(to);
   await chess.move(move);
   let ask = Ans.playerMove(from, to, piece);
   if (move.length === 5) {
     const pieceCode = move[4];
     ask += ' ' + Ans.moveWithPromotion(pieceCode);
   }
+  let historyItem;
+  if (beatedPiece) {
+    historyItem = { type: piece, move, beat: beatedPiece };
+    ask += Ans.playerBeat(beatedPiece);
+  } else {
+    historyItem = { type: piece, move };
+  }
+  // history.info for castling and En passant
+  conv.user.storage.history.push(historyItem);
   if (chess.currentGameState === ChessGameState.CHECKMATE) {
     speak(conv, ask + ' \n' + Ans.youWin());
     speak(conv, Ask.askToNewGame());
@@ -302,10 +328,12 @@ async function moveSequence(
     ask += '\n' + Ans.checkToEnemy();
   }
   speak(conv, ask);
+  board = new ChessBoard(chess.fenstring);
   await chess.moveAuto();
   const enemyFrom = chess.enemyMove.slice(0, 2);
   const enemyTo = chess.enemyMove.slice(2, 4);
-  const board = new ChessBoard(chess.fenstring);
+  beatedPiece = board.pos(enemyTo);
+  board = new ChessBoard(chess.fenstring);
   const enemyPiece = board.pos(enemyTo);
   let enemyStr = null;
   if (chess.enemyMove.length === 5) {
@@ -314,6 +342,14 @@ async function moveSequence(
   } else {
     enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
   }
+  if (beatedPiece) {
+    historyItem = { type: enemyPiece, move: chess.enemyMove, beat: beatedPiece };
+    enemyStr += Ans.enemyBeat(beatedPiece);
+  } else {
+    historyItem = { type: enemyPiece, move: chess.enemyMove };
+  }
+  // history.info for castling and En passant
+  conv.user.storage.history.push(historyItem);
   if ((chess.currentGameState as ChessGameState) === ChessGameState.CHECKMATE) {
     speak(conv, `${enemyStr} \n${Ans.youLose()} \n${Ask.askToNewGame()}`);
     conv.contexts.set('ask-to-new-game', 1);
@@ -392,16 +428,17 @@ app.intent(
       if (!piecesMatch) {
         speak(conv, Ans.piecesDontMatch(piece, actualPiece, from));
         speak(conv, Ask.moveWithoutPiecesMatch(actualPiece, piece, from, to));
-        conv.contexts.set('confirm-move', 1);
+        conv.contexts.set('confirm-move', 1, { move });
+        // TODO: if it's a promotion?
         return;
       }
       if (chess.isPromotion(move)) {
         speak(conv, Ans.promotion(from, to));
-        speak(conv, Ask.promotion());
-        conv.contexts.set('ask-to-promotion', 1, { move, piece });
+        speak(conv, Ask.howToPromote());
+        conv.contexts.set('ask-to-promotion', 1, { move });
         return;
       }
-      await moveSequence(conv, chess, move, piece);
+      await moveSequence(conv, chess, move);
     } else {
       let illegal = Ans.illegalMove(from, to, { piece });
       if (chess.currentGameState === ChessGameState.CHECK) {
@@ -421,7 +458,6 @@ app.intent(
   ): Promise<void> => {
     console.log('Pawn promotion to the ' + piece2);
     const promContext = conv.contexts.get('ask-to-promotion');
-    const piece = promContext.parameters.piece as string;
     let move = promContext.parameters.move as string;
     switch (piece2) {
       case Ans.piece('q'):
@@ -442,7 +478,7 @@ app.intent(
     const fenstring = conv.user.storage.fen;
     const difficulty = conv.user.storage.difficulty;
     const chess = new Chess(fenstring, difficulty);
-    await moveSequence(conv, chess, move, piece);
+    await moveSequence(conv, chess, move);
   }
 );
 
@@ -462,11 +498,13 @@ app.intent(
       const difficulty = conv.user.storage.difficulty;
       const chess = new Chess(fenstring, difficulty);
       await chess.moveAuto();
+      conv.user.storage.fen = chess.fenstring;
       const enemyFrom = chess.enemyMove.slice(0, 2);
       const enemyTo = chess.enemyMove.slice(2, 4);
-      conv.user.storage.fen = chess.fenstring;
       const board = new ChessBoard(chess.fenstring);
       const enemyPiece = board.pos(enemyTo);
+      const historyItem = { type: enemyPiece, move: chess.enemyMove };
+      conv.user.storage.history.push(historyItem);
       const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
       const askYouStr = Ask.nowYouNeedToMove();
       speak(conv, enemyStr + '\n' + askYouStr);
@@ -516,6 +554,54 @@ app.intent(
   }
 );
 
+async function listOfMoves(
+  conv: VoiceChessConv,
+  startNumber: number
+): Promise<void> {
+  console.log('legal moves');
+  const fenstring = conv.user.storage.fen;
+  const difficulty = conv.user.storage.difficulty;
+  const chess = new Chess(fenstring, difficulty);
+  await chess.updateGameState();
+  const bulkOfMoves = chess.getBulkOfMoves(startNumber);
+  if (bulkOfMoves.pieces.length === 0) {
+    throw new Error("Checkmate/stalemate in this place can't be!");
+  }
+  if (bulkOfMoves.end) {
+    const ans = Ans.listMoves(bulkOfMoves.pieces) + Ans.itsAll();
+    speak(conv, ans);
+    speak(conv, Ask.waitMove());
+  } else {
+    speak(conv, Ans.listMoves(bulkOfMoves.pieces));
+    speak(conv, Ask.askToGoNext());
+    conv.contexts.set('moves-next', 1, { start: bulkOfMoves.next });
+  }
+}
+
+app.intent('Legal moves', async (conv: VoiceChessConv) => {
+  await listOfMoves(conv, 0);
+});
+
+app.intent('Next', async (conv: VoiceChessConv) => {
+  let isFallback = false;
+  if (conv.contexts.get('moves-next')) {
+    await listOfMoves(
+      conv,
+      Number(conv.contexts.get('moves-next').parameters.start)
+    );
+  } else if (conv.contexts.get('board-next')) {
+    giveSecondPartOfTheBoard(conv);
+  } else if (conv.contexts.get('row-next')) {
+    giveNextRow(conv);
+  } else {
+    isFallback = true;
+    fallbackHandler(conv);
+  }
+  if (!isFallback) {
+    conv.data.fallbackCount = 0;
+  }
+});
+
 app.intent(
   'No',
   (conv: VoiceChessConv): void => {
@@ -524,6 +610,12 @@ app.intent(
     let isFallback = false;
     if (conv.contexts.get('turn-intent')) {
       speak(conv, Ask.askWhatever());
+    } else if (conv.contexts.get('moves-next')) {
+      speak(conv, Ask.waitMove());
+    } else if (conv.contexts.get('board-next')) {
+      speak(conv, Ask.waitMove());
+    } else if (conv.contexts.get('row-next')) {
+      speak(conv, Ask.waitMove());
     } else if (conv.contexts.get('ask-to-new-game')) {
       speak(conv, Ask.whatToDo());
     } else if (conv.contexts.get('ask-to-continue')) {
@@ -532,6 +624,7 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       speak(conv, Ask.askToMove());
     } else if (conv.contexts.get('confirm-move')) {
+
     } else {
       isFallback = true;
       fallbackHandler(conv);
@@ -544,12 +637,21 @@ app.intent(
 
 app.intent(
   'Yes',
-  (conv: VoiceChessConv): void => {
+  async (conv: VoiceChessConv): Promise<void> => {
     console.log('yes');
     safeGameContext(conv);
     let isFallback = false;
     if (conv.contexts.get('turn-intent')) {
       speak(conv, Ask.askToMove());
+    } else if (conv.contexts.get('moves-next')) {
+      await listOfMoves(
+        conv,
+        Number(conv.contexts.get('moves-next').parameters.start)
+      );
+    } else if (conv.contexts.get('board-next')) {
+      giveSecondPartOfTheBoard(conv);
+    } else if (conv.contexts.get('row-next')) {
+      giveNextRow(conv);
     } else if (conv.contexts.get('ask-to-new-game')) {
       startNewGame(conv);
     } else if (conv.contexts.get('ask-to-continue')) {
@@ -557,6 +659,7 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       beginShowingTheBoard(conv);
     } else if (conv.contexts.get('confirm-move')) {
+
     } else {
       isFallback = true;
       fallbackHandler(conv);

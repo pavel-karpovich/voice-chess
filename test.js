@@ -1,16 +1,17 @@
 /* eslint-disable max-len */
 
 
+const util = require('util');
 const loadEngine = require('./functions/node_modules/stockfish');
 const {Chess} = require('./functions/lib/chess');
 const {ChessBoard} = require('./functions/lib/chessboard');
-const {Ans} = require('./functions/lib/answer');
+const {Answer} = require('./functions/lib/answer');
 const {upFirst} = require('./functions/lib/helpers');
 
 const stockfish = loadEngine('./functions/node_modules/stockfish/src/stockfish.wasm');
 
 
-let fenstring = '8/1P6/8/8/8/5k2/8/8 w KQkq - 0 1';
+let fenstring = '4k3/8/2Q5/4p1p1/p2P4/1P3N2/3K4/8 w KQkq - 0 1';
 let bestMove = null;
 let on = null;
 
@@ -103,9 +104,18 @@ async function nextMove() {
 // nextMove();
 
 const chess = new Chess(fenstring, 2);
+Answer.setLanguage('ru');
+
 async function game() {
-  await chess.move('b7b8q');
-  await chess.moveAuto();
+  await chess.updateGameState();
+  let n = 0;
+  let bulk = null;
+  do {
+    bulk = chess.getBulkOfMoves(n);
+    console.log(util.inspect(bulk, { depth: 5 }));
+    console.log(Answer.listMoves(bulk.pieces));
+    n = bulk.next;
+  } while(!bulk.end);
 }
 
 game();
