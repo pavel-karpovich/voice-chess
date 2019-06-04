@@ -58,9 +58,11 @@ export class Chess {
     this.asyncHandler = null;
     this.enemy = null;
     this.memorizedState = null;
-    this.stockfish.postMessage('ucinewgame');
     this.stockfish.postMessage('isready');
+    this.stockfish.postMessage('ucinewgame');
     this.configureDifficulty(difficulty);
+    this.stockfish.postMessage('setoption name Ponder value false');
+    this.stockfish.postMessage('setoption name Slow Mover value 10');
     if (this.fen === undefined) {
       this.fen = Chess.initialFen;
     }
@@ -100,8 +102,8 @@ export class Chess {
     this.depth = level === 0 ? 1 : level / 2;
     const setopt = 'setoption name Skill Level ';
     this.stockfish.postMessage(setopt + 'value ' + level);
-    const errProb = Math.round(level * 6.35 + 1);
-    const maxErr = Math.round(level * -0.25 + 5);
+    const maxErr = Math.round(level * -20 + 450);
+    const errProb = Math.round(level * 12.7 + 1);
     this.stockfish.postMessage(setopt + 'Maximum Error value ' + maxErr);
     this.stockfish.postMessage(setopt + 'Probability value ' + errProb);
   }
@@ -155,7 +157,7 @@ export class Chess {
   async moveAuto(): Promise<void> {
     return new Promise<void>((resolve: () => void) => {
       this.onChangeGameState = resolve;
-      this.stockfish.postMessage(`go depth ${this.depth} movetime 2000`);
+      this.stockfish.postMessage(`go depth ${this.depth} movetime 1000`);
     });
   }
 

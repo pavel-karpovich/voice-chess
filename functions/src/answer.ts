@@ -994,6 +994,7 @@ export class Answer {
     result += '.';
     return result;
   }
+  // TODO: Correct list of possible promotions
   static listMoves(bulk: PieceMoves[]): string {
     let result = '';
     for (const move of bulk) {

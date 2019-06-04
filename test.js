@@ -42,9 +42,10 @@ stockfish.onmessage = function(e) {
     stockfish.postMessage('d');
   }
 };
-stockfish.postMessage('ucinewgame');
 stockfish.postMessage('isready');
+stockfish.postMessage('ucinewgame');
 stockfish.postMessage(`position fen ${fenstring}`);
+stockfish.postMessage('uci');
 
 /**
  * Send
@@ -118,4 +119,4 @@ async function game() {
   } while(!bulk.end);
 }
 
-game();
+// game();
