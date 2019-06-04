@@ -860,9 +860,9 @@ export class Answer {
           `Pawn promotes into a ${piece}!`,
         ],
         ru: [
-          `И пешка становится ${piece}!`,
+          `И пешка становится ${this.piece(pieceCode, 'tvr')}!`,
           `Теперь это ${piece}!`,
-          `Пешка превратилась в ${piece}!`,
+          `Пешка превратилась в ${this.piece(pieceCode, 'vin')}!`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
