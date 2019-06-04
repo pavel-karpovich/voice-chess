@@ -108,6 +108,7 @@ app.intent(
 );
 
 function fallbackHandler(conv: VoiceChessConv): void {
+  console.log('fallback');
   for (const context of restorableContexts) {
     if (conv.contexts.get(context)) {
       conv.contexts.set(context, 1);
@@ -182,6 +183,7 @@ function beginShowingTheBoard(conv: VoiceChessConv): void {
   }
   speak(conv, longString);
   speak(conv, Ask.askToGoNext());
+  conv.contexts.set('board-next', 1);
 }
 
 function giveSecondPartOfTheBoard(conv: VoiceChessConv): void {
