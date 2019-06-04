@@ -349,8 +349,8 @@ export class Answer {
         return ({
           en: 'Rook',
           ru: ({
-            sin: 'Слон',
-            vin: 'Слона',
+            sin: 'Ладья',
+            vin: 'Ладью',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'n':
@@ -365,8 +365,8 @@ export class Answer {
         return ({
           en: 'Bishop',
           ru: ({
-            sin: 'Ладья',
-            vin: 'ладью',
+            sin: 'Слон',
+            vin: 'Слона',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'q':

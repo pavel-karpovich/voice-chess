@@ -9,6 +9,13 @@ import { upFirst, pause } from './helpers';
 
 process.env.DEBUG = 'dialogflow:debug';
 
+interface HistoryFrame {
+  type: string;
+  move: string;
+  beat?: string;
+  info?: string;
+}
+
 interface ConversationData {
   fallbackCount?: number;
   row?: number;
@@ -18,6 +25,7 @@ interface LongStorageData {
   difficulty?: number;
   fen?: string;
   side?: ChessSide;
+  history?: HistoryFrame[];
 }
 
 type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
@@ -135,6 +143,7 @@ app.intent('Default Fallback Intent', fallbackHandler);
 function startNewGame(conv: VoiceChessConv): void {
   console.log('new game');
   conv.user.storage.fen = Chess.initialFen;
+  conv.user.storage.history = [];
   speak(conv, Ans.newgame());
   speak(conv, Ask.chooseSide());
 }
@@ -272,12 +281,21 @@ function askOrRemind(conv: VoiceChessConv): void {
 async function moveSequence(
   conv: VoiceChessConv,
   chess: Chess,
-  move: string,
-  piece: string
+  move: string
 ): Promise<void> {
   const from = move.slice(0, 2);
   const to = move.slice(2, 4);
+  let board = new ChessBoard(chess.fenstring);
+  const piece = board.pos(from);
+  let beatedPiece = board.pos(to);
   await chess.move(move);
+  let historyItem;
+  if (beatedPiece) {
+    historyItem = { type: piece, move, beat: beatedPiece };
+  } else {
+    historyItem = { type: piece, move };
+  }
+  conv.user.storage.history.push(historyItem);
   let ask = Ans.playerMove(from, to, piece);
   if (move.length === 5) {
     const pieceCode = move[4];
@@ -308,11 +326,20 @@ async function moveSequence(
     ask += '\n' + Ans.checkToEnemy();
   }
   speak(conv, ask);
+  board = new ChessBoard(chess.fenstring);
   await chess.moveAuto();
   const enemyFrom = chess.enemyMove.slice(0, 2);
   const enemyTo = chess.enemyMove.slice(2, 4);
-  const board = new ChessBoard(chess.fenstring);
+  beatedPiece = board.pos(enemyTo);
+  board = new ChessBoard(chess.fenstring);
   const enemyPiece = board.pos(enemyTo);
+  if (beatedPiece) {
+    historyItem = { type: enemyPiece, move: chess.enemyMove, beat: beatedPiece };
+  } else {
+    historyItem = { type: enemyPiece, move: chess.enemyMove };
+  }
+  // history.info for castling and En passant
+  conv.user.storage.history.push(historyItem);
   let enemyStr = null;
   if (chess.enemyMove.length === 5) {
     enemyStr = Ans.enemyMove(enemyFrom, enemyTo, 'p');
@@ -407,7 +434,7 @@ app.intent(
         conv.contexts.set('ask-to-promotion', 1, { move, piece });
         return;
       }
-      await moveSequence(conv, chess, move, piece);
+      await moveSequence(conv, chess, move);
     } else {
       let illegal = Ans.illegalMove(from, to, { piece });
       if (chess.currentGameState === ChessGameState.CHECK) {
@@ -448,7 +475,7 @@ app.intent(
     const fenstring = conv.user.storage.fen;
     const difficulty = conv.user.storage.difficulty;
     const chess = new Chess(fenstring, difficulty);
-    await moveSequence(conv, chess, move, piece);
+    await moveSequence(conv, chess, move);
   }
 );
 
@@ -468,11 +495,13 @@ app.intent(
       const difficulty = conv.user.storage.difficulty;
       const chess = new Chess(fenstring, difficulty);
       await chess.moveAuto();
+      conv.user.storage.fen = chess.fenstring;
       const enemyFrom = chess.enemyMove.slice(0, 2);
       const enemyTo = chess.enemyMove.slice(2, 4);
-      conv.user.storage.fen = chess.fenstring;
       const board = new ChessBoard(chess.fenstring);
       const enemyPiece = board.pos(enemyTo);
+      const historyItem = { type: enemyPiece, move: chess.enemyMove };
+      conv.user.storage.history.push(historyItem);
       const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
       const askYouStr = Ask.nowYouNeedToMove();
       speak(conv, enemyStr + '\n' + askYouStr);
