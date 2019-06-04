@@ -290,6 +290,8 @@ async function moveSequence(
   const piece = board.pos(from);
   let beatedPiece = board.pos(to);
   await chess.move(move);
+  console.log('Fen after player move: ' + chess.fenstring);
+  console.log('And state: ' + chess.currentGameState);
   let ask = Ans.playerMove(from, to, piece);
   if (move.length === 5) {
     const pieceCode = move[4];
@@ -331,6 +333,8 @@ async function moveSequence(
   speak(conv, ask);
   board = new ChessBoard(chess.fenstring);
   await chess.moveAuto();
+  console.log('Fen after AI move: ' + chess.fenstring);
+  console.log('And state: ' + chess.currentGameState);
   const enemyFrom = chess.enemyMove.slice(0, 2);
   const enemyTo = chess.enemyMove.slice(2, 4);
   beatedPiece = board.pos(enemyTo);
