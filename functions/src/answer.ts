@@ -1150,9 +1150,9 @@ export class Answer {
     return rand(
       ({
         en: [
-          `you moved ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}`,
-          `you played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
-          `you made a ${this.piece(pieceCode)} move from ${char(from)} to ${char(to)}`,
+          `I moved ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}`,
+          `I played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
+          `I made a ${this.piece(pieceCode)} move from ${char(from)} to ${char(to)}`,
         ],
         ru: [
           `я походил ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,

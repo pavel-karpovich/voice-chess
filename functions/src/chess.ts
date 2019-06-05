@@ -216,7 +216,6 @@ export class Chess {
         else return 0;
       });
     }
-    console.log(this.moves.join(', '));
     const standardSize = 10;
     const permissibleVariation = 5;
     const unnecessary =
