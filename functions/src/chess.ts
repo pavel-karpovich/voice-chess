@@ -193,16 +193,28 @@ export class Chess {
     const board = new ChessBoard(this.fen);
     if (beatsSorted) {
       this.moves.sort((move1, move2) => {
-        const to1 = board.pos(move1.slice(2, 4));
-        const to2 = board.pos(move2.slice(2, 4));
+        const beat1 = board.pos(move1.slice(2, 4));
+        const beat2 = board.pos(move2.slice(2, 4));
         if (move1.length === 4 && move2.length === 5) return 1;
         else if (move1.length === 5 && move2.length === 4) return -1;
-        else if (to1 === null && to2 !== null) return 1;
-        else if (to1 !== null && to2 === null) return -1;
+        else if (beat1 === null && beat2 !== null) return 1;
+        else if (beat1 !== null && beat2 === null) return -1;
         else return move1.localeCompare(move2);
       });
     } else {
-      this.moves.sort((move1, move2) => move1.localeCompare(move2));
+      this.moves.sort((move1, move2) => {
+        const from1 = move1.slice(0, 2);
+        const from2 = move2.slice(0, 2);
+        const beat1 = board.pos(move1.slice(2, 4));
+        const beat2 = board.pos(move2.slice(2, 4));
+        if (from1.localeCompare(from2) === 1) return 1;
+        else if (from1.localeCompare(from2) === -1) return -1;
+        else if (beat1 === null && beat2 !== null) return 1;
+        else if (beat1 !== null && beat2 === null) return -1;
+        else if (move1.length === 4 && move2.length === 5) return 1;
+        else if (move1.length === 5 && move2.length === 4) return -1;
+        else return 0;
+      });
     }
     console.log(this.moves.join(', '));
     const standardSize = 10;

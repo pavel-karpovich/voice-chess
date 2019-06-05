@@ -918,6 +918,14 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static asWell(): string {
+    return rand(
+      ({
+        en: ['and'],
+        ru: ['а также'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
   static canAttack(): string {
     return rand(
       ({
@@ -989,34 +997,38 @@ export class Answer {
 
   static onePosFromBulk(pos: PieceMoves): string {
     let result = upFirst(this.pieceOnPosition(pos.type, pos.pos));
-    let isBeats = false;
     let startIndex = 0;
     let endIndex = 0;
     let end = false;
     let first = true;
+    let last = false;
+    let isBeats = Boolean(pos.moves[0].beat);
     for (let i = 0; i < pos.moves.length; ++i) {
-      if (i === 0) {
-        isBeats = Boolean(pos.moves[i].beat);
-      }
       if (Boolean(pos.moves[i].beat) !== isBeats) {
         end = true;
-        startIndex = i;
       }
       if (i === pos.moves.length - 1) {
-        end = true;
-        endIndex = i + 1;
-      } else {
-        endIndex = i;
+        last = true;
       }
-      if (end) {
-        end = false;
+      endIndex = i;
+      if (end || last) {
         if (!first) {
-          result += ' ' + this.and();
+          result += ', ' + this.asWell();
         } else {
           first = false;
         }
-        result += this.canDoSmth(pos.moves.slice(startIndex, endIndex));
+        if (end && last) {
+          result += this.canDoSmth(pos.moves.slice(startIndex, endIndex));
+          result += ', ' + this.asWell();
+          result += this.canDoSmth(pos.moves.slice(endIndex));
+        } else if (last) {
+          result += this.canDoSmth(pos.moves.slice(startIndex));
+        } else {
+          result += this.canDoSmth(pos.moves.slice(startIndex, endIndex));
+        }
+        startIndex = endIndex;
         isBeats = !isBeats;
+        end = false;
       }
     }
     result += '.';
