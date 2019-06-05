@@ -233,12 +233,21 @@ export class Answer {
     return rand(
       ({
         en: [
-          `The move is made! You move ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}.`,
-          `Okay, you move ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}.`,
+          `The move is made! You move ${this.piece(pieceCode)} from ${char(
+            from
+          )} to ${char(to)}.`,
+          `Okay, you move ${this.piece(pieceCode)} from ${char(from)} to ${char(
+            to
+          )}.`,
         ],
         ru: [
-          `Ход сделан! Вы передвинули ${this.piece(pieceCode, 'vin')} с позиции ${char(from)} на ${char(to)}.`,
-          `Ладно, значит вы ходите ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
+          `Ход сделан! Вы передвинули ${this.piece(
+            pieceCode,
+            'vin'
+          )} с позиции ${char(from)} на ${char(to)}.`,
+          `Ладно, значит вы ходите ${this.piece(pieceCode, 'tvr')} с ${char(
+            from
+          )} на ${char(to)}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -320,8 +329,12 @@ export class Answer {
         ru: [
           `Мой ход таков: ${piece} с ${char(from)} на ${char(to)}.`,
           `Так. Пожалуй, я отвечу ${piece} ${char(from)} ${char(to)}.`,
-          `Я сделаю ход ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}!`,
-          `А я похожу ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
+          `Я сделаю ход ${this.piece(pieceCode, 'tvr')} с ${char(
+            from
+          )} на ${char(to)}!`,
+          `А я похожу ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(
+            to
+          )}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -335,11 +348,16 @@ export class Answer {
           `Minus ${this.yourPiece(beatedPieceCode, 'vin')}.`,
         ],
         ru: [
-          `${upFirst(this.yourPiece(beatedPieceCode, 'sin'))} теперь ${this.my(this.pieceGender(beatedPieceCode))}!`,
+          `${upFirst(this.yourPiece(beatedPieceCode, 'sin'))} теперь ${this.my(
+            this.pieceGender(beatedPieceCode)
+          )}!`,
           `И я лишу вас ${this.piece(beatedPieceCode, 'rod')}.`,
           `И я забираю ${this.yourPiece(beatedPieceCode, 'vin')}.`,
           `${upFirst(this.yourPiece(beatedPieceCode, 'vin'))} в минусе.`,
-          `С вашего позволения, я забираю ${this.yourPiece(beatedPieceCode, 'vin')}.`,
+          `С вашего позволения, я забираю ${this.yourPiece(
+            beatedPieceCode,
+            'vin'
+          )}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -554,6 +572,7 @@ export class Answer {
           `${this.piece(code)} ${char(pos)}`,
         ],
         ru: [
+          `${this.piece(code)} на ${char(pos)}`,
           `${this.piece(code)} с ${char(pos)}`,
           `${this.piece(code)} на позиции ${char(pos)}`,
           `${this.piece(code)} ${char(pos)}`,
@@ -924,35 +943,50 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static beats(targets: Move[]) {
-    let result =
-      ' ' + this.canAttack() + ' ' + this.enemy(this.pieceGender(targets[0].beat));
+  static canPromote(): string {
+    return rand(
+      ({
+        en: [
+          'then promote',
+          'transform to queen',
+          'transform to another piece',
+          'then promote to queen',
+        ],
+        ru: [
+          'затем превратиться',
+          'превратиться в другую фигуру',
+          'превратиться в ферзя',
+          'затем превратиться в ферзя',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static canDoSmth(targets: Move[]): string {
+    let result = ' ';
+    if (targets[0].beat) {
+      result +=
+        this.canAttack() + ' ' + this.enemy(this.pieceGender(targets[0].beat));
+    } else {
+      result += this.canMove();
+    }
     for (let i = 0; i < targets.length; ++i) {
       if (i !== 0 && i === targets.length - 1) {
         result += ' ' + this.or();
       }
-      result += ` ${this.piece(targets[i].beat, 'vin')} ${this.on()} ${char(
-        targets[i].to
-      )}`;
+      if (targets[i].beat) {
+        result += ' ' + this.piece(targets[i].beat, 'vin');
+      }
+      result += ' ' + this.on() + ' ' + char(targets[i].to);
+      if (targets[i].promo) {
+        result += ' ' + this.and() + ' ' + this.canPromote();
+      }
       if (i < targets.length - 1) {
         result += ',';
       }
     }
     return result;
   }
-  static moves(targets: string[]) {
-    let result = ' ' + this.canMove();
-    for (let i = 0; i < targets.length; ++i) {
-      if (i !== 0 && i === targets.length - 1) {
-        result += ' ' + this.or();
-      }
-      result += ` ${this.on()} ${char(targets[i])}`;
-      if (i < targets.length - 1) {
-        result += ',';
-      }
-    }
-    return result;
-  }
+
   static onePosFromBulk(pos: PieceMoves): string {
     let result = upFirst(this.pieceOnPosition(pos.type, pos.pos));
     let isBeats = false;
@@ -981,20 +1015,13 @@ export class Answer {
         } else {
           first = false;
         }
-        if (isBeats) {
-          result += this.beats(pos.moves.slice(startIndex, endIndex));
-          isBeats = false;
-        } else {
-          const movesArr = pos.moves.slice(startIndex, endIndex).map(m => m.to);
-          result += this.moves(movesArr);
-          isBeats = true;
-        }
+        result += this.canDoSmth(pos.moves.slice(startIndex, endIndex));
+        isBeats = !isBeats;
       }
     }
     result += '.';
     return result;
   }
-  // TODO: Correct list of possible promotions
   static listMoves(bulk: PieceMoves[]): string {
     let result = '';
     for (const move of bulk) {

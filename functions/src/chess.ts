@@ -20,7 +20,8 @@ export enum ChessSide {
 
 export interface Move {
   to: string;
-  beat: string;
+  beat?: string;
+  promo?: boolean;
 }
 export interface PieceMoves {
   type: string;
@@ -194,8 +195,9 @@ export class Chess {
       this.moves.sort((move1, move2) => {
         const to1 = board.pos(move1.slice(2, 4));
         const to2 = board.pos(move2.slice(2, 4));
-        
-        if (to1 === null && to2 !== null) return 1;
+        if (move1.length === 4 && move2.length === 5) return 1;
+        else if (move1.length === 5 && move2.length === 4) return -1;
+        else if (to1 === null && to2 !== null) return 1;
         else if (to1 !== null && to2 === null) return -1;
         else return move1.localeCompare(move2);
       });
@@ -205,21 +207,40 @@ export class Chess {
     console.log(this.moves.join(', '));
     const standardSize = 10;
     const permissibleVariation = 5;
-    const maxN = n + standardSize + permissibleVariation;
+    const unnecessary =
+      this.moves
+        .slice(n)
+        .reduce((sum, el) => (sum += Number(el.length === 5)), 0) * 0.75;
+    const maxN = n + standardSize + permissibleVariation + unnecessary;
     if (maxN > this.moves.length) {
       ret.next = this.moves.length;
       let lastPos = this.moves[n].slice(0, 2);
-      let posTo = this.moves[n].slice(2, 4);
-      let mv = { to: posTo, beat: board.pos(posTo) };
       let piece = {
         pos: lastPos,
         type: board.pos(lastPos),
-        moves: [mv],
+        moves: [] as Move[],
       };
-      for (let i = n + 1; i < this.moves.length; ++i) {
+      for (let i = n; i < this.moves.length; ++i) {
         const currentPos = this.moves[i].slice(0, 2);
-        posTo = this.moves[i].slice(2, 4);
-        mv = { to: posTo, beat: board.pos(posTo) };
+        const posTo = this.moves[i].slice(2, 4);
+        const promo = this.moves[i].length === 5;
+        let mv = null;
+        if (promo) {
+          const beat = board.pos(posTo);
+          if (beat) {
+            mv = { to: posTo, beat, promo };
+          } else {
+            mv = { to: posTo, promo };
+          }
+          i += 3;
+        } else {
+          const beat = board.pos(posTo);
+          if (beat) {
+            mv = { to: posTo, beat };
+          } else {
+            mv = { to: posTo };
+          }
+        }
         if (currentPos === lastPos) {
           piece.moves.push(mv);
         } else {
@@ -230,26 +251,41 @@ export class Chess {
       }
       ret.pieces.push(piece);
     } else {
+      const totalLength = (bulk: MovesBulk): number => {
+        return bulk.pieces.reduce((sum, el) => (sum += el.moves.length), 0);
+      };
       ret.end = false;
       let lastPos = this.moves[n].slice(0, 2);
-      let posTo = this.moves[n].slice(2, 4);
-      let mv = { to: posTo, beat: board.pos(posTo) };
       let piece = {
         pos: lastPos,
         type: board.pos(lastPos),
-        moves: [mv],
+        moves: [] as Move[],
       };
       let i;
-      for (i = n + 1; i < maxN + 1; ++i) {
+      for (i = n; i < maxN + 1; ++i) {
         const currentPos = this.moves[i].slice(0, 2);
-        posTo = this.moves[i].slice(2, 4);
-        mv = { to: posTo, beat: board.pos(posTo) };
+        const posTo = this.moves[i].slice(2, 4);
+        const promo = this.moves[i].length === 5;
+        let mv = null;
+        if (promo) {
+          const beat = board.pos(posTo);
+          if (beat) {
+            mv = { to: posTo, beat, promo };
+          } else {
+            mv = { to: posTo, promo };
+          }
+          i += 3;
+        } else {
+          const beat = board.pos(posTo);
+          if (beat) {
+            mv = { to: posTo, beat };
+          } else {
+            mv = { to: posTo };
+          }
+        }
         if (currentPos === lastPos) {
           if (i === maxN) {
-            if (
-              piece.moves.length === i - n ||
-              piece.moves.length >= 2 * permissibleVariation
-            ) {
+            if (totalLength(ret) <= standardSize - permissibleVariation) {
               ret.pieces.push(piece);
             } else {
               i -= piece.moves.length;
@@ -259,7 +295,7 @@ export class Chess {
           piece.moves.push(mv);
         } else {
           ret.pieces.push(piece);
-          if (i >= n + standardSize) {
+          if (totalLength(ret) >= standardSize) {
             break;
           }
           lastPos = currentPos;

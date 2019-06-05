@@ -302,7 +302,7 @@ async function moveSequence(
   } else {
     historyItem = { type: piece, move };
   }
-  // history.info for castling and En passant
+  // TODO: history.info for castling and En passant
   conv.user.storage.history.push(historyItem);
   if (chess.currentGameState === ChessGameState.CHECKMATE) {
     speak(conv, ask + ' \n' + Ans.youWin());
@@ -344,7 +344,11 @@ async function moveSequence(
     enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
   }
   if (beatedPiece) {
-    historyItem = { type: enemyPiece, move: chess.enemyMove, beat: beatedPiece };
+    historyItem = {
+      type: enemyPiece,
+      move: chess.enemyMove,
+      beat: beatedPiece,
+    };
     enemyStr += Ans.enemyBeat(beatedPiece);
   } else {
     historyItem = { type: enemyPiece, move: chess.enemyMove };
@@ -626,7 +630,6 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       speak(conv, Ask.askToMove());
     } else if (conv.contexts.get('confirm-move')) {
-
     } else {
       isFallback = true;
       fallbackHandler(conv);
@@ -661,7 +664,6 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       beginShowingTheBoard(conv);
     } else if (conv.contexts.get('confirm-move')) {
-
     } else {
       isFallback = true;
       fallbackHandler(conv);
