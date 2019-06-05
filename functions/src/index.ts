@@ -618,6 +618,9 @@ app.intent('Legal moves', async (conv: VoiceChessConv) => {
 function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
   let result = '';
   let isPlayerMove = false;
+  console.log('player side: ' + pSide);
+  console.log('moves[0].type: ' + moves[0].type);
+  console.log('gived side: ' + Ans.giveSide(moves[0].type));
   if (Ans.giveSide(moves[0].type) === pSide) {
     isPlayerMove = true;
   }
