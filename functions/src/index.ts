@@ -630,6 +630,8 @@ function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
     result += Ans.firstMoveInHistoryIntro() + ' ';
     intro = true;
   }
+  console.log('isPlayerMove: ' + isPlayerMove);
+  console.log('moves.length: ' + moves.length);
   for (const move of moves) {
     const from = move.move.slice(0, 2);
     const to = move.move.slice(2, 4);
@@ -644,12 +646,15 @@ function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
       }
     };
     rnd = Math.random();
-    if (rnd < 0.3 && !intro) {
+    if (rnd < 0.3 && !intro && move !== moves[0]) {
       result += Ans.nextMoveInHistoryIntro() + ' ';
       intro = true;
     }
+    console.log(move);
+    console.log('cycle iter');
     if (isPlayerMove) {
       let firstPhrase = Ans.youMoved(move.type, from, to);
+      console.log('player moved: ' + firstPhrase);
       if (!intro) {
         firstPhrase = upFirst(firstPhrase);
       }
@@ -664,6 +669,7 @@ function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
       }
     } else {
       let firstPhrase = Ans.iMoved(move.type, from, to);
+      console.log('I moved: ' + firstPhrase);
       if (!intro) {
         firstPhrase = upFirst(firstPhrase);
       }
