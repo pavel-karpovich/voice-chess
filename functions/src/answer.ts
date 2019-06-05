@@ -45,6 +45,13 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static giveSide(pieceCode: string): ChessSide {
+    if (pieceCode === pieceCode.toUpperCase()) {
+      return ChessSide.WHITE;
+    } else {
+      return ChessSide.BLACK;
+    }
+  }
   static side(side: ChessSide, opt = 'mus'): string {
     if (side === ChessSide.BLACK) {
       return this.black(opt);
@@ -390,8 +397,8 @@ export class Answer {
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
-  static color(code: string, opt = 'mus'): string {
-    if (code === code.toUpperCase()) {
+  static color(pieceCode: string, opt = 'mus'): string {
+    if (this.giveSide(pieceCode) === ChessSide.WHITE) {
       return this.white(opt);
     } else {
       return this.black(opt);
@@ -1041,4 +1048,179 @@ export class Answer {
     }
     return result;
   }
+  static emptyHistory(): string {
+    return rand(
+      ({
+        en: [
+          'There is no story here, we just started a new game!',
+          'The history of moves is empty, we are just started.',
+          'History is empty, we didn\'t make any move yet.',
+        ],
+        ru: [
+          'Какая история? Мы только начали новую игру!',
+          'В истории нет ни одного хода, мы только начали.',
+          'Никакой истории нет, ещё не было сделано ни одного хода',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static invalidMovesNumber(invNum: number): string {
+    return rand(
+      ({
+        en: [
+          'This value is invalid!',
+          `The number of moves can't be equal to ${invNum}.`,
+        ],
+        ru: [
+          'Вы назвали некорректное число.',
+          `Количество ходов не может быть равно ${invNum}!`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static moreMovesThanWeHave(invNum: number, num: number): string {
+    return rand(
+      ({
+        en: [
+          `We didn't do so many moves! Only ${num}:`,
+          `We have only ${num} moves in the history of the game:`,
+          `${invNum} it is too many. We played only 3 moves.`,
+          'This is more than we played in the whole game! I will show you everything that we have in the history of moves:',
+          `We have not played ${invNum} moves throughout the game. I can tell you only ${num} moves:`,
+        ],
+        ru: [
+          `У нас нету стольки ходов. Только ${num}:`,
+          `У нас всего ${num} ходов в истории:`,
+          `${invNum} ходов я физически не могу назвать, но вот ${num} - пожалуйста.`,
+          'Это больше чем было за всю игру. Я перечислю вам всё, что есть.',
+          `За всю игру было только ${num} ходов. Так что больше чем ${num} я вам не назову.`
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static firstMoveInHistoryIntro(): string {
+    return rand(
+      ({
+        en: [
+          'At first',
+          'First',
+        ],
+        ru: [
+          'Сначала',
+          'Сперва',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static nextMoveInHistoryIntro(): string {
+    return rand(
+      ({
+        en: [
+          'Next',
+          'Then',
+          'In response,',
+        ],
+        ru: [
+          'Далее',
+          'Затем',
+          'В ответ',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static youMoved(pieceCode: string, from: string, to: string): string {
+    return rand(
+      ({
+        en: [
+          `you moved ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}`,
+          `you played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
+          `you made a ${this.piece(pieceCode)} move from ${char(from)} to ${char(to)}`,
+        ],
+        ru: [
+          `вы походили ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
+          `вы сыграли ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}`,
+          `вы перешли ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
+          `вы сделали ход ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static iMoved(pieceCode: string, from: string, to: string): string {
+    return rand(
+      ({
+        en: [
+          `you moved ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}`,
+          `you played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
+          `you made a ${this.piece(pieceCode)} move from ${char(from)} to ${char(to)}`,
+        ],
+        ru: [
+          `я походил ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
+          `я сыграл ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}`,
+          `я перешёл ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
+          `я сделал ход ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static youTookMyPiece(pieceCode: string): string {
+    return rand(
+      ({
+        en: [
+          `killed ${this.myPiece(pieceCode)}`,
+          `took ${this.myPiece(pieceCode)}`,
+          `left me without ${this.myPiece(pieceCode)}`,
+        ],
+        ru: [
+          `забрали ${this.myPiece(pieceCode, 'vin')}`,
+          `убили ${this.myPiece(pieceCode, 'vin')}`,
+          `лишили меня ${this.piece(pieceCode, 'rod')}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static iTookYourPiece(pieceCode: string): string {
+    return rand(
+      ({
+        en: [
+          `killed ${this.yourPiece(pieceCode)}`,
+          `took ${this.yourPiece(pieceCode)}`,
+          `left you without ${this.yourPiece(pieceCode)}`,
+        ],
+        ru: [
+          `забрал ${this.yourPiece(pieceCode, 'vin')}`,
+          `убил ${this.yourPiece(pieceCode, 'vin')}`,
+          `лишил вас ${this.piece(pieceCode, 'rod')}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static youPromoted(pieceCode: string): string {
+    return rand(
+      ({
+        en: [
+          `has promoted your pawn to the ${this.piece(pieceCode)}`,
+          `turned your pawn into the ${this.yourPiece(pieceCode)}`,
+        ],
+        ru: [
+          `превратили свою пешку в ${this.piece(pieceCode, 'vin')}`,
+          `трансформировали свою пешку в ${this.piece(pieceCode, 'vin')}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static iPromoted(pieceCode: string): string {
+    return rand(
+      ({
+        en: [
+          `I promoted my pawn to the ${this.piece(pieceCode)}`,
+          `I turned my pawn to the ${this.yourPiece(pieceCode)}`,
+        ],
+        ru: [
+          `превратил свою пешку в ${this.piece(pieceCode, 'vin')}`,
+          `трансформировал свою пешку в ${this.piece(pieceCode, 'vin')}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+
 }

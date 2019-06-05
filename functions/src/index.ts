@@ -13,7 +13,7 @@ interface HistoryFrame {
   type: string;
   move: string;
   beat?: string;
-  info?: string;
+  promo?: string;
 }
 
 interface ConversationData {
@@ -291,16 +291,25 @@ async function moveSequence(
   let beatedPiece = board.pos(to);
   await chess.move(move);
   let ask = Ans.playerMove(from, to, piece);
-  if (move.length === 5) {
+  let isPromo = move.length === 5;
+  if (isPromo) {
     const pieceCode = move[4];
     ask += ' ' + Ans.moveWithPromotion(pieceCode);
   }
   let historyItem;
   if (beatedPiece) {
-    historyItem = { type: piece, move, beat: beatedPiece };
+    if (isPromo) {
+      historyItem = { type: piece, move, beat: beatedPiece, promo: move[4] };
+    } else {
+      historyItem = { type: piece, move, beat: beatedPiece };
+    }
     ask += Ans.playerBeat(beatedPiece);
   } else {
-    historyItem = { type: piece, move };
+    if (isPromo) {
+      historyItem = { type: piece, move, promo: move[4] };
+    } else {
+      historyItem = { type: piece, move };
+    }
   }
   // TODO: history.info for castling and En passant
   conv.user.storage.history.push(historyItem);
@@ -337,21 +346,35 @@ async function moveSequence(
   board = new ChessBoard(chess.fenstring);
   const enemyPiece = board.pos(enemyTo);
   let enemyStr = null;
-  if (chess.enemyMove.length === 5) {
+  isPromo = chess.enemyMove.length === 5;
+  if (isPromo) {
     enemyStr = Ans.enemyMove(enemyFrom, enemyTo, 'p');
     enemyStr += ' ' + Ans.moveWithPromotion(enemyPiece);
   } else {
     enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
   }
   if (beatedPiece) {
-    historyItem = {
-      type: enemyPiece,
-      move: chess.enemyMove,
-      beat: beatedPiece,
-    };
+    if (isPromo) {
+      historyItem = {
+        type: 'p',
+        move: chess.enemyMove,
+        beat: beatedPiece,
+        promo: enemyPiece,
+      };
+    } else {
+      historyItem = {
+        type: enemyPiece,
+        move: chess.enemyMove,
+        beat: beatedPiece,
+      };
+    }
     enemyStr += Ans.enemyBeat(beatedPiece);
   } else {
-    historyItem = { type: enemyPiece, move: chess.enemyMove };
+    if (isPromo) {
+      historyItem = { type: 'p', move: chess.enemyMove, promo: enemyPiece };
+    } else {
+      historyItem = { type: enemyPiece, move: chess.enemyMove };
+    }
   }
   // history.info for castling and En passant
   conv.user.storage.history.push(historyItem);
@@ -586,6 +609,106 @@ async function listOfMoves(
 
 app.intent('Legal moves', async (conv: VoiceChessConv) => {
   await listOfMoves(conv, 0);
+});
+
+function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
+  let result = '';
+  let isPlayerMove = false;
+  if (Ans.giveSide(moves[0].type) === pSide) {
+    isPlayerMove = true;
+  }
+  let intro = false;
+  let rnd = Math.random();
+  if (rnd < 0.7 && moves.length > 1) {
+    result += Ans.firstMoveInHistoryIntro() + ' ';
+    intro = true;
+  }
+  for (const move of moves) {
+    const from = move.move.slice(0, 2);
+    const to = move.move.slice(2, 4);
+    const optTotal = Number('beat' in move) + Number('promo' in move);
+    let optCount = 0;
+    const addSeparator = () => {
+      optCount++;
+      if (optCount === optTotal) {
+        result += Ans.and() + ' ';
+      } else {
+        result += ', ';
+      }
+    };
+    rnd = Math.random();
+    if (rnd < 0.3 && !intro) {
+      result += Ans.nextMoveInHistoryIntro() + ' ';
+      intro = true;
+    }
+    if (isPlayerMove) {
+      let firstPhrase = Ans.youMoved(move.type, from, to);
+      if (!intro) {
+        firstPhrase = upFirst(firstPhrase);
+      }
+      result += firstPhrase; 
+      if (move.beat) {
+        addSeparator();
+        result += Ans.youTookMyPiece(move.beat);
+      }
+      if (move.promo) {
+        addSeparator();
+        result += Ans.youPromoted(move.promo);
+      }
+    } else {
+      let firstPhrase = Ans.iMoved(move.type, from, to);
+      if (!intro) {
+        firstPhrase = upFirst(firstPhrase);
+      }
+      result += firstPhrase; 
+      if (move.beat) {
+        addSeparator();
+        result += Ans.iTookYourPiece(move.beat);
+      }
+      if (move.promo) {
+        addSeparator();
+        result += Ans.iPromoted(move.promo);
+      }
+    }
+    result += '.' + pause(1) + '\n';
+    isPlayerMove = !isPlayerMove;
+    intro = false;
+  }
+  return result;
+}
+
+function showMovesHistory(conv: VoiceChessConv, movesNumber?: number): void {
+  const history = conv.user.storage.history;
+  if (history.length === 0) {
+    speak(conv, Ans.emptyHistory());
+    speak(conv, Ask.waitMove());
+    return;
+  }
+  movesNumber = movesNumber || history.length;
+  if (movesNumber < 1) {
+    speak(conv, Ans.invalidMovesNumber(movesNumber));
+    speak(conv, Ask.whatToDo());
+    return;
+  }
+  let answer = '';
+  if (movesNumber > history.length) {
+    answer += Ans.moreMovesThanWeHave(movesNumber, history.length) + '\n';
+    movesNumber = history.length;
+  }
+  const playerSide = conv.user.storage.side;
+  const requestedMoves = history.slice(history.length - movesNumber);
+  answer += historyOfMoves(requestedMoves, playerSide);
+  speak(conv, answer);
+  speak(conv, Ask.waitMove());
+}
+
+app.intent(
+  'History',
+  (
+    conv: VoiceChessConv,
+    { movesNumber }: { movesNumber?: number }
+  ): void => {
+  showMovesHistory(conv, movesNumber);
 });
 
 app.intent('Next', async (conv: VoiceChessConv) => {
