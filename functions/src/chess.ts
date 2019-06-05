@@ -20,7 +20,8 @@ export enum ChessSide {
 
 export interface Move {
   to: string;
-  beat: string;
+  beat?: string;
+  promo?: boolean;
 }
 export interface PieceMoves {
   type: string;
@@ -58,9 +59,11 @@ export class Chess {
     this.asyncHandler = null;
     this.enemy = null;
     this.memorizedState = null;
-    this.stockfish.postMessage('ucinewgame');
     this.stockfish.postMessage('isready');
+    this.stockfish.postMessage('ucinewgame');
     this.configureDifficulty(difficulty);
+    this.stockfish.postMessage('setoption name Ponder value false');
+    this.stockfish.postMessage('setoption name Slow Mover value 10');
     if (this.fen === undefined) {
       this.fen = Chess.initialFen;
     }
@@ -100,8 +103,8 @@ export class Chess {
     this.depth = level === 0 ? 1 : level / 2;
     const setopt = 'setoption name Skill Level ';
     this.stockfish.postMessage(setopt + 'value ' + level);
-    const errProb = Math.round(level * 6.35 + 1);
-    const maxErr = Math.round(level * -0.25 + 5);
+    const maxErr = Math.round(level * -20 + 450);
+    const errProb = Math.round(level * 12.7 + 1);
     this.stockfish.postMessage(setopt + 'Maximum Error value ' + maxErr);
     this.stockfish.postMessage(setopt + 'Probability value ' + errProb);
   }
@@ -155,7 +158,7 @@ export class Chess {
   async moveAuto(): Promise<void> {
     return new Promise<void>((resolve: () => void) => {
       this.onChangeGameState = resolve;
-      this.stockfish.postMessage(`go depth ${this.depth} movetime 2000`);
+      this.stockfish.postMessage(`go depth ${this.depth} movetime 1000`);
     });
   }
 
@@ -177,7 +180,7 @@ export class Chess {
     return this.memorizedState;
   }
 
-  getBulkOfMoves(n: number, sorted = true): MovesBulk {
+  getBulkOfMoves(n: number, beatsSorted = true): MovesBulk {
     if (!this.moves) {
       throw new Error(
         'getBulkOfMoves() first requires updateGameState() call!'
@@ -188,35 +191,68 @@ export class Chess {
       return ret;
     }
     const board = new ChessBoard(this.fen);
-    if (sorted) {
+    if (beatsSorted) {
       this.moves.sort((move1, move2) => {
-        const to1 = board.pos(move1.slice(2, 4));
-        const to2 = board.pos(move2.slice(2, 4));
-        if (to1 === null && to2 !== null) return 1;
-        else if (to1 !== null && to2 === null) return -1;
+        const beat1 = board.pos(move1.slice(2, 4));
+        const beat2 = board.pos(move2.slice(2, 4));
+        if (move1.length === 4 && move2.length === 5) return 1;
+        else if (move1.length === 5 && move2.length === 4) return -1;
+        else if (beat1 === null && beat2 !== null) return 1;
+        else if (beat1 !== null && beat2 === null) return -1;
         else return move1.localeCompare(move2);
       });
     } else {
-      this.moves.sort((move1, move2) => move1.localeCompare(move2));
+      this.moves.sort((move1, move2) => {
+        const from1 = move1.slice(0, 2);
+        const from2 = move2.slice(0, 2);
+        const beat1 = board.pos(move1.slice(2, 4));
+        const beat2 = board.pos(move2.slice(2, 4));
+        if (from1.localeCompare(from2) === 1) return 1;
+        else if (from1.localeCompare(from2) === -1) return -1;
+        else if (beat1 === null && beat2 !== null) return 1;
+        else if (beat1 !== null && beat2 === null) return -1;
+        else if (move1.length === 4 && move2.length === 5) return 1;
+        else if (move1.length === 5 && move2.length === 4) return -1;
+        else return 0;
+      });
     }
     console.log(this.moves.join(', '));
     const standardSize = 10;
     const permissibleVariation = 5;
-    const maxN = n + standardSize + permissibleVariation;
+    const unnecessary =
+      this.moves
+        .slice(n)
+        .reduce((sum, el) => (sum += Number(el.length === 5)), 0) * 0.75;
+    const maxN = n + standardSize + permissibleVariation + unnecessary;
     if (maxN > this.moves.length) {
       ret.next = this.moves.length;
       let lastPos = this.moves[n].slice(0, 2);
-      let posTo = this.moves[n].slice(2, 4);
-      let mv = { to: posTo, beat: board.pos(posTo) };
       let piece = {
         pos: lastPos,
         type: board.pos(lastPos),
-        moves: [mv],
+        moves: [] as Move[],
       };
-      for (let i = n + 1; i < this.moves.length; ++i) {
+      for (let i = n; i < this.moves.length; ++i) {
         const currentPos = this.moves[i].slice(0, 2);
-        posTo = this.moves[i].slice(2, 4);
-        mv = { to: posTo, beat: board.pos(posTo) };
+        const posTo = this.moves[i].slice(2, 4);
+        const promo = this.moves[i].length === 5;
+        let mv = null;
+        if (promo) {
+          const beat = board.pos(posTo);
+          if (beat) {
+            mv = { to: posTo, beat, promo };
+          } else {
+            mv = { to: posTo, promo };
+          }
+          i += 3;
+        } else {
+          const beat = board.pos(posTo);
+          if (beat) {
+            mv = { to: posTo, beat };
+          } else {
+            mv = { to: posTo };
+          }
+        }
         if (currentPos === lastPos) {
           piece.moves.push(mv);
         } else {
@@ -227,26 +263,41 @@ export class Chess {
       }
       ret.pieces.push(piece);
     } else {
+      const totalLength = (bulk: MovesBulk): number => {
+        return bulk.pieces.reduce((sum, el) => (sum += el.moves.length), 0);
+      };
       ret.end = false;
       let lastPos = this.moves[n].slice(0, 2);
-      let posTo = this.moves[n].slice(2, 4);
-      let mv = { to: posTo, beat: board.pos(posTo) };
       let piece = {
         pos: lastPos,
         type: board.pos(lastPos),
-        moves: [mv],
+        moves: [] as Move[],
       };
       let i;
-      for (i = n + 1; i < maxN + 1; ++i) {
+      for (i = n; i < maxN + 1; ++i) {
         const currentPos = this.moves[i].slice(0, 2);
-        posTo = this.moves[i].slice(2, 4);
-        mv = { to: posTo, beat: board.pos(posTo) };
+        const posTo = this.moves[i].slice(2, 4);
+        const promo = this.moves[i].length === 5;
+        let mv = null;
+        if (promo) {
+          const beat = board.pos(posTo);
+          if (beat) {
+            mv = { to: posTo, beat, promo };
+          } else {
+            mv = { to: posTo, promo };
+          }
+          i += 3;
+        } else {
+          const beat = board.pos(posTo);
+          if (beat) {
+            mv = { to: posTo, beat };
+          } else {
+            mv = { to: posTo };
+          }
+        }
         if (currentPos === lastPos) {
           if (i === maxN) {
-            if (
-              piece.moves.length === i - n ||
-              piece.moves.length >= 2 * permissibleVariation
-            ) {
+            if (totalLength(ret) <= standardSize - permissibleVariation) {
               ret.pieces.push(piece);
             } else {
               i -= piece.moves.length;
@@ -256,7 +307,7 @@ export class Chess {
           piece.moves.push(mv);
         } else {
           ret.pieces.push(piece);
-          if (i >= n + standardSize) {
+          if (totalLength(ret) >= standardSize) {
             break;
           }
           lastPos = currentPos;
