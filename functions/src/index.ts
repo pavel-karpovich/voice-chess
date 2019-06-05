@@ -637,7 +637,7 @@ function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
       }
     };
     rnd = Math.random();
-    if (rnd < 0.3 && !intro) {
+    if (rnd < 0.3 && !intro && move !== moves[0]) {
       result += Ans.nextMoveInHistoryIntro() + ' ';
       intro = true;
     }
