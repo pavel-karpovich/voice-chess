@@ -619,7 +619,7 @@ function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
   }
   let intro = false;
   let rnd = Math.random();
-  if (rnd < 0.7 && moves.length > 1) {
+  if (rnd < 0.3 && moves.length > 1) {
     result += Ans.firstMoveInHistoryIntro() + ' ';
     intro = true;
   }
