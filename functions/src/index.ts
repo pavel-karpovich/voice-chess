@@ -455,6 +455,9 @@ app.intent(
     } else if (piece !== actualPiece) {
       piecesMatch = false;
     }
+    console.log('Actual Piece: ' + actualPiece);
+    console.log('Player side: ' + playerSide);
+    console.log('Given side: ' + Ans.giveSide(actualPiece));
     if (Ans.giveSide(actualPiece) !== playerSide) {
       speak(conv, Ans.wrongSide(playerSide, from, actualPiece));
       askOrRemind(conv);
