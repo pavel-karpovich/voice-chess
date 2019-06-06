@@ -436,7 +436,8 @@ app.intent(
       );
     }
     const board = new ChessBoard(chess.fenstring);
-    const actualPiece = Ans.piece(board.pos(from));
+    const actualPieceCode = board.pos(from);
+    const actualPiece = Ans.piece(actualPieceCode);
     let piecesMatch = true;
     if (!piece && !actualPiece) {
       speak(conv, Ans.cellIsEmpty(from));
@@ -451,7 +452,7 @@ app.intent(
     } else if (piece !== actualPiece) {
       piecesMatch = false;
     }
-    if (Ans.giveSide(actualPiece) !== playerSide) {
+    if (Ans.giveSide(actualPieceCode) !== playerSide) {
       speak(conv, Ans.wrongSide(playerSide, from, actualPiece));
       askOrRemind(conv);
       return;
