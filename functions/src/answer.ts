@@ -1088,7 +1088,7 @@ export class Answer {
         en: [
           'There is no story here, we just started a new game!',
           'The history of moves is empty, we are just started.',
-          'History is empty, we didn\'t make any move yet.',
+          "History is empty, we didn't make any move yet.",
         ],
         ru: [
           'Какая история? Мы только начали новую игру!',
@@ -1135,31 +1135,16 @@ export class Answer {
   static firstMoveInHistoryIntro(): string {
     return rand(
       ({
-        en: [
-          'At first',
-          'First',
-        ],
-        ru: [
-          'Сначала',
-          'Сперва',
-        ],
+        en: ['At first', 'First'],
+        ru: ['Сначала', 'Сперва'],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
   static nextMoveInHistoryIntro(): string {
     return rand(
       ({
-        en: [
-          'Next',
-          'Then',
-          'In response,',
-        ],
-        ru: [
-          'Далее',
-          'Затем',
-          'В ответ',
-          'После этого',
-        ],
+        en: ['Next', 'Then', 'In response,'],
+        ru: ['Далее', 'Затем', 'В ответ', 'После этого'],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -1167,15 +1152,27 @@ export class Answer {
     return rand(
       ({
         en: [
-          `you moved ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}`,
+          `you moved ${this.piece(pieceCode)} from ${char(from)} to ${char(
+            to
+          )}`,
           `you played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
-          `you made a ${this.piece(pieceCode)} move from ${char(from)} to ${char(to)}`,
+          `you made a ${this.piece(pieceCode)} move from ${char(
+            from
+          )} to ${char(to)}`,
         ],
         ru: [
-          `вы походили ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
-          `вы сыграли ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}`,
-          `вы перешли ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
-          `вы сделали ход ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
+          `вы походили ${this.piece(pieceCode, 'tvr')} с ${char(
+            from
+          )} на ${char(to)}`,
+          `вы сыграли ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(
+            to
+          )}`,
+          `вы перешли ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(
+            to
+          )}`,
+          `вы сделали ход ${this.piece(pieceCode, 'tvr')} с ${char(
+            from
+          )} на ${char(to)}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -1186,13 +1183,21 @@ export class Answer {
         en: [
           `I moved ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}`,
           `I played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
-          `I made a ${this.piece(pieceCode)} move from ${char(from)} to ${char(to)}`,
+          `I made a ${this.piece(pieceCode)} move from ${char(from)} to ${char(
+            to
+          )}`,
         ],
         ru: [
-          `я походил ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
+          `я походил ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(
+            to
+          )}`,
           `я сыграл ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}`,
-          `я перешёл ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
-          `я сделал ход ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
+          `я перешёл ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(
+            to
+          )}`,
+          `я сделал ход ${this.piece(pieceCode, 'tvr')} с ${char(
+            from
+          )} на ${char(to)}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -1257,23 +1262,46 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static wrongSide(playerSide: ChessSide, from: string, pieceCode: string): string {
+  static wrongSide(
+    playerSide: ChessSide,
+    from: string,
+    pieceCode: string
+  ): string {
     const enemySide = oppositeSide(playerSide);
     return rand(
       ({
         en: [
-          `You play ${this.color(playerSide, 'plr')}, but on the square ${char(from)} is ${this.coloredPiece(pieceCode)}!`,
+          `You play ${this.color(playerSide, 'plr')}, but on the square ${char(
+            from
+          )} is ${this.coloredPiece(pieceCode)}!`,
           `You cannot play ${this.coloredPiece(pieceCode)}, because it's mine!`,
-          `You are for ${this.color(playerSide, 'plr')}, I am for ${this.color(enemySide, 'plr')}. The ${this.piece(pieceCode)} on ${char(from)} is ${this.color(enemySide)}, thus mine.`,
+          `You are for ${this.color(playerSide, 'plr')}, I am for ${this.color(
+            enemySide,
+            'plr'
+          )}. The ${this.piece(pieceCode)} on ${char(from)} is ${this.color(
+            enemySide
+          )}, thus mine.`,
         ],
         ru: [
-          `Вы играете за ${this.color(playerSide, 'plr/rod')}, а на клетке ${char(from)} стоит ${this.myPiece(pieceCode)}!`,
-          `Вы не можете играть за ${this.piece(pieceCode, 'rod')} на ${char(from)}, она моя.`,
-          `Вообще то за ${this.color(enemySide, 'plr/rod')} играю я. Вы не можете ходить моими фигурами.`,
-          `Вы за ${this.color(playerSide, 'plr/rod')}, я за ${this.color(enemySide, 'plr/rod')}. Следите за фигурами. На ${char(from)} ${this.myColoredPiece(pieceCode)}.`,
+          `Вы играете за ${this.color(
+            playerSide,
+            'plr/rod'
+          )}, а на клетке ${char(from)} стоит ${this.myPiece(pieceCode)}!`,
+          `Вы не можете играть за ${this.piece(pieceCode, 'rod')} на ${char(
+            from
+          )}, она моя.`,
+          `Вообще то за ${this.color(
+            enemySide,
+            'plr/rod'
+          )} играю я. Вы не можете ходить моими фигурами.`,
+          `Вы за ${this.color(playerSide, 'plr/rod')}, я за ${this.color(
+            enemySide,
+            'plr/rod'
+          )}. Следите за фигурами. На ${char(from)} ${this.myColoredPiece(
+            pieceCode
+          )}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-
 }

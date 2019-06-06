@@ -652,7 +652,7 @@ function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
       if (!intro) {
         firstPhrase = upFirst(firstPhrase);
       }
-      result += firstPhrase; 
+      result += firstPhrase;
       if (move.beat) {
         addSeparator();
         result += Ans.youTookMyPiece(move.beat);
@@ -666,7 +666,7 @@ function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
       if (!intro) {
         firstPhrase = upFirst(firstPhrase);
       }
-      result += firstPhrase; 
+      result += firstPhrase;
       if (move.beat) {
         addSeparator();
         result += Ans.iTookYourPiece(move.beat);
@@ -710,12 +710,10 @@ function showMovesHistory(conv: VoiceChessConv, movesNumber?: number): void {
 
 app.intent(
   'History',
-  (
-    conv: VoiceChessConv,
-    { movesNumber }: { movesNumber?: number }
-  ): void => {
-  showMovesHistory(conv, movesNumber);
-});
+  (conv: VoiceChessConv, { movesNumber }: { movesNumber?: number }): void => {
+    showMovesHistory(conv, movesNumber);
+  }
+);
 
 app.intent('Next', async (conv: VoiceChessConv) => {
   let isFallback = false;
