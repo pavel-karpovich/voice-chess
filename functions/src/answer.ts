@@ -6,7 +6,7 @@ import {
   upFirst,
   pause,
 } from './helpers';
-import { PieceMoves, Move, ChessSide } from './chess';
+import { PieceMoves, Move, ChessSide, oppositeSide } from './chess';
 
 export class Answer {
   private static lang: string;
@@ -297,14 +297,20 @@ export class Answer {
     } as LocalizationObject<string>)[this.lang];
   }
   static myPiece(pieceCode: string, opt = 'sin'): string {
-    pieceCode = pieceCode.toLowerCase();
     const gen = this.pieceGender(pieceCode);
     return this.my(`${gen}/${opt}`) + ' ' + this.piece(pieceCode, opt);
   }
   static yourPiece(pieceCode: string, opt = 'sin'): string {
-    pieceCode = pieceCode.toLowerCase();
     const gen = this.pieceGender(pieceCode);
     return this.your(`${gen}/${opt}`) + ' ' + this.piece(pieceCode, opt);
+  }
+  static myColoredPiece(pieceCode: string, opt = 'sin'): string {
+    const gen = this.pieceGender(pieceCode);
+    return this.my(`${gen}/${opt}`) + ' ' + this.coloredPiece(pieceCode, opt);
+  }
+  static yourColoredPiece(pieceCode: string, opt = 'sin'): string {
+    const gen = this.pieceGender(pieceCode);
+    return this.your(`${gen}/${opt}`) + ' ' + this.coloredPiece(pieceCode, opt);
   }
   static playerBeat(beatedPieceCode: string): string {
     return rand(
@@ -373,11 +379,27 @@ export class Answer {
     return ({
       en: ({
         mus: 'black',
+        fem: 'white',
         plr: 'blacks',
+        'mus/sin': 'black',
+        'fem/sin': 'black',
+        'mus/vin': 'black',
+        'fem/vin': 'black',
+        'mus/rod': 'black',
+        'fem/rod': 'black',
+        'plr/rod': 'blacks',
+        'plr/tvr': 'blacks',
       } as WordForms)[opt],
       ru: ({
         mus: 'чёрный',
         fem: 'чёрная',
+        plr: 'чёрные',
+        'mus/sin': 'чёрный',
+        'fem/sin': 'чёрная',
+        'mus/vin': 'чёрного',
+        'fem/vin': 'чёрную',
+        'mus/rod': 'чёрного',
+        'fem/rod': 'чёрной',
         'plr/rod': 'чёрных',
         'plr/tvr': 'чёрными',
       } as WordForms)[opt],
@@ -387,18 +409,34 @@ export class Answer {
     return ({
       en: ({
         mus: 'white',
+        fem: 'white',
         plr: 'whites',
+        'mus/sin': 'white',
+        'fem/sin': 'white',
+        'mus/vin': 'white',
+        'fem/vin': 'white',
+        'mus/rod': 'white',
+        'fem/rod': 'white',
+        'plr/rod': 'whites',
+        'plr/tvr': 'whites',
       } as WordForms)[opt],
       ru: ({
         mus: 'белый',
         fem: 'белая',
-        'plr/rod': 'белых',
-        'plr/tvr': 'белыми',
+        plr: 'белые',
+        'mus/sin': 'чёрный',
+        'fem/sin': 'чёрная',
+        'mus/vin': 'чёрного',
+        'fem/vin': 'чёрную',
+        'mus/rod': 'чёрного',
+        'fem/rod': 'чёрной',
+        'plr/rod': 'чёрных',
+        'plr/tvr': 'чёрными',
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
-  static color(pieceCode: string, opt = 'mus'): string {
-    if (this.giveSide(pieceCode) === ChessSide.WHITE) {
+  static color(side: ChessSide, opt = 'mus'): string {
+    if (side === ChessSide.WHITE) {
       return this.white(opt);
     } else {
       return this.black(opt);
@@ -474,14 +512,10 @@ export class Answer {
         return null;
     }
   }
-  static coloredPiece(code: string): string {
-    const piece = this.piece(code);
-    let color = null;
-    if (piece === 'Пешка' || piece === 'Ладья') {
-      color = this.color(code, 'fem');
-    } else {
-      color = this.color(code, 'mus');
-    }
+  static coloredPiece(pieceCode: string, opt = 'sin'): string {
+    const piece = this.piece(pieceCode, opt);
+    const gen = this.pieceGender(pieceCode);
+    const color = this.color(this.giveSide(pieceCode), `${gen}/${opt}`);
     return color + ' ' + piece;
   }
   static nRow(n: number, opt = 'mus'): string {
@@ -1124,6 +1158,7 @@ export class Answer {
           'Далее',
           'Затем',
           'В ответ',
+          'После этого',
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -1149,9 +1184,9 @@ export class Answer {
     return rand(
       ({
         en: [
-          `you moved ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}`,
-          `you played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
-          `you made a ${this.piece(pieceCode)} move from ${char(from)} to ${char(to)}`,
+          `I moved ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}`,
+          `I played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
+          `I made a ${this.piece(pieceCode)} move from ${char(from)} to ${char(to)}`,
         ],
         ru: [
           `я походил ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
@@ -1218,6 +1253,24 @@ export class Answer {
         ru: [
           `превратил свою пешку в ${this.piece(pieceCode, 'vin')}`,
           `трансформировал свою пешку в ${this.piece(pieceCode, 'vin')}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static wrongSide(playerSide: ChessSide, from: string, pieceCode: string): string {
+    const enemySide = oppositeSide(playerSide);
+    return rand(
+      ({
+        en: [
+          `You play ${this.color(playerSide, 'plr')}, but on the square ${char(from)} is ${this.coloredPiece(pieceCode)}!`,
+          `You cannot play ${this.coloredPiece(pieceCode)}, because it's mine!`,
+          `You are for ${this.color(playerSide, 'plr')}, I am for ${this.color(enemySide, 'plr')}. The ${this.piece(pieceCode)} on ${char(from)} is ${this.color(enemySide)}, thus mine.`,
+        ],
+        ru: [
+          `Вы играете за ${this.color(playerSide, 'plr/rod')}, а на клетке ${char(from)} стоит ${this.myPiece(pieceCode)}!`,
+          `Вы не можете играть за ${this.piece(pieceCode, 'rod')} на ${char(from)}, она моя.`,
+          `Вообще то за ${this.color(enemySide, 'plr/rod')} играю я. Вы не можете ходить моими фигурами.`,
+          `Вы за ${this.color(playerSide, 'plr/rod')}, я за ${this.color(enemySide, 'plr/rod')}. Следите за фигурами. На ${char(from)} ${this.myColoredPiece(pieceCode)}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

@@ -33,14 +33,14 @@ export interface WordForms {
   na?: string;
   sin?: string;
   vin?: string;
-  'plr/rod'?: string;
-  'plr/tvr'?: string;
-  'mus/vin'?: string;
-  'fem/vin'?: string;
   'mus/sin'?: string;
   'fem/sin'?: string;
+  'mus/vin'?: string;
+  'fem/vin'?: string;
   'mus/rod'?: string;
   'fem/rod'?: string;
+  'plr/rod'?: string;
+  'plr/tvr'?: string;
 }
 
 export function char(str: string): string {
