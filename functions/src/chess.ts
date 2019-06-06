@@ -17,7 +17,9 @@ export enum ChessSide {
   WHITE = 1,
   BLACK = 2,
 }
-
+export function oppositeSide(side: ChessSide): ChessSide {
+  return side === ChessSide.WHITE ? ChessSide.BLACK : ChessSide.WHITE;
+}
 export interface Move {
   to: string;
   beat?: string;

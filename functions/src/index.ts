@@ -451,31 +451,36 @@ app.intent(
     } else if (piece !== actualPiece) {
       piecesMatch = false;
     }
+    if (Ans.giveSide(actualPiece) !== playerSide) {
+      speak(conv, Ans.wrongSide(playerSide, from, actualPiece));
+      askOrRemind(conv);
+      return;
+    }
     await chess.updateGameState();
     const isLegal = chess.isMoveLegal(move);
-    if (isLegal) {
-      if (!piecesMatch) {
-        speak(conv, Ans.piecesDontMatch(piece, actualPiece, from));
-        speak(conv, Ask.moveWithoutPiecesMatch(actualPiece, piece, from, to));
-        conv.contexts.set('confirm-move', 1, { move });
-        // TODO: if it's a promotion?
-        return;
-      }
-      if (chess.isPromotion(move)) {
-        speak(conv, Ans.promotion(from, to));
-        speak(conv, Ask.howToPromote());
-        conv.contexts.set('ask-to-promotion', 1, { move });
-        return;
-      }
-      await moveSequence(conv, chess, move);
-    } else {
+    if (!isLegal) {
       let illegal = Ans.illegalMove(from, to, { piece });
       if (chess.currentGameState === ChessGameState.CHECK) {
         illegal = `${Ans.checkToPlayer()}${pause(2)}\n${illegal}`;
       }
       speak(conv, illegal);
       askOrRemind(conv);
+      return;
     }
+    if (!piecesMatch) {
+      speak(conv, Ans.piecesDontMatch(piece, actualPiece, from));
+      speak(conv, Ask.moveWithoutPiecesMatch(actualPiece, piece, from, to));
+      conv.contexts.set('confirm-move', 1, { move });
+      // TODO: if it's a promotion?
+      return;
+    }
+    if (chess.isPromotion(move)) {
+      speak(conv, Ans.promotion(from, to));
+      speak(conv, Ask.howToPromote());
+      conv.contexts.set('ask-to-promotion', 1, { move });
+      return;
+    }
+    await moveSequence(conv, chess, move);
   }
 );
 
