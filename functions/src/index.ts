@@ -777,4 +777,9 @@ app.intent(
   }
 );
 
+app.intent('Repeat', async (conv: VoiceChessConv): Promise<void> => {
+  speak(conv, 'This feature is under development.');
+  directToNextLogicalAction(conv);
+});
+
 module.exports.fulfillment = functions.https.onRequest(app);
