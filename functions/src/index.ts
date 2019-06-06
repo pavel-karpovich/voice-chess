@@ -508,10 +508,15 @@ app.intent(
   async (conv: VoiceChessConv, { side }: { side: ChessSide }): Promise<void> => {
     console.log('Choose side: ' + side);
     conv.user.storage.side = side;
+    console.log('conv.user.storage.side:' + conv.user.storage.side);
     if (side === ChessSide.WHITE) {
+      console.log('white');
       speak(conv, Ans.whiteSide());
+      console.log(1);
       speak(conv, Ask.askToMove());
+      console.log(2);
     } else {
+      console.log('black');
       speak(conv, Ans.blackSide());
       const fenstring = conv.user.storage.fen;
       const difficulty = conv.user.storage.options.difficulty;
