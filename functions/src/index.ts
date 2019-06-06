@@ -854,4 +854,13 @@ app.intent(
   }
 );
 
+app.intent('Silence', (conv: VoiceChessConv): void => {
+  const gameContext = conv.contexts.get('game');
+  if (gameContext) {
+    speak(conv, Ans.doNotHurry());
+  } else {
+    speak(conv, Ask.isAnybodyHere());
+  }
+});
+
 module.exports.fulfillment = functions.https.onRequest(app);

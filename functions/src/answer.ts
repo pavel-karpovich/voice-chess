@@ -1332,4 +1332,21 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static doNotHurry(): string {
+    return rand(
+      ({
+        en: [
+          'You can think about your move, no need to rush.',
+          'Ok, I will no longer ask you for confirmation.',
+          'You can think well and answer me later.',
+          'You can think well and answer me later. Just don\'t forget to say "Okay, Google!".',
+        ],
+        ru: [
+          'Вы можете подумать над своим ходом, я никуда не тороплюсь.',
+          'Вы можете подумать и ответить позже, я пока ещё не планирую разряжаться.',
+          'Можете подумать и ответить позже, только не забудьте сказать "Ok, Google!".',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }

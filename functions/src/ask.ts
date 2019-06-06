@@ -348,4 +348,22 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static isAnybodyHere(): string {
+    return rand(
+      ({
+        en: [
+          'Helloo!.. Is anybody still here?',
+          'You didn\'t forget about me?',
+          'Hi! You are here?',
+          'I can\'t hear you, repeat what you said, please!',
+        ],
+        ru: [
+          'Эй, вы всё ещё тут?',
+          'Вы про меня не забыли?',
+          'Аууу! Есть кто на связи?',
+          'Я вас не слышу, повторите, пожалуйста.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }
