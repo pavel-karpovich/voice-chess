@@ -1,4 +1,5 @@
-import { rand, LocalizationObject, char } from './helpers';
+import { rand, LocalizationObject, char, upFirst } from '../helpers';
+import { Vocabulary as Voc } from './vocabulary';
 
 export class Ask {
   private static lang: string;
@@ -172,12 +173,12 @@ export class Ask {
           'You can think your move and answer me later.',
           'Do you have another option?',
           'Choose the correct move.',
-          'Try something else...',
+          'Then try something else.',
         ],
         ru: [
           'Вы можете подумать над своим ходом, и ответить мне попозже.',
           'У вас есть другой вариант?',
-          'Есть что ещё в запасе?',
+          'Тогда как вы походите?',
           'Назовите корректный ход.',
         ],
       } as LocalizationObject<string[]>)[this.lang]
@@ -221,18 +222,6 @@ export class Ask {
           'Я ожидаю вашего хода. Вы решили куда будете ходить?',
           'Теперь вы готовы походить?',
           'Я жду вашего хода. Что будете делать?',
-        ],
-      } as LocalizationObject<string[]>)[this.lang]
-    );
-  }
-  static silence(): string {
-    return rand(
-      ({
-        en: ['Are you still here?', 'Hello?'],
-        ru: [
-          'Ау, Вы ещё тут?',
-          'Ну давайте вместе помолчим.',
-          'Знаете, я тоже люблю молчать.',
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -295,20 +284,20 @@ export class Ask {
     return rand(
       ({
         en: [
-          `Are you confused? Will you move ${actualPiece}?`,
+          `Are you confused? Will you move ${Voc.piece(actualPiece)}?`,
           `But move is legal. Save it?`,
-          `But move is legal. Confirm it with ${actualPiece}?`,
-          `Did you want to say ${actualPiece}?`,
-          `Then, your move is ${actualPiece} from ${char(from)} to ${char(
+          `But move is legal. Confirm it with ${Voc.piece(actualPiece)}?`,
+          `Did you want to say ${Voc.piece(actualPiece)}?`,
+          `Then, your move is ${Voc.piece(actualPiece)} from ${char(from)} to ${char(
             to
           )}?`,
         ],
         ru: [
-          `Вы просто перепутали? Будете ходить ${actualPiece}?`,
+          `Вы просто перепутали? Будете ходить ${Voc.piece(actualPiece, 'tvr')}?`,
           `Но сам ход корректный. Оставляем его?`,
-          `Вы хотели сказать ${actualPiece} с ${char(from)} на ${char(to)}?`,
-          `Будете ходить ${actualPiece} с ${char(from)} на ${char(to)}?`,
-          `Значит, ${actualPiece} ${char(from)} ${char(to)}?`,
+          `Вы хотели сказать ${Voc.piece(actualPiece)} с ${char(from)} на ${char(to)}?`,
+          `Будете ходить ${Voc.piece(actualPiece, 'rod')} с ${char(from)} на ${char(to)}?`,
+          `Значит, ${Voc.piece(actualPiece)} ${char(from)} ${char(to)}?`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -327,6 +316,52 @@ export class Ask {
           'В какую фигуру вы превратите свою пешку?',
           'В кого превращать? Ферзь, слон, конь, ладья?',
           'Ферзь, слон, конь, ладья. Выбирайте!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static askToConfirm(from: string, to: string, pieceCode: string): string {
+    return rand(
+      ({
+        en: [
+          `${upFirst(Voc.piece(pieceCode))} from ${char(from)} to ${char(
+            to
+          )}, yes?`,
+          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(
+            to
+          )}. That's right?`,
+          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(
+            to
+          )}. I understood correctly?`,
+        ],
+        ru: [
+          `${upFirst(Voc.piece(pieceCode))} с ${char(from)} на ${char(
+            to
+          )}, да?`,
+          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(
+            to
+          )}. Всё верно?`,
+          `Вы хотите походить ${Voc.piece(pieceCode, 'rod')} ${char(
+            from
+          )} ${char(to)}. Верно?`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static isAnybodyHere(): string {
+    return rand(
+      ({
+        en: [
+          'Helloo!.. Is anybody still here?',
+          "You didn't forget about me?",
+          'Hi! You are here?',
+          "I can't hear you, repeat what you said, please!",
+        ],
+        ru: [
+          'Эй, вы всё ещё тут?',
+          'Вы про меня не забыли?',
+          'Аууу! Есть кто на связи?',
+          'Я вас не слышу, повторите, пожалуйста.',
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
