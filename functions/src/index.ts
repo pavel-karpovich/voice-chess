@@ -453,7 +453,7 @@ app.intent(
       piecesMatch = false;
     }
     if (Ans.giveSide(actualPieceCode) !== playerSide) {
-      speak(conv, Ans.wrongSide(playerSide, from, actualPiece));
+      speak(conv, Ans.wrongSide(playerSide, from, actualPieceCode));
       askOrRemind(conv);
       return;
     }
