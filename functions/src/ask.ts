@@ -1,4 +1,5 @@
-import { rand, LocalizationObject, char } from './helpers';
+import { rand, LocalizationObject, char, upFirst } from './helpers';
+import { Answer as Ans } from './answer';
 
 export class Ask {
   private static lang: string;
@@ -172,12 +173,12 @@ export class Ask {
           'You can think your move and answer me later.',
           'Do you have another option?',
           'Choose the correct move.',
-          'Try something else...',
+          'Then try something else.',
         ],
         ru: [
           'Вы можете подумать над своим ходом, и ответить мне попозже.',
           'У вас есть другой вариант?',
-          'Есть что ещё в запасе?',
+          'Тогда как вы походите?',
           'Назовите корректный ход.',
         ],
       } as LocalizationObject<string[]>)[this.lang]
@@ -327,6 +328,22 @@ export class Ask {
           'В какую фигуру вы превратите свою пешку?',
           'В кого превращать? Ферзь, слон, конь, ладья?',
           'Ферзь, слон, конь, ладья. Выбирайте!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static askToConfirm(from: string, to: string, pieceCode: string): string {
+    return rand(
+      ({
+        en: [
+          `${upFirst(Ans.piece(pieceCode))} from ${char(from)} to ${char(to)}, yes?`,
+          `${upFirst(Ans.piece(pieceCode))} ${char(from)} ${char(to)}. That's right?`,
+          `${upFirst(Ans.piece(pieceCode))} ${char(from)} ${char(to)}. I understood correctly?`,
+        ],
+        ru: [
+          `${upFirst(Ans.piece(pieceCode))} с ${char(from)} на ${char(to)}, да?`,
+          `${upFirst(Ans.piece(pieceCode))} ${char(from)} ${char(to)}. Всё верно?`,
+          `Вы хотите походить ${Ans.piece(pieceCode, 'rod')} ${char(from)} ${char(to)}. Верно?`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

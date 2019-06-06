@@ -279,11 +279,16 @@ function askOrRemind(conv: VoiceChessConv): void {
   }
 }
 
-async function moveSequence(
+async function makeMoves(
   conv: VoiceChessConv,
-  chess: Chess,
-  move: string
+  move: string,
+  chess?: Chess
 ): Promise<void> {
+  if (!chess) {
+    const fenstring = conv.user.storage.fen;
+    const difficulty = conv.user.storage.difficulty;
+    chess = new Chess(fenstring, difficulty);
+  }
   const from = move.slice(0, 2);
   const to = move.slice(2, 4);
   let board = new ChessBoard(chess.fenstring);
@@ -475,15 +480,28 @@ app.intent(
       // TODO: if it's a promotion?
       return;
     }
-    if (chess.isPromotion(move)) {
-      speak(conv, Ans.promotion(from, to));
-      speak(conv, Ask.howToPromote());
-      conv.contexts.set('ask-to-promotion', 1, { move });
-      return;
-    }
-    await moveSequence(conv, chess, move);
+    speak(conv, Ask.askToConfirm(from, to, actualPieceCode));
+    conv.contexts.set('confirm-move', 1, { move });
+    // await makeMoves(conv, move, chess);
   }
 );
+
+async function acceptMove(conv: VoiceChessConv): Promise<void> {
+  const move = conv.contexts.get('confirm-move').parameters.move as string;
+  const fenstring = conv.user.storage.fen;
+  const difficulty = conv.user.storage.difficulty;
+  const chess = new Chess(fenstring, difficulty);
+  await chess.updateGameState();
+  if (chess.isPromotion(move)) {
+    const from = move.slice(0, 2);
+    const to = move.slice(2, 4);
+    speak(conv, Ans.promotion(from, to));
+    speak(conv, Ask.howToPromote());
+    conv.contexts.set('ask-to-promotion', 1, { move });
+    return;
+  }
+  await makeMoves(conv, move, chess);
+}
 
 app.intent(
   'Promotion',
@@ -510,10 +528,7 @@ app.intent(
       default:
         return;
     }
-    const fenstring = conv.user.storage.fen;
-    const difficulty = conv.user.storage.difficulty;
-    const chess = new Chess(fenstring, difficulty);
-    await moveSequence(conv, chess, move);
+    await makeMoves(conv, move);
   }
 );
 
@@ -757,6 +772,7 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       speak(conv, Ask.askToMove());
     } else if (conv.contexts.get('confirm-move')) {
+      speak(conv, Ask.askToMoveAgain());
     } else {
       isFallback = true;
       fallbackHandler(conv);
@@ -791,6 +807,7 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       beginShowingTheBoard(conv);
     } else if (conv.contexts.get('confirm-move')) {
+      await acceptMove(conv);
     } else {
       isFallback = true;
       fallbackHandler(conv);
