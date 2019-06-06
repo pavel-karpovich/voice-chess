@@ -21,11 +21,16 @@ interface ConversationData {
   row?: number;
 }
 
-interface LongStorageData {
+interface Options {
   difficulty?: number;
+  confirm?: boolean;
+}
+
+interface LongStorageData {
   fen?: string;
   side?: ChessSide;
   history?: HistoryFrame[];
+  options?: Options;
 }
 
 type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
@@ -91,19 +96,25 @@ function whatDoYouWantWithTips(conv: VoiceChessConv): void {
   }
 }
 
+function firstGameRun(conv: VoiceChessConv): void {
+  const initialDifficulty = 2;
+  const initialConfirmOpt = true;
+  conv.user.storage.options = {
+    difficulty: initialDifficulty,
+    confirm: initialConfirmOpt,
+  };
+  speak(conv, Ans.firstPlay());
+  speak(conv, Ask.askToNewGame());
+  conv.contexts.set('ask-to-new-game', 1);
+}
+
 app.intent(
   'Default Welcome Intent',
   (conv: VoiceChessConv): void => {
     console.log('welcome');
-    if (conv.user.storage.difficulty === undefined) {
-      conv.user.storage.difficulty = 2;
-      speak(conv, Ans.firstPlay());
-      speak(conv, Ask.askToNewGame());
-      conv.contexts.set('ask-to-new-game', 1);
-    } else if (
-      conv.user.storage.fen === undefined ||
-      conv.user.storage.fen === null
-    ) {
+    if (!conv.user.storage.options) {
+      firstGameRun(conv);
+    } else if (!conv.user.storage.fen) {
       speak(conv, Ans.welcome());
       speak(conv, Ask.askToNewGame());
       conv.contexts.set('ask-to-new-game', 1);
@@ -286,7 +297,7 @@ async function makeMoves(
 ): Promise<void> {
   if (!chess) {
     const fenstring = conv.user.storage.fen;
-    const difficulty = conv.user.storage.difficulty;
+    const difficulty = conv.user.storage.options.difficulty;
     chess = new Chess(fenstring, difficulty);
   }
   const from = move.slice(0, 2);
@@ -431,7 +442,7 @@ app.intent(
     const move = from + to;
     console.log(`From: ${from}, to: ${to}`);
     const fenstring = conv.user.storage.fen;
-    const difficulty = conv.user.storage.difficulty;
+    const difficulty = conv.user.storage.options.difficulty;
     const playerSide = conv.user.storage.side;
     const chess = new Chess(fenstring, difficulty);
     if (chess.whoseTurn !== playerSide) {
@@ -477,19 +488,30 @@ app.intent(
       speak(conv, Ans.piecesDontMatch(piece, actualPiece, from));
       speak(conv, Ask.moveWithoutPiecesMatch(actualPiece, piece, from, to));
       conv.contexts.set('confirm-move', 1, { move });
-      // TODO: if it's a promotion?
       return;
     }
-    speak(conv, Ask.askToConfirm(from, to, actualPieceCode));
-    conv.contexts.set('confirm-move', 1, { move });
-    // await makeMoves(conv, move, chess);
+    const needConfirm = conv.user.storage.options.confirm;
+    if (needConfirm) {
+      speak(conv, Ask.askToConfirm(from, to, actualPieceCode));
+      conv.contexts.set('confirm-move', 1, { move });
+      return;
+    }
+    if (chess.isPromotion(move)) {
+      const from = move.slice(0, 2);
+      const to = move.slice(2, 4);
+      speak(conv, Ans.promotion(from, to));
+      speak(conv, Ask.howToPromote());
+      conv.contexts.set('ask-to-promotion', 1, { move });
+      return;
+    }
+    await makeMoves(conv, move, chess);
   }
 );
 
 async function acceptMove(conv: VoiceChessConv): Promise<void> {
   const move = conv.contexts.get('confirm-move').parameters.move as string;
   const fenstring = conv.user.storage.fen;
-  const difficulty = conv.user.storage.difficulty;
+  const difficulty = conv.user.storage.options.difficulty;
   const chess = new Chess(fenstring, difficulty);
   await chess.updateGameState();
   if (chess.isPromotion(move)) {
@@ -545,7 +567,7 @@ app.intent(
       speak(conv, Ans.blackSide());
       conv.user.storage.side = ChessSide.BLACK;
       const fenstring = conv.user.storage.fen;
-      const difficulty = conv.user.storage.difficulty;
+      const difficulty = conv.user.storage.options.difficulty;
       const chess = new Chess(fenstring, difficulty);
       await chess.moveAuto();
       conv.user.storage.fen = chess.fenstring;
@@ -567,11 +589,22 @@ app.intent(
   (conv: VoiceChessConv): void => {
     console.log('difficulty');
     safeGameContext(conv);
-    const currentDifficulty = conv.user.storage.difficulty;
+    const currentDifficulty = conv.user.storage.options.difficulty;
     speak(conv, Ans.showDifficulty(currentDifficulty));
     speak(conv, Ask.askToChangeDifficulty());
   }
 );
+
+function directToNextLogicalAction(conv: VoiceChessConv): void {
+  const gameContext = conv.contexts.get('game');
+  if (gameContext) {
+    speak(conv, Ask.waitMove());
+    conv.contexts.set('turn-intent', 1);
+  } else {
+    speak(conv, Ask.askToNewGame());
+    conv.contexts.set('ask-to-new-game', 1);
+  }
+}
 
 app.intent(
   'Difficulty - number',
@@ -582,21 +615,14 @@ app.intent(
     console.log('difficulte - number');
     safeGameContext(conv);
     if (ord || num) {
-      const currentDifficulty = conv.user.storage.difficulty;
+      const currentDifficulty = conv.user.storage.options.difficulty;
       const newDifficulty = num ? num : ord;
       if (currentDifficulty === newDifficulty) {
         speak(conv, Ans.difficultyTheSame(newDifficulty));
       } else {
         speak(conv, Ans.difficultyChanged(newDifficulty, currentDifficulty));
       }
-      const game = conv.contexts.get('game');
-      if (game !== undefined) {
-        speak(conv, Ask.waitMove());
-        conv.contexts.set('turn-intent', 1);
-      } else {
-        speak(conv, Ask.askToNewGame());
-        conv.contexts.set('ask-to-new-game', 1);
-      }
+      directToNextLogicalAction(conv);
     } else {
       speak(conv, Ask.difficultyWithoutValue());
       conv.contexts.set('difficulty-followup', 1);
@@ -610,7 +636,7 @@ async function listOfMoves(
 ): Promise<void> {
   console.log('legal moves');
   const fenstring = conv.user.storage.fen;
-  const difficulty = conv.user.storage.difficulty;
+  const difficulty = conv.user.storage.options.difficulty;
   const chess = new Chess(fenstring, difficulty);
   await chess.updateGameState();
   const bulkOfMoves = chess.getBulkOfMoves(startNumber);
@@ -730,13 +756,23 @@ app.intent(
   }
 );
 
+app.intent('Enable confirm', (conv: VoiceChessConv): void => {
+  conv.user.storage.options.confirm = true;
+  speak(conv, Ans.confirmEnabled());
+  directToNextLogicalAction(conv);
+});
+
+app.intent('Disable confirm', (conv: VoiceChessConv): void => {
+  conv.user.storage.options.confirm = false;
+  speak(conv, Ans.confirmDisabled());
+  directToNextLogicalAction(conv);
+});
+
 app.intent('Next', async (conv: VoiceChessConv) => {
   let isFallback = false;
   if (conv.contexts.get('moves-next')) {
-    await listOfMoves(
-      conv,
-      Number(conv.contexts.get('moves-next').parameters.start)
-    );
+    const fromPoint = Number(conv.contexts.get('moves-next').parameters.start);
+    await listOfMoves(conv, fromPoint);
   } else if (conv.contexts.get('board-next')) {
     giveSecondPartOfTheBoard(conv);
   } else if (conv.contexts.get('row-next')) {

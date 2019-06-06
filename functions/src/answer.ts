@@ -1304,4 +1304,32 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static confirmEnabled(): string {
+    return rand(
+      ({
+        en: [
+          'Okay, move confirmation is now activated!',
+          'Ok, now I will ask for confirmation of each your move!',
+        ],
+        ru: [
+          'Хорошо, подтверждение ходов теперь включено.',
+          'Принято! Теперь я буду спрашивать у вас подтверждение ходов.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static confirmDisabled(): string {
+    return rand(
+      ({
+        en: [
+          'Okay, confirmation of moves in now disabled.',
+          'Ok, I will no longer ask you for confirmation.',
+        ],
+        ru: [
+          'Окей, подтверждение ходов выключено.',
+          'Хорошо, я больше не буду спрашивать подтверждения для ваших ходов.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }
