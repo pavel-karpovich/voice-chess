@@ -1,6 +1,6 @@
 const loadEngine = require('stockfish');
 import * as path from 'path';
-import { ChessBoard } from './chessboard';
+import { ChessSide } from './chessUtils';
 const stockfishPath = '../node_modules/stockfish/src/stockfish.wasm';
 
 export const chessBoardSize = 8;
@@ -11,29 +11,6 @@ export enum ChessGameState {
   CHECKMATE = 3,
   STALEMATE = 4,
   FIFTYMOVEDRAW = 5,
-}
-
-export enum ChessSide {
-  WHITE = 1,
-  BLACK = 2,
-}
-export function oppositeSide(side: ChessSide): ChessSide {
-  return side === ChessSide.WHITE ? ChessSide.BLACK : ChessSide.WHITE;
-}
-export interface Move {
-  to: string;
-  beat?: string;
-  promo?: boolean;
-}
-export interface PieceMoves {
-  type: string;
-  pos: string;
-  moves: Move[];
-}
-interface MovesBulk {
-  end: boolean;
-  next: number;
-  pieces: PieceMoves[];
 }
 
 /**
@@ -182,149 +159,18 @@ export class Chess {
     return this.memorizedState;
   }
 
-  getBulkOfMoves(n: number, beatsSorted = true): MovesBulk {
-    if (!this.moves) {
-      throw new Error(
-        'getBulkOfMoves() first requires updateGameState() call!'
-      );
-    }
-    const ret = { end: true, next: n, pieces: [] as PieceMoves[] };
-    if (n >= this.moves.length) {
-      return ret;
-    }
-    const board = new ChessBoard(this.fen);
-    if (beatsSorted) {
-      this.moves.sort((move1, move2) => {
-        const beat1 = board.pos(move1.slice(2, 4));
-        const beat2 = board.pos(move2.slice(2, 4));
-        if (move1.length === 4 && move2.length === 5) return 1;
-        else if (move1.length === 5 && move2.length === 4) return -1;
-        else if (beat1 === null && beat2 !== null) return 1;
-        else if (beat1 !== null && beat2 === null) return -1;
-        else return move1.localeCompare(move2);
-      });
-    } else {
-      this.moves.sort((move1, move2) => {
-        const from1 = move1.slice(0, 2);
-        const from2 = move2.slice(0, 2);
-        const beat1 = board.pos(move1.slice(2, 4));
-        const beat2 = board.pos(move2.slice(2, 4));
-        if (from1.localeCompare(from2) === 1) return 1;
-        else if (from1.localeCompare(from2) === -1) return -1;
-        else if (beat1 === null && beat2 !== null) return 1;
-        else if (beat1 !== null && beat2 === null) return -1;
-        else if (move1.length === 4 && move2.length === 5) return 1;
-        else if (move1.length === 5 && move2.length === 4) return -1;
-        else return 0;
-      });
-    }
-    const standardSize = 10;
-    const permissibleVariation = 5;
-    const unnecessary =
-      this.moves
-        .slice(n)
-        .reduce((sum, el) => (sum += Number(el.length === 5)), 0) * 0.75;
-    const maxN = n + standardSize + permissibleVariation + unnecessary;
-    if (maxN > this.moves.length) {
-      ret.next = this.moves.length;
-      let lastPos = this.moves[n].slice(0, 2);
-      let piece = {
-        pos: lastPos,
-        type: board.pos(lastPos),
-        moves: [] as Move[],
-      };
-      for (let i = n; i < this.moves.length; ++i) {
-        const currentPos = this.moves[i].slice(0, 2);
-        const posTo = this.moves[i].slice(2, 4);
-        const promo = this.moves[i].length === 5;
-        let mv = null;
-        if (promo) {
-          const beat = board.pos(posTo);
-          if (beat) {
-            mv = { to: posTo, beat, promo };
-          } else {
-            mv = { to: posTo, promo };
-          }
-          i += 3;
-        } else {
-          const beat = board.pos(posTo);
-          if (beat) {
-            mv = { to: posTo, beat };
-          } else {
-            mv = { to: posTo };
-          }
-        }
-        if (currentPos === lastPos) {
-          piece.moves.push(mv);
-        } else {
-          ret.pieces.push(piece);
-          lastPos = currentPos;
-          piece = { pos: lastPos, type: board.pos(lastPos), moves: [mv] };
-        }
-      }
-      ret.pieces.push(piece);
-    } else {
-      const totalLength = (bulk: MovesBulk): number => {
-        return bulk.pieces.reduce((sum, el) => (sum += el.moves.length), 0);
-      };
-      ret.end = false;
-      let lastPos = this.moves[n].slice(0, 2);
-      let piece = {
-        pos: lastPos,
-        type: board.pos(lastPos),
-        moves: [] as Move[],
-      };
-      let i;
-      for (i = n; i < maxN + 1; ++i) {
-        const currentPos = this.moves[i].slice(0, 2);
-        const posTo = this.moves[i].slice(2, 4);
-        const promo = this.moves[i].length === 5;
-        let mv = null;
-        if (promo) {
-          const beat = board.pos(posTo);
-          if (beat) {
-            mv = { to: posTo, beat, promo };
-          } else {
-            mv = { to: posTo, promo };
-          }
-          i += 3;
-        } else {
-          const beat = board.pos(posTo);
-          if (beat) {
-            mv = { to: posTo, beat };
-          } else {
-            mv = { to: posTo };
-          }
-        }
-        if (currentPos === lastPos) {
-          if (i === maxN) {
-            if (totalLength(ret) <= standardSize - permissibleVariation) {
-              ret.pieces.push(piece);
-            } else {
-              i -= piece.moves.length;
-            }
-            break;
-          }
-          piece.moves.push(mv);
-        } else {
-          ret.pieces.push(piece);
-          if (totalLength(ret) >= standardSize) {
-            break;
-          }
-          lastPos = currentPos;
-          piece = { pos: lastPos, type: board.pos(lastPos), moves: [mv] };
-        }
-      }
-      ret.next = i;
-    }
-    return ret;
-  }
-
   set onChangeGameState(handler: () => void) {
     this.asyncHandler = () => {
       this.asyncHandler = null;
       handler();
     };
+  }
+
+  get legalMoves(): string[] {
+    if (!this.moves) {
+      throw new Error('legalMoves prop first requires updateGameState() call!');
+    }
+    return this.moves;
   }
   /**
    * Get fen string - chess board state representation in string

@@ -1,5 +1,5 @@
-import { rand, LocalizationObject, char, upFirst } from './helpers';
-import { Answer as Ans } from './answer';
+import { rand, LocalizationObject, char, upFirst } from '../helpers';
+import { Vocabulary as Voc } from './vocabulary';
 
 export class Ask {
   private static lang: string;
@@ -226,18 +226,6 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static silence(): string {
-    return rand(
-      ({
-        en: ['Are you still here?', 'Hello?'],
-        ru: [
-          'Ау, Вы ещё тут?',
-          'Ну давайте вместе помолчим.',
-          'Знаете, я тоже люблю молчать.',
-        ],
-      } as LocalizationObject<string[]>)[this.lang]
-    );
-  }
   static askRowNumber(): string {
     return rand(
       ({
@@ -336,14 +324,26 @@ export class Ask {
     return rand(
       ({
         en: [
-          `${upFirst(Ans.piece(pieceCode))} from ${char(from)} to ${char(to)}, yes?`,
-          `${upFirst(Ans.piece(pieceCode))} ${char(from)} ${char(to)}. That's right?`,
-          `${upFirst(Ans.piece(pieceCode))} ${char(from)} ${char(to)}. I understood correctly?`,
+          `${upFirst(Voc.piece(pieceCode))} from ${char(from)} to ${char(
+            to
+          )}, yes?`,
+          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(
+            to
+          )}. That's right?`,
+          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(
+            to
+          )}. I understood correctly?`,
         ],
         ru: [
-          `${upFirst(Ans.piece(pieceCode))} с ${char(from)} на ${char(to)}, да?`,
-          `${upFirst(Ans.piece(pieceCode))} ${char(from)} ${char(to)}. Всё верно?`,
-          `Вы хотите походить ${Ans.piece(pieceCode, 'rod')} ${char(from)} ${char(to)}. Верно?`,
+          `${upFirst(Voc.piece(pieceCode))} с ${char(from)} на ${char(
+            to
+          )}, да?`,
+          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(
+            to
+          )}. Всё верно?`,
+          `Вы хотите походить ${Voc.piece(pieceCode, 'rod')} ${char(
+            from
+          )} ${char(to)}. Верно?`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -353,9 +353,9 @@ export class Ask {
       ({
         en: [
           'Helloo!.. Is anybody still here?',
-          'You didn\'t forget about me?',
+          "You didn't forget about me?",
           'Hi! You are here?',
-          'I can\'t hear you, repeat what you said, please!',
+          "I can't hear you, repeat what you said, please!",
         ],
         ru: [
           'Эй, вы всё ещё тут?',
