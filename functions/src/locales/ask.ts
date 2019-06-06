@@ -284,20 +284,20 @@ export class Ask {
     return rand(
       ({
         en: [
-          `Are you confused? Will you move ${actualPiece}?`,
+          `Are you confused? Will you move ${Voc.piece(actualPiece)}?`,
           `But move is legal. Save it?`,
-          `But move is legal. Confirm it with ${actualPiece}?`,
-          `Did you want to say ${actualPiece}?`,
-          `Then, your move is ${actualPiece} from ${char(from)} to ${char(
+          `But move is legal. Confirm it with ${Voc.piece(actualPiece)}?`,
+          `Did you want to say ${Voc.piece(actualPiece)}?`,
+          `Then, your move is ${Voc.piece(actualPiece)} from ${char(from)} to ${char(
             to
           )}?`,
         ],
         ru: [
-          `Вы просто перепутали? Будете ходить ${actualPiece}?`,
+          `Вы просто перепутали? Будете ходить ${Voc.piece(actualPiece, 'tvr')}?`,
           `Но сам ход корректный. Оставляем его?`,
-          `Вы хотели сказать ${actualPiece} с ${char(from)} на ${char(to)}?`,
-          `Будете ходить ${actualPiece} с ${char(from)} на ${char(to)}?`,
-          `Значит, ${actualPiece} ${char(from)} ${char(to)}?`,
+          `Вы хотели сказать ${Voc.piece(actualPiece)} с ${char(from)} на ${char(to)}?`,
+          `Будете ходить ${Voc.piece(actualPiece, 'rod')} с ${char(from)} на ${char(to)}?`,
+          `Значит, ${Voc.piece(actualPiece)} ${char(from)} ${char(to)}?`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

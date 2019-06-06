@@ -196,7 +196,7 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static illegalMove(from: string, to: string, details?: object): string {
+  static illegalMove(from: string, to: string, piece?: string): string {
     return rand(
       ({
         en: [
@@ -504,13 +504,13 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static cellIsEmpty(cell: string, piece?: string): string {
-    if (piece) {
+  static cellIsEmpty(cell: string, pieceCode?: string): string {
+    if (pieceCode) {
       return rand(
         ({
           en: [
-            `There is no ${piece} on the square ${char(cell)}! It's empty.`,
-            `${piece} from ${char(cell)}? Are you sure? ${char(
+            `There is no ${Voc.piece(pieceCode)} on the square ${char(cell)}! It's empty.`,
+            `${Voc.piece(pieceCode)} from ${char(cell)}? Are you sure? ${char(
               cell
             )} is empty!`,
             `You confused something. In the square ${char(
@@ -518,11 +518,11 @@ export class Answer {
             )} no chess pieces.`,
           ],
           ru: [
-            `Но клетка ${char(cell)} пустая. На ней нет ${piece}!`,
-            `${piece} на ${char(cell)}? Но на клетке ${char(cell)} ничего нет.`,
+            `Но клетка ${char(cell)} пустая. На ней нет ${Voc.piece(pieceCode, 'rod')}!`,
+            `${Voc.piece(pieceCode)} на ${char(cell)}? Но на клетке ${char(cell)} ничего нет.`,
             `На клетке ${char(
               cell
-            )} нет ${piece}, на ней вообще нет фигур - это свободная клетка.`,
+            )} нет ${Voc.piece(pieceCode, 'rod')}. На ней вообще нет фигур - это свободная клетка.`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -553,18 +553,18 @@ export class Answer {
         en: [
           `But on the square ${char(
             cell
-          )} is not ${playerPiece}, but ${actualPiece}.`,
-          `On the square ${char(cell)} is ${actualPiece}, not ${playerPiece}.`,
-          `On ${char(cell)} is not ${playerPiece}, but ${actualPiece}.`,
+          )} is not a ${Voc.piece(playerPiece)}, but ${Voc.piece(actualPiece)}.`,
+          `On the square ${char(cell)} is a ${Voc.piece(actualPiece)}, not a ${Voc.piece(playerPiece)}.`,
+          `On ${char(cell)} is not a ${Voc.piece(playerPiece)}, but ${Voc.piece(actualPiece)}.`,
         ],
         ru: [
           `Но на клетке ${char(
             cell
-          )} стоит не ${playerPiece}, a ${actualPiece}.`,
+          )} стоит не ${Voc.piece(playerPiece)}, a ${Voc.piece(actualPiece)}.`,
           `Только на клетке ${char(
             cell
-          )} находится ${actualPiece}, а не ${playerPiece}.`,
-          `На ${char(cell)} не ${playerPiece}, а ${actualPiece}.`,
+          )} находится ${Voc.piece(actualPiece)}, а не ${Voc.piece(playerPiece)}.`,
+          `На ${char(cell)} не ${Voc.piece(playerPiece)}, а ${Voc.piece(actualPiece)}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

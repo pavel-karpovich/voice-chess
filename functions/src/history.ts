@@ -3,7 +3,7 @@ import { Vocabulary as Voc } from './locales/vocabulary';
 import { upFirst, pause } from './helpers';
 
 export interface HistoryFrame {
-  type: string;
+  code: string;
   move: string;
   beat?: string;
   promo?: string;
@@ -12,7 +12,7 @@ export interface HistoryFrame {
 export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
   let result = '';
   let isPlayerMove = false;
-  if (getSide(moves[0].type) === pSide) {
+  if (getSide(moves[0].code) === pSide) {
     isPlayerMove = true;
   }
   let intro = false;
@@ -40,7 +40,7 @@ export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string 
       intro = true;
     }
     if (isPlayerMove) {
-      let firstPhrase = Voc.youMoved(move.type, from, to);
+      let firstPhrase = Voc.youMoved(move.code, from, to);
       if (!intro) {
         firstPhrase = upFirst(firstPhrase);
       }
@@ -54,7 +54,7 @@ export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string 
         result += Voc.youPromoted(move.promo);
       }
     } else {
-      let firstPhrase = Voc.iMoved(move.type, from, to);
+      let firstPhrase = Voc.iMoved(move.code, from, to);
       if (!intro) {
         firstPhrase = upFirst(firstPhrase);
       }
