@@ -509,34 +509,39 @@ app.intent(
 app.intent(
   'Choose Side',
   async (conv: VoiceChessConv, { side }: { side: number }): Promise<void> => {
-    console.log('Choose side: ' + side);
-    console.log('White side: ' + ChessSide.WHITE);
-    console.log('Equal: ' + (side === Number(ChessSide.WHITE)));
-    conv.user.storage.side = side;
-    console.log('conv.user.storage.side:' + conv.user.storage.side);
-    if (side === Number(ChessSide.WHITE)) {
-      console.log('white');
-      speak(conv, Ans.whiteSide());
-      console.log(1);
-      speak(conv, Ask.askToMove());
-      console.log(2);
-    } else {
-      console.log('black');
-      speak(conv, Ans.blackSide());
-      const fenstring = conv.user.storage.fen;
-      const difficulty = conv.user.storage.options.difficulty;
-      const chess = new Chess(fenstring, difficulty);
-      await chess.moveAuto();
-      conv.user.storage.fen = chess.fenstring;
-      const enemyFrom = chess.enemyMove.slice(0, 2);
-      const enemyTo = chess.enemyMove.slice(2, 4);
-      const board = new ChessBoard(chess.fenstring);
-      const enemyPiece = board.pos(enemyTo);
-      const historyItem = { code: enemyPiece, move: chess.enemyMove };
-      conv.user.storage.history.push(historyItem);
-      const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
-      const askYouStr = Ask.nowYouNeedToMove();
-      speak(conv, enemyStr + '\n' + askYouStr);
+    try {
+      console.log('Choose side: ' + side);
+      console.log('White side: ' + ChessSide.WHITE);
+      console.log('Equal: ' + (side === Number(ChessSide.WHITE)));
+      conv.user.storage.side = side;
+      console.log('conv.user.storage.side:' + conv.user.storage.side);
+      if (side === Number(ChessSide.WHITE)) {
+        console.log('white');
+        speak(conv, Ans.whiteSide());
+        console.log(1);
+        speak(conv, Ask.askToMove());
+        console.log(2);
+      } else {
+        console.log('black');
+        speak(conv, Ans.blackSide());
+        const fenstring = conv.user.storage.fen;
+        const difficulty = conv.user.storage.options.difficulty;
+        const chess = new Chess(fenstring, difficulty);
+        await chess.moveAuto();
+        conv.user.storage.fen = chess.fenstring;
+        const enemyFrom = chess.enemyMove.slice(0, 2);
+        const enemyTo = chess.enemyMove.slice(2, 4);
+        const board = new ChessBoard(chess.fenstring);
+        const enemyPiece = board.pos(enemyTo);
+        const historyItem = { code: enemyPiece, move: chess.enemyMove };
+        conv.user.storage.history.push(historyItem);
+        const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
+        const askYouStr = Ask.nowYouNeedToMove();
+        speak(conv, enemyStr + '\n' + askYouStr);
+      }
+    }
+    catch (e) {
+      console.log('Error: ' + e);
     }
   }
 );
