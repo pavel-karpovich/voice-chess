@@ -50,6 +50,7 @@ export class Chess {
 
     this.stockfish.onmessage = (e: any) => {
       if (typeof e !== 'string') return;
+      console.log(e);
       if (e.startsWith('bestmove')) {
         this.enemy = e.split(' ')[1];
         const command = `position fen ${this.fen} moves ${this.enemy}`;
@@ -138,6 +139,7 @@ export class Chess {
   async moveAuto(): Promise<void> {
     return new Promise<void>((resolve: () => void) => {
       this.onChangeGameState = resolve;
+      console.log('move auto');
       this.stockfish.postMessage(`go depth ${this.depth} movetime 1000`);
     });
   }
