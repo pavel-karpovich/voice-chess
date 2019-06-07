@@ -508,14 +508,14 @@ app.intent(
 
 app.intent(
   'Choose Side',
-  async (conv: VoiceChessConv, { side }: { side: number }): Promise<void> => {
+  async (conv: VoiceChessConv, { side }: { side: ChessSide }): Promise<void> => {
     try {
       console.log('Choose side: ' + side);
       console.log('White side: ' + ChessSide.WHITE);
-      console.log('Equal: ' + (side === Number(ChessSide.WHITE)));
+      console.log('Equal: ' + (side === ChessSide.WHITE));
       conv.user.storage.side = side;
       console.log('conv.user.storage.side:' + conv.user.storage.side);
-      if (side === Number(ChessSide.WHITE)) {
+      if (side === ChessSide.WHITE) {
         console.log('white');
         speak(conv, Ans.whiteSide());
         console.log(1);

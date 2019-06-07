@@ -1,5 +1,5 @@
 
-export enum ChessSide {
+export const enum ChessSide {
   WHITE = 1,
   BLACK = 2,
 }
