@@ -1,7 +1,7 @@
 const loadEngine = require('stockfish');
 import * as path from 'path';
 import { ChessSide } from './chessUtils';
-const stockfishPath = '../node_modules/stockfish/src/stockfish.wasm';
+const stockfishPath = '../../node_modules/stockfish/src/stockfish.wasm';
 
 export const chessBoardSize = 8;
 
