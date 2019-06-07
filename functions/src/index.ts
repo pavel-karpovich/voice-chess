@@ -530,7 +530,7 @@ app.intent(
         const difficulty = conv.user.storage.options.difficulty;
         const chess = new Chess(fenstring, difficulty);
         console.log(chess.fenstring);
-        // await chess.moveAuto();
+        await chess.moveAuto();
         // conv.user.storage.fen = chess.fenstring;
         // const enemyFrom = chess.enemyMove.slice(0, 2);
         // const enemyTo = chess.enemyMove.slice(2, 4);
