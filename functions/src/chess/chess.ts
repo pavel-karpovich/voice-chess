@@ -5,7 +5,7 @@ const stockfishPath = '../../node_modules/stockfish/src/stockfish.wasm';
 
 export const chessBoardSize = 8;
 
-export enum ChessGameState {
+export const enum ChessGameState {
   OK = 1,
   CHECK = 2,
   CHECKMATE = 3,
