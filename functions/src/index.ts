@@ -3,6 +3,7 @@ import { dialogflow, DialogflowConversation } from 'actions-on-google';
 
 import { Answer as Ans } from './locales/answer';
 import { Ask } from './locales/ask';
+import { Vocabulary as Voc } from './locales/vocabulary';
 import { Chess, chessBoardSize, ChessGameState } from './chess/chess';
 import { ChessSide, getSide } from './chess/chessUtils';
 import { ChessBoard } from './chess/chessboard';
@@ -55,9 +56,11 @@ app.middleware(
   (conv: VoiceChessConv): void => {
     if (conv.user.locale) {
       const lang = conv.user.locale.slice(0, 2);
+      Voc.setLanguage(lang);
       Ans.setLanguage(lang);
       Ask.setLanguage(lang);
     } else {
+      Voc.setLanguage();
       Ans.setLanguage();
       Ask.setLanguage();
     }
@@ -276,16 +279,16 @@ async function makeMoves(
   let historyItem;
   if (beatedPiece) {
     if (isPromo) {
-      historyItem = { code: piece, move, beat: beatedPiece, promo: move[4] };
+      historyItem = { c: piece, m: move, b: beatedPiece, p: move[4] };
     } else {
-      historyItem = { code: piece, move, beat: beatedPiece };
+      historyItem = { c: piece, m: move, b: beatedPiece };
     }
     ask += Ans.playerBeat(beatedPiece);
   } else {
     if (isPromo) {
-      historyItem = { code: piece, move, promo: move[4] };
+      historyItem = { c: piece, m: move, p: move[4] };
     } else {
-      historyItem = { code: piece, move };
+      historyItem = { c: piece, m: move };
     }
   }
   // TODO: history.info for castling and En passant
@@ -333,24 +336,24 @@ async function makeMoves(
   if (beatedPiece) {
     if (isPromo) {
       historyItem = {
-        code: 'p',
-        move: chess.enemyMove,
-        beat: beatedPiece,
-        promo: enemyPiece,
+        c: 'p',
+        m: chess.enemyMove,
+        b: beatedPiece,
+        p: enemyPiece,
       };
     } else {
       historyItem = {
-        code: enemyPiece,
-        move: chess.enemyMove,
-        beat: beatedPiece,
+        c: enemyPiece,
+        m: chess.enemyMove,
+        b: beatedPiece,
       };
     }
     enemyStr += Ans.enemyBeat(beatedPiece);
   } else {
     if (isPromo) {
-      historyItem = { code: 'p', move: chess.enemyMove, promo: enemyPiece };
+      historyItem = { c: 'p', m: chess.enemyMove, p: enemyPiece };
     } else {
-      historyItem = { code: enemyPiece, move: chess.enemyMove };
+      historyItem = { c: enemyPiece, m: chess.enemyMove };
     }
   }
   // history.info for castling and En passant
@@ -518,7 +521,7 @@ app.intent(
       const enemyTo = chess.enemyMove.slice(2, 4);
       const board = new ChessBoard(chess.fenstring);
       const enemyPiece = board.pos(enemyTo);
-      const historyItem = { code: enemyPiece, move: chess.enemyMove };
+      const historyItem = { c: enemyPiece, m: chess.enemyMove };
       conv.user.storage.history.push(historyItem);
       const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
       const askYouStr = Ask.nowYouNeedToMove();
