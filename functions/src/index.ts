@@ -208,9 +208,10 @@ function rankHandler(
   const fenstring = conv.user.storage.fen;
   const rankNum = Number(num ? num : ord);
   if (!isNaN(rankNum)) {
-    if (rankNum < 1 || rankNum > 8) {
+    if (rankNum < 1 || rankNum > chessBoardSize) {
       speak(conv, Ans.incorrectRankNumber(rankNum));
       speak(conv, Ask.askRankNumber());
+      return;
     }
     speak(conv, showRank(fenstring, rankNum));
     speak(conv, Ask.askToGoNext());
