@@ -22,6 +22,7 @@ function singleRow(row: ChessCellInfo[], rowNum: number): string {
 export function showRow(fen: string, rowNum: number): string {
   const board = new ChessBoard(fen);
   const rowData = board.row(rowNum);
+  console.log('rowData length: ' + rowData.length);
   const result = singleRow(rowData, rowNum);
   return result;
 }

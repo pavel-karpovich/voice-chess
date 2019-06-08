@@ -223,6 +223,7 @@ function giveNextRow(conv: VoiceChessConv): void {
   console.log('next row');
   const rowContext = conv.contexts.get('row-next');
   const lastRow = rowContext.parameters.row as number;
+  console.log(lastRow);
   if (lastRow === 8) {
     speak(conv, Ans.noNextRow());
     speak(conv, Ask.waitMove());
