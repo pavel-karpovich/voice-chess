@@ -771,4 +771,24 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static playerAutoMove(): string {
+    return rand(
+      ({
+        en: [
+          'As you wish. I make a move instead of you.',
+          'Ok, I make your move instead of you.',
+          'Okay, I\'ll make a move for you.',
+          'Move instead of you? Easy!',
+          'If you sure, I can do it.',
+        ],
+        ru: [
+          'Ну, раз вы так хотите, я могу сделать ход за вас.',
+          'Хорошо, сейчас я похожу за вас.',
+          'Хорошо, я похожу за вас.',
+          'Ладно, я сделаю ваш ход вместо вас.',
+          'Походить за вас? Запросто!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }
