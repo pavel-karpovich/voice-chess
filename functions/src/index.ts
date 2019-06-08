@@ -206,7 +206,7 @@ function rankHandler(
 ): void {
   console.log('Single rank');
   const fenstring = conv.user.storage.fen;
-  const rankNum = num ? num : ord;
+  const rankNum = Number(num ? num : ord);
   if (!isNaN(rankNum)) {
     if (rankNum < 1 || rankNum > 8) {
       speak(conv, Ans.incorrectRankNumber(rankNum));
