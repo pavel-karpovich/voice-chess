@@ -223,7 +223,7 @@ function rankHandler(
 function giveNextRank(conv: VoiceChessConv): void {
   console.log('next rank');
   const rankContext = conv.contexts.get('rank-next');
-  const lastRank = rankContext.parameters.rank as number;
+  const lastRank = Number(rankContext.parameters.rank);
   if (lastRank === 8) {
     speak(conv, Ans.noNextRank());
     speak(conv, Ask.waitMove());
