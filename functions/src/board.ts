@@ -21,6 +21,7 @@ function singleRank(rank: ChessSquareData[], rankNum: number): string {
 
 export function showRank(fen: string, rankNum: number): string {
   const board = new ChessBoard(fen);
+  console.log('rankNum 2: ' + rankNum);
   const rankData = board.rank(rankNum);
   console.log('rankData length: ' + rankData.length);
   const result = singleRank(rankData, rankNum);

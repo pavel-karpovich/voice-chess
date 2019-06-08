@@ -30,6 +30,7 @@ export class ChessBoard {
   }
 
   rank(i: number): ChessSquareData[] {
+    console.log('i: ' + i);
     if (i < 1 || i > chessBoardSize) {
       return null;
     }
