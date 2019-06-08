@@ -1,17 +1,17 @@
-import { ChessBoard, ChessCellInfo } from './chess/chessboard';
+import { ChessBoard, ChessSquareData } from './chess/chessboard';
 import { upFirst, pause } from './helpers';
 import { Vocabulary as Voc } from './locales/vocabulary';
 
-function singleRow(row: ChessCellInfo[], rowNum: number): string {
+function singleRank(rank: ChessSquareData[], rankNum: number): string {
   let resultString = '';
-  if (row.every(el => el.val === null)) {
-    const emptyRowString = upFirst(Voc.emptyRow(rowNum));
-    resultString += emptyRowString + '\n';
+  if (rank.every(el => el.val === null)) {
+    const emptyRankString = upFirst(Voc.emptyRank(rankNum));
+    resultString += emptyRankString + '\n';
   } else {
-    resultString += Voc.nRow(rowNum) + ': ';
-    for (const cell of row) {
-      if (cell.val !== null) {
-        resultString += Voc.coloredPieceOnPosition(cell.val, cell.pos) + ', ';
+    resultString += Voc.nRank(rankNum) + ': ';
+    for (const square of rank) {
+      if (square.val !== null) {
+        resultString += Voc.coloredPieceOnPosition(square.val, square.pos) + ', ';
       }
     }
     resultString = resultString.slice(0, -2) + '.\n';
@@ -19,19 +19,19 @@ function singleRow(row: ChessCellInfo[], rowNum: number): string {
   return resultString;
 }
 
-export function showRow(fen: string, rowNum: number): string {
+export function showRank(fen: string, rankNum: number): string {
   const board = new ChessBoard(fen);
-  const rowData = board.row(rowNum);
-  console.log('rowData length: ' + rowData.length);
-  const result = singleRow(rowData, rowNum);
+  const rankData = board.rank(rankNum);
+  console.log('rankData length: ' + rankData.length);
+  const result = singleRank(rankData, rankNum);
   return result;
 }
 
-export function showRows(fen: string, fromRow: number, toRow: number): string {
+export function showRanks(fen: string, fromRank: number, toRank: number): string {
   const board = new ChessBoard(fen);
   let result = '<p>';
-  for (let i = fromRow; i <= toRow; ++i) {
-    result += `<s>${singleRow(board.row(i), i)}</s>${pause(0.7)}`;
+  for (let i = fromRank; i <= toRank; ++i) {
+    result += `<s>${singleRank(board.rank(i), i)}</s>${pause(0.7)}`;
   }
   result += '</p>';
   return result;

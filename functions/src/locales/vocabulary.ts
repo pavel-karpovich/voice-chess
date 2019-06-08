@@ -211,11 +211,11 @@ export class Vocabulary {
     const color = this.color(getSide(pieceCode), `${gen}/${opt}`);
     return color + ' ' + piece;
   }
-  static nRow(n: number, opt = 'mus'): string {
+  static nRank(n: number, opt = 'mus'): string {
     switch (n) {
       case 1:
         return ({
-          en: 'First row',
+          en: 'First rank',
           ru: ({
             mus: 'Первый ряд',
             na: 'Первом ряду',
@@ -223,7 +223,7 @@ export class Vocabulary {
         } as LocalizationObject<string>)[this.lang];
       case 2:
         return ({
-          en: 'Second row',
+          en: 'Second rank',
           ru: ({
             mus: 'Второй ряд',
             na: 'Втором ряду',
@@ -231,7 +231,7 @@ export class Vocabulary {
         } as LocalizationObject<string>)[this.lang];
       case 3:
         return ({
-          en: 'Third row',
+          en: 'Third rank',
           ru: ({
             mus: 'Третий ряд',
             na: 'Третьем ряду',
@@ -239,7 +239,7 @@ export class Vocabulary {
         } as LocalizationObject<string>)[this.lang];
       case 4:
         return ({
-          en: 'Fourth row',
+          en: 'Fourth rank',
           ru: ({
             mus: 'Четвёртый ряд',
             na: 'Четвёртом ряду',
@@ -247,7 +247,7 @@ export class Vocabulary {
         } as LocalizationObject<string>)[this.lang];
       case 5:
         return ({
-          en: 'Fifth row',
+          en: 'Fifth rank',
           ru: ({
             mus: 'Пятый ряд',
             na: 'Пятом ряду',
@@ -255,7 +255,7 @@ export class Vocabulary {
         } as LocalizationObject<string>)[this.lang];
       case 6:
         return ({
-          en: 'Sixth row',
+          en: 'Sixth rank',
           ru: ({
             mus: 'Шестой ряд',
             na: 'Шестом ряду',
@@ -263,7 +263,7 @@ export class Vocabulary {
         } as LocalizationObject<string>)[this.lang];
       case 7:
         return ({
-          en: 'Seventh row',
+          en: 'Seventh rank',
           ru: ({
             mus: 'Седьмой ряд',
             na: 'Седьмом ряду',
@@ -271,7 +271,7 @@ export class Vocabulary {
         } as LocalizationObject<string>)[this.lang];
       case 8:
         return ({
-          en: 'Eighth row',
+          en: 'Eighth rank',
           ru: ({
             mus: 'Восьмой ряд',
             na: 'Восьмом ряду',
@@ -281,11 +281,11 @@ export class Vocabulary {
         return null;
     }
   }
-  static emptyRow(n: number): string {
+  static emptyRank(n: number): string {
     return rand(
       ({
-        en: [`${this.nRow(n)} is empty.`],
-        ru: [`На ${this.nRow(n, 'na')} нет фигур.`],
+        en: [`${this.nRank(n)} is empty.`],
+        ru: [`На ${this.nRank(n, 'na')} нет фигур.`],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }

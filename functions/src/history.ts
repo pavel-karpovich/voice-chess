@@ -3,16 +3,16 @@ import { Vocabulary as Voc } from './locales/vocabulary';
 import { upFirst, pause } from './helpers';
 
 export interface HistoryFrame {
-  code: string;
-  move: string;
-  beat?: string;
-  promo?: string;
+  c: string;     // piece code
+  m: string;     // move
+  b?: string;    // beated piece code
+  p?: string;   // promote to
 }
 
 export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
   let result = '';
   let isPlayerMove = false;
-  if (getSide(moves[0].code) === pSide) {
+  if (getSide(moves[0].c) === pSide) {
     isPlayerMove = true;
   }
   let intro = false;
@@ -22,8 +22,8 @@ export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string 
     intro = true;
   }
   for (const move of moves) {
-    const from = move.move.slice(0, 2);
-    const to = move.move.slice(2, 4);
+    const from = move.m.slice(0, 2);
+    const to = move.m.slice(2, 4);
     const optTotal = Number('beat' in move) + Number('promo' in move);
     let optCount = 0;
     const addSeparator = () => {
@@ -40,32 +40,32 @@ export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string 
       intro = true;
     }
     if (isPlayerMove) {
-      let firstPhrase = Voc.youMoved(move.code, from, to);
+      let firstPhrase = Voc.youMoved(move.c, from, to);
       if (!intro) {
         firstPhrase = upFirst(firstPhrase);
       }
       result += firstPhrase;
-      if (move.beat) {
+      if (move.b) {
         addSeparator();
-        result += Voc.youTookMyPiece(move.beat);
+        result += Voc.youTookMyPiece(move.b);
       }
-      if (move.promo) {
+      if (move.p) {
         addSeparator();
-        result += Voc.youPromoted(move.promo);
+        result += Voc.youPromoted(move.p);
       }
     } else {
-      let firstPhrase = Voc.iMoved(move.code, from, to);
+      let firstPhrase = Voc.iMoved(move.c, from, to);
       if (!intro) {
         firstPhrase = upFirst(firstPhrase);
       }
       result += firstPhrase;
-      if (move.beat) {
+      if (move.b) {
         addSeparator();
-        result += Voc.iTookYourPiece(move.beat);
+        result += Voc.iTookYourPiece(move.b);
       }
-      if (move.promo) {
+      if (move.p) {
         addSeparator();
-        result += Voc.iPromoted(move.promo);
+        result += Voc.iPromoted(move.p);
       }
     }
     result += '.' + pause(1) + '\n';

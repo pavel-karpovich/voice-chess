@@ -1,11 +1,11 @@
 const loadEngine = require('stockfish');
 import * as path from 'path';
 import { ChessSide } from './chessUtils';
-const stockfishPath = '../node_modules/stockfish/src/stockfish.wasm';
+const stockfishPath = '../../node_modules/stockfish/src/stockfish.wasm';
 
 export const chessBoardSize = 8;
 
-export enum ChessGameState {
+export const enum ChessGameState {
   OK = 1,
   CHECK = 2,
   CHECKMATE = 3,
@@ -21,7 +21,8 @@ export class Chess {
   private fen: string;
   private moves: string[];
   private checkers: string[];
-  private asyncHandler: () => void;
+  private stateChangeHandler: () => void;
+  private bestMoveHandler: (bestMove: string) => void;
   private enemy: string;
   private depth: number;
   private memorizedState: ChessGameState;
@@ -35,7 +36,8 @@ export class Chess {
     const stockfishWasm = stockfishPath;
     this.stockfish = loadEngine(path.join(__dirname, stockfishWasm));
     this.fen = fenstring;
-    this.asyncHandler = null;
+    this.stateChangeHandler = null;
+    this.bestMoveHandler = null;
     this.enemy = null;
     this.memorizedState = null;
     this.stockfish.postMessage('isready');
@@ -43,7 +45,7 @@ export class Chess {
     this.configureDifficulty(difficulty);
     this.stockfish.postMessage('setoption name Ponder value false');
     this.stockfish.postMessage('setoption name Slow Mover value 10');
-    if (this.fen === undefined) {
+    if (!this.fen) {
       this.fen = Chess.initialFen;
     }
     this.stockfish.postMessage(`position fen ${this.fen}`);
@@ -52,10 +54,8 @@ export class Chess {
       if (typeof e !== 'string') return;
       console.log(e);
       if (e.startsWith('bestmove')) {
-        this.enemy = e.split(' ')[1];
-        const command = `position fen ${this.fen} moves ${this.enemy}`;
-        this.stockfish.postMessage(command);
-        this.stockfish.postMessage('d');
+        const bestMove = e.split(' ')[1];
+        this.bestMoveHandler(bestMove);
       } else if (e.startsWith('Fen')) {
         this.fen = e.slice(5);
       } else if (e.startsWith('Checkers')) {
@@ -65,7 +65,7 @@ export class Chess {
         this.moves = e.slice(17).split(' ');
         this.moves.pop();
         this.memorizedState = null;
-        this.asyncHandler();
+        this.stateChangeHandler();
       }
     };
   }
@@ -123,6 +123,13 @@ export class Chess {
     );
   }
 
+  async bestMove(): Promise<string> {
+    return new Promise((resolve: (bm: string) => void) => {
+      this.stockfish.postMessage(`go depth ${this.depth} movetime 1000`);
+      this.onBestMove = resolve;
+    });
+  }
+
   /**
    * Player move
    * @param {string} move
@@ -137,10 +144,12 @@ export class Chess {
    * Move making by computer
    */
   async moveAuto(): Promise<void> {
-    return new Promise<void>((resolve: () => void) => {
+    return new Promise<void>(async (resolve: () => void) => {
+      this.enemy = await this.bestMove();
+      const command = `position fen ${this.fen} moves ${this.enemy}`;
+      this.stockfish.postMessage(command);
+      this.stockfish.postMessage('d');
       this.onChangeGameState = resolve;
-      console.log('move auto');
-      this.stockfish.postMessage(`go depth ${this.depth} movetime 1000`);
     });
   }
 
@@ -163,9 +172,15 @@ export class Chess {
   }
 
   set onChangeGameState(handler: () => void) {
-    this.asyncHandler = () => {
-      this.asyncHandler = null;
+    this.stateChangeHandler = () => {
+      this.stateChangeHandler = null;
       handler();
+    };
+  }
+  set onBestMove(handler: (bm: string) => void) {
+    this.bestMoveHandler = (bm: string) => {
+      this.bestMoveHandler = null;
+      handler(bm);
     };
   }
 
