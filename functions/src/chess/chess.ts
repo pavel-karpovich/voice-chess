@@ -54,7 +54,7 @@ export class Chess {
       if (typeof e !== 'string') return;
       if (e.startsWith('bestmove')) {
         const bestMove = e.split(' ')[1];
-        this.onBestMove(bestMove);
+        this.bestMoveHandler(bestMove);
       } else if (e.startsWith('Fen')) {
         this.fen = e.slice(5);
       } else if (e.startsWith('Checkers')) {
