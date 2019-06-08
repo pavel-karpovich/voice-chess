@@ -208,6 +208,7 @@ function rankHandler(
   const fenstring = conv.user.storage.fen;
   const rankNum = num ? num : ord;
   console.log('rankNum: ' + rankNum);
+  console.log('type of rank num: ' + typeof rankNum);
   if (!isNaN(rankNum)) {
     if (rankNum < 1 || rankNum > 8) {
       speak(conv, Ans.incorrectRankNumber(rankNum));
