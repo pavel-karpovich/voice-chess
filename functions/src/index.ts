@@ -9,7 +9,7 @@ import { ChessSide, getSide } from './chess/chessUtils';
 import { ChessBoard } from './chess/chessboard';
 import { pause, gaussianRandom } from './helpers';
 import { HistoryFrame, historyOfMoves } from './history';
-import { showRow, showRows} from './board';
+import { showRank, showRanks} from './board';
 import { getBulkOfMoves, listMoves } from './moves';
 
 process.env.DEBUG = 'dialogflow:debug';
@@ -34,7 +34,7 @@ type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
 
 const restorableContexts = [
   'ask-side',
-  'row-next',
+  'rank-next',
   'difficulty-followup',
   'board-next',
   'ask-to-new-game',
@@ -181,7 +181,7 @@ function beginShowingTheBoard(conv: VoiceChessConv): void {
   console.log('viewing the board');
   const fenstring = conv.user.storage.fen;
   let longString = `<p><s>${Ans.board1()}</s></p>\n`;
-  longString += showRows(fenstring, 1, chessBoardSize / 2);
+  longString += showRanks(fenstring, 1, chessBoardSize / 2);
   speak(conv, longString);
   speak(conv, Ask.askToGoNext());
   conv.contexts.set('board-next', 1);
@@ -191,7 +191,7 @@ function giveSecondPartOfTheBoard(conv: VoiceChessConv): void {
   console.log('board - next');
   const fenstring = conv.user.storage.fen;
   let longString = `<p><s>${Ans.board2()}</s></p>\n`;
-  longString += showRows(fenstring, chessBoardSize / 2 + 1, chessBoardSize);
+  longString += showRanks(fenstring, chessBoardSize / 2 + 1, chessBoardSize);
   conv.contexts.set('turn-intent', 1);
   speak(conv, longString);
   speak(conv, Ask.waitMove());
@@ -200,50 +200,50 @@ function giveSecondPartOfTheBoard(conv: VoiceChessConv): void {
 app.intent('Board', beginShowingTheBoard);
 app.intent('Board - next', giveSecondPartOfTheBoard);
 
-function rowHandler(
+function rankHandler(
   conv: VoiceChessConv,
   { ord, num }: { ord?: number; num?: number }
 ): void {
-  console.log('Single row');
+  console.log('Single rank');
   const fenstring = conv.user.storage.fen;
-  const rowNum = num ? num : ord;
-  if (!isNaN(rowNum)) {
-    if (rowNum < 1 || rowNum > 8) {
-      speak(conv, Ans.incorrectRowNumber(rowNum));
-      speak(conv, Ask.askRowNumber());
+  const rankNum = num ? num : ord;
+  if (!isNaN(rankNum)) {
+    if (rankNum < 1 || rankNum > 8) {
+      speak(conv, Ans.incorrectRankNumber(rankNum));
+      speak(conv, Ask.askRankNumber());
     }
-    speak(conv, showRow(fenstring, rowNum));
+    speak(conv, showRank(fenstring, rankNum));
     speak(conv, Ask.askToGoNext());
-    conv.contexts.set('row-next', 1, { row: rowNum });
+    conv.contexts.set('rank-next', 1, { rank: rankNum });
   } else {
-    speak(conv, Ask.askRowNumber());
+    speak(conv, Ask.askRankNumber());
   }
 }
 
-function giveNextRow(conv: VoiceChessConv): void {
-  console.log('next row');
-  const rowContext = conv.contexts.get('row-next');
-  const lastRow = rowContext.parameters.row as number;
-  if (lastRow === 8) {
-    speak(conv, Ans.noNextRow());
+function giveNextRank(conv: VoiceChessConv): void {
+  console.log('next rank');
+  const rankContext = conv.contexts.get('rank-next');
+  const lastRank = rankContext.parameters.rank as number;
+  if (lastRank === 8) {
+    speak(conv, Ans.noNextRank());
     speak(conv, Ask.waitMove());
     conv.contexts.set('turn-intent', 1);
     return;
   }
   const fenstring = conv.user.storage.fen;
-  const thisRow = lastRow + 1;
-  speak(conv, showRow(fenstring, thisRow));
-  if (thisRow === 8) {
+  const thisRank = lastRank + 1;
+  speak(conv, showRank(fenstring, thisRank));
+  if (thisRank === 8) {
     speak(conv, Ask.whatToDo());
   } else {
     speak(conv, Ask.askToGoNext());
-    conv.contexts.set('row-next', 1, { row: thisRow });
+    conv.contexts.set('rank-next', 1, { rank: thisRank });
   }
 }
 
-app.intent('Row', rowHandler);
-app.intent('Row - number', rowHandler);
-app.intent('Row - next', giveNextRow);
+app.intent('Rank', rankHandler);
+app.intent('Rank - number', rankHandler);
+app.intent('Rank - next', giveNextRank);
 
 function askOrRemind(conv: VoiceChessConv): void {
   const fiftyFifty = Math.random();
@@ -435,11 +435,11 @@ app.intent(
     const actualPiece = board.pos(from);
     let piecesMatch = true;
     if (!piece && !actualPiece) {
-      speak(conv, Ans.cellIsEmpty(from));
+      speak(conv, Ans.squareIsEmpty(from));
       askOrRemind(conv);
       return;
     } else if (piece && !actualPiece) {
-      speak(conv, Ans.cellIsEmpty(from, piece));
+      speak(conv, Ans.squareIsEmpty(from, piece));
       askOrRemind(conv);
       return;
     } else if (!piece && actualPiece) {
@@ -728,8 +728,8 @@ app.intent('Next', async (conv: VoiceChessConv) => {
     await listOfMoves(conv, fromPoint);
   } else if (conv.contexts.get('board-next')) {
     giveSecondPartOfTheBoard(conv);
-  } else if (conv.contexts.get('row-next')) {
-    giveNextRow(conv);
+  } else if (conv.contexts.get('rank-next')) {
+    giveNextRank(conv);
   } else {
     isFallback = true;
     fallbackHandler(conv);
@@ -751,7 +751,7 @@ app.intent(
       speak(conv, Ask.waitMove());
     } else if (conv.contexts.get('board-next')) {
       speak(conv, Ask.waitMove());
-    } else if (conv.contexts.get('row-next')) {
+    } else if (conv.contexts.get('rank-next')) {
       speak(conv, Ask.waitMove());
     } else if (conv.contexts.get('ask-to-new-game')) {
       speak(conv, Ask.whatToDo());
@@ -789,8 +789,8 @@ app.intent(
       );
     } else if (conv.contexts.get('board-next')) {
       giveSecondPartOfTheBoard(conv);
-    } else if (conv.contexts.get('row-next')) {
-      giveNextRow(conv);
+    } else if (conv.contexts.get('rank-next')) {
+      giveNextRank(conv);
     } else if (conv.contexts.get('ask-to-new-game')) {
       startNewGame(conv);
     } else if (conv.contexts.get('ask-to-continue')) {

@@ -1,41 +1,41 @@
 import { chessBoardSize } from './chess';
 
-export interface ChessCellInfo {
+export interface ChessSquareData {
   pos: string;
   val: string;
 }
 
-const columns = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
 export class ChessBoard {
   private board: Map<string, string>;
 
   constructor(fen: string) {
     this.board = new Map();
-    const fenRows = fen.split(/[// ]/);
+    const fenRanks = fen.split(/[// ]/);
     for (let i = 1; i <= chessBoardSize; i++) {
       let j = 0;
-      for (const code of fenRows[chessBoardSize - i]) {
+      for (const code of fenRanks[chessBoardSize - i]) {
         const int = Number(code);
         if (isNaN(int)) {
-          this.board.set(columns[j] + i, code);
+          this.board.set(files[j] + i, code);
           ++j;
         } else {
           for (let k = 0; k < int; ++k, ++j) {
-            this.board.set(columns[j] + i, null);
+            this.board.set(files[j] + i, null);
           }
         }
       }
     }
   }
 
-  row(i: number): ChessCellInfo[] {
+  rank(i: number): ChessSquareData[] {
     if (i < 1 || i > chessBoardSize) {
       return null;
     }
-    return columns.map<ChessCellInfo>(col => ({
-      pos: col + i,
-      val: this.board.get(col + i),
+    return files.map<ChessSquareData>(file => ({
+      pos: file + i,
+      val: this.board.get(file + i),
     }));
   }
 

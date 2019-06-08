@@ -310,12 +310,12 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static incorrectRowNumber(num: number): string {
+  static incorrectRankNumber(num: number): string {
     return rand(
       ({
         en: [
-          `Row ${num}? What does it mean?`,
-          'You called the wrong row number. Rows are numbered from 1 to 8.',
+          `Rank ${num}? What does it mean?`,
+          'You called the wrong rank number. Ranks in standard chess are numbered from 1 to 8.',
         ],
         ru: [
           `Ряда ${num} не существует в шахматах.`,
@@ -325,13 +325,13 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static noNextRow(): string {
+  static noNextRank(): string {
     return rand(
       ({
         en: [
-          'There is no next row.',
-          'It was the 8th row.\nThere is no next row!',
-          'It was the last row.\n',
+          'There is no next rank.',
+          'It was the 8th rank.\nThere is no next rank!',
+          'It was the last rank.\n',
         ],
         ru: [
           'Следующего ряда нет.',
@@ -504,24 +504,24 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static cellIsEmpty(cell: string, pieceCode?: string): string {
+  static squareIsEmpty(square: string, pieceCode?: string): string {
     if (pieceCode) {
       return rand(
         ({
           en: [
-            `There is no ${Voc.piece(pieceCode)} on the square ${char(cell)}! It's empty.`,
-            `${Voc.piece(pieceCode)} from ${char(cell)}? Are you sure? ${char(
-              cell
+            `There is no ${Voc.piece(pieceCode)} on the square ${char(square)}! It's empty.`,
+            `${Voc.piece(pieceCode)} from ${char(square)}? Are you sure? ${char(
+              square
             )} is empty!`,
             `You confused something. In the square ${char(
-              cell
+              square
             )} no chess pieces.`,
           ],
           ru: [
-            `Но клетка ${char(cell)} пустая. На ней нет ${Voc.piece(pieceCode, 'rod')}!`,
-            `${Voc.piece(pieceCode)} на ${char(cell)}? Но на клетке ${char(cell)} ничего нет.`,
+            `Но клетка ${char(square)} пустая. На ней нет ${Voc.piece(pieceCode, 'rod')}!`,
+            `${Voc.piece(pieceCode)} на ${char(square)}? Но на клетке ${char(square)} ничего нет.`,
             `На клетке ${char(
-              cell
+              square
             )} нет ${Voc.piece(pieceCode, 'rod')}. На ней вообще нет фигур - это свободная клетка.`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
@@ -530,14 +530,14 @@ export class Answer {
       return rand(
         ({
           en: [
-            `But the square ${char(cell)} is empty. There are no pieces!`,
-            `Sorry, but there are no pieces on the square ${char(cell)}.`,
-            `The position is incorrect. The square ${char(cell)} is empty!`,
+            `But the square ${char(square)} is empty. There are no pieces!`,
+            `Sorry, but there are no pieces on the square ${char(square)}.`,
+            `The position is incorrect. The square ${char(square)} is empty!`,
           ],
           ru: [
-            `Но клетка ${char(cell)} пустая. На ней нет фигур.`,
-            `На клетке ${char(cell)} нет фигур.`,
-            `Это некорректная позиция. На клетке ${char(cell)} ничего нет.`,
+            `Но клетка ${char(square)} пустая. На ней нет фигур.`,
+            `На клетке ${char(square)} нет фигур.`,
+            `Это некорректная позиция. На клетке ${char(square)} ничего нет.`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -546,25 +546,25 @@ export class Answer {
   static piecesDontMatch(
     playerPiece: string,
     actualPiece: string,
-    cell: string
+    square: string
   ): string {
     return rand(
       ({
         en: [
           `But on the square ${char(
-            cell
+            square
           )} is not a ${Voc.piece(playerPiece)}, but ${Voc.piece(actualPiece)}.`,
-          `On the square ${char(cell)} is a ${Voc.piece(actualPiece)}, not a ${Voc.piece(playerPiece)}.`,
-          `On ${char(cell)} is not a ${Voc.piece(playerPiece)}, but ${Voc.piece(actualPiece)}.`,
+          `On the square ${char(square)} is a ${Voc.piece(actualPiece)}, not a ${Voc.piece(playerPiece)}.`,
+          `On ${char(square)} is not a ${Voc.piece(playerPiece)}, but ${Voc.piece(actualPiece)}.`,
         ],
         ru: [
           `Но на клетке ${char(
-            cell
+            square
           )} стоит не ${Voc.piece(playerPiece)}, a ${Voc.piece(actualPiece)}.`,
           `Только на клетке ${char(
-            cell
+            square
           )} находится ${Voc.piece(actualPiece)}, а не ${Voc.piece(playerPiece)}.`,
-          `На ${char(cell)} не ${Voc.piece(playerPiece)}, а ${Voc.piece(actualPiece)}.`,
+          `На ${char(square)} не ${Voc.piece(playerPiece)}, а ${Voc.piece(actualPiece)}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -573,7 +573,7 @@ export class Answer {
     return rand(
       ({
         en: [
-          `Your pawn reaches the last row! Now you need to use promotion!`,
+          `Your pawn reaches the last rank! Now you need to use promotion!`,
           `When your pawn moves from ${char(from)} to ${char(
             to
           )}, there will be a promotion!`,

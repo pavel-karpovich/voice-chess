@@ -48,7 +48,7 @@ export class Ask {
         '<p><s>You are now in the game..</s>' +
         "<s>And I'm wait when you make your next move.</s>" +
         '<s>If you want, you can ask me about the current state of the chessboard.</s>' +
-        '<s>I can tell you about a specific row of the board, or about all the white or black pieces.</s>' +
+        '<s>I can tell you about a specific rank of the board, or about all the white or black pieces.</s>' +
         '<s>You can also start a new game, or change the difficulty level.</s></p>' +
         '<p><s>And what do you want to do?</s></p>',
       ru:
@@ -226,14 +226,14 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static askRowNumber(): string {
+  static askRankNumber(): string {
     return rand(
       ({
         en: [
-          'Can you repeat the row number?',
-          'Please, repeat the row number.',
-          'Which row do I need to show?',
-          'Which row do you want to know the alignment of forces?',
+          'Can you repeat the rank number?',
+          'Please, repeat the rank number.',
+          'Which rank do I need to show?',
+          'Which rank do you want to know the alignment of forces?',
         ],
         ru: [
           'Какой ряд?',
