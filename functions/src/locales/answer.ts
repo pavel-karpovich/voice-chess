@@ -753,4 +753,22 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static adviseMove(from: string, to: string, pieceCode: string): string {
+    return rand(
+      ({
+        en: [
+          `I can advise you to make a ${Voc.piece(pieceCode)} move from ${char(from)} to ${char(to)}.`,
+          `If I were you, I would move a ${Voc.piece(pieceCode)} from ${char(from)} to ${char(to)}.`,
+          `The ${Voc.piece(pieceCode)} move from ${char(from)} to ${char(to)} seems pretty good!`,
+          `What about ${Voc.piece(pieceCode)} from ${char(from)} to ${char(to)}?`,
+        ],
+        ru: [
+          `Могу посоветовать вам походить ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
+          `Я бы на вашем месте походил ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
+          `Вы можете сыграть ${Voc.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}.`,
+          `Что насчёт хода ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}?`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }

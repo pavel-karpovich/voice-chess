@@ -50,3 +50,11 @@ export function char(str: string): string {
 export function pause(interval: number): string {
   return `<break time="${interval}"/>`;
 }
+
+export function gaussianRandom(iter = 4): number {
+  let sum = 0;
+  for (let i = 0; i < iter; ++i) {
+    sum += Math.random();
+  }
+  return sum / iter;
+}

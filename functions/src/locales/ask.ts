@@ -366,4 +366,22 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static waitForReactOnAdvise(): string {
+    return rand(
+      ({
+        en: [
+          'What do you say?',
+          'Will you use my advice?',
+          'Will you make such a move, or say another?',
+          'Do you agree with this choice?',
+        ],
+        ru: [
+          'Что скажете?',
+          'Походите так, или у вас есть предложение получше?',
+          'Будете ходить так?',
+          'Послушаете меня, или походите по-своему?',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }

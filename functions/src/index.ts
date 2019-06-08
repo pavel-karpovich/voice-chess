@@ -7,7 +7,7 @@ import { Vocabulary as Voc } from './locales/vocabulary';
 import { Chess, chessBoardSize, ChessGameState } from './chess/chess';
 import { ChessSide, getSide } from './chess/chessUtils';
 import { ChessBoard } from './chess/chessboard';
-import { pause } from './helpers';
+import { pause, gaussianRandom } from './helpers';
 import { HistoryFrame, historyOfMoves } from './history';
 import { showRow, showRows} from './board';
 import { getBulkOfMoves, listMoves } from './moves';
@@ -44,6 +44,7 @@ const restorableContexts = [
   'confirm-move',
   'ask-to-promotion',
   'moves-next',
+  'advice-made',
 ];
 
 function speak(conv: VoiceChessConv, text: string) {
@@ -655,6 +656,47 @@ app.intent(
   }
 );
 
+app.intent('Advice', async (conv: VoiceChessConv): Promise<void> => {
+  const fenstring = conv.user.storage.fen;
+  const difficulty = conv.user.storage.options.difficulty;
+  const delta = 6;
+  const min = difficulty - delta;
+  const max = difficulty + delta;
+  const rndDif = (Math.floor((max - min) * gaussianRandom()) + min) | 0;
+  const chess = new Chess(fenstring, rndDif);
+  const randomChance = 0.2;
+  const rnd = Math.random();
+  let advisedMove = null;
+  if (rnd < randomChance) {
+    await chess.updateGameState();
+    const rndMoveIndex = Math.floor(Math.random() * chess.legalMoves.length);
+    advisedMove = chess.legalMoves[rndMoveIndex];
+  } else {
+    advisedMove = await chess.bestMove();
+  }
+  const from = advisedMove.slice(0, 2);
+  const to = advisedMove.slice(2, 4);
+  const board = new ChessBoard(fenstring);
+  const piece = board.pos(from);
+  speak(conv, Ans.adviseMove(from, to, piece));
+  speak(conv, Ask.waitForReactOnAdvise());
+  conv.contexts.set('advice-made', 1, { move: advisedMove });
+});
+
+function acceptAdvice(conv: VoiceChessConv) {
+  const advCtx = conv.contexts.get('advice-made');
+  const move = advCtx.parameters.move as string;
+  const from = move.slice(0, 2);
+  const to = move.slice(2, 4);
+  const fenstring = conv.user.storage.fen;
+  const board = new ChessBoard(fenstring);
+  const piece = board.pos(from);
+  speak(conv, Ask.askToConfirm(from, to, piece));
+  conv.contexts.set('confirm-move', 1, { move });
+}
+
+app.intent('Accept Advice', acceptAdvice);
+
 app.intent('Next', async (conv: VoiceChessConv) => {
   let isFallback = false;
   if (conv.contexts.get('moves-next')) {
@@ -696,6 +738,8 @@ app.intent(
       speak(conv, Ask.askToMove());
     } else if (conv.contexts.get('confirm-move')) {
       speak(conv, Ask.askToMoveAgain());
+    } else if (conv.contexts.get('advice-made')) {
+      speak(conv, Ask.askToMove());
     } else {
       isFallback = true;
       fallbackHandler(conv);
@@ -731,6 +775,8 @@ app.intent(
       beginShowingTheBoard(conv);
     } else if (conv.contexts.get('confirm-move')) {
       await acceptMove(conv);
+    } else if (conv.contexts.get('advice-made')) {
+      acceptAdvice(conv);
     } else {
       isFallback = true;
       fallbackHandler(conv);
