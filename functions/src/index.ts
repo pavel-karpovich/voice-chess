@@ -555,7 +555,7 @@ app.intent(
   'Correct',
   (conv: VoiceChessConv): void => {
     
-    const fenstring = conv.user.storage.fen;
+    let fenstring = conv.user.storage.fen;
     const board = new ChessBoard(fenstring);
     const histLength = conv.user.storage.history.length;
     const lastAIMove = conv.user.storage.history[histLength - 1];
@@ -565,7 +565,7 @@ app.intent(
     console.log('fen before: ' + fenstring);
     board.extract(lastAIMove.m, lastAIMove.b);
     board.extract(lastPlayerMove.m, lastPlayerMove.b);
-    // fenstring = board.convertToFen();
+    fenstring = board.convertToFen();
     console.log('fenstring after extraction: ' + fenstring);
     conv.ask('test');
     /* if (histLength < 2) {
