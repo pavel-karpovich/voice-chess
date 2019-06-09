@@ -428,7 +428,7 @@ app.intent(
     to = to.toLowerCase();
     const move = from + to;
     console.log(`From: ${from}, to: ${to}`);
-    let fenstring = conv.user.storage.fen;
+    const fenstring = conv.user.storage.fen;
     const correctCtx = conv.contexts.get('correct-move');
     if (correctCtx) {
       const board = new ChessBoard(fenstring);
@@ -437,7 +437,7 @@ app.intent(
       const lastPlayerMove = conv.user.storage.history[histLength - 2];
       board.extract(lastAIMove.m, lastAIMove.b);
       board.extract(lastPlayerMove.m, lastPlayerMove.b);
-      fenstring = board.convertToFen();
+      // fenstring = board.convertToFen();
       console.log('fenstring after extraction: ' + fenstring);
     }
     const difficulty = conv.user.storage.options.difficulty;
