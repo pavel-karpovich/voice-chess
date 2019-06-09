@@ -120,6 +120,7 @@ export class ChessBoard {
     }
     if (this.side === 'w') {
       fen += ' b';
+      this.count--;
     } else {
       fen += ' w';
     }
@@ -127,7 +128,6 @@ export class ChessBoard {
     if (this.clock !== 0) {
       this.clock--;
     }
-    this.count--;
     fen += ` ${this.clock} ${this.count}`;
     this.fen = fen;
     this.dirty = false;
