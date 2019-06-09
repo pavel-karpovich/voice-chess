@@ -271,6 +271,7 @@ async function moveByPlayer(
   let fenstring = conv.user.storage.fen;
   const correctCtx = conv.contexts.get('correct-move');
   if (correctCtx) {
+    console.log('pops');
     const board = new ChessBoard(fenstring);
     const lastAIMove = conv.user.storage.history.pop();
     const lastPlayerMove = conv.user.storage.history.pop();
@@ -516,6 +517,7 @@ app.intent(
 );
 
 async function acceptMove(conv: VoiceChessConv): Promise<void> {
+  console.log('accept move');
   const move = conv.contexts.get('confirm-move').parameters.move as string;
   const fenstring = conv.user.storage.fen;
   const difficulty = conv.user.storage.options.difficulty;
@@ -554,21 +556,9 @@ app.intent(
 app.intent(
   'Correct',
   (conv: VoiceChessConv): void => {
-    
-    let fenstring = conv.user.storage.fen;
-    const board = new ChessBoard(fenstring);
+    console.log('correct');
     const histLength = conv.user.storage.history.length;
-    const lastAIMove = conv.user.storage.history[histLength - 1];
-    const lastPlayerMove = conv.user.storage.history[histLength - 2];
-    console.log('last AI move: ' + lastAIMove);
-    console.log('last player move: ' + lastPlayerMove);
-    console.log('fen before: ' + fenstring);
-    board.extract(lastAIMove.m, lastAIMove.b);
-    board.extract(lastPlayerMove.m, lastPlayerMove.b);
-    fenstring = board.convertToFen();
-    console.log('fenstring after extraction: ' + fenstring);
-    conv.ask('test');
-    /* if (histLength < 2) {
+    if (histLength < 2) {
       speak(conv, Ans.noMoveToCorrect());
       speak(conv, Ask.waitMove());
       return;
@@ -577,7 +567,7 @@ app.intent(
     const from = lastMove.m.slice(0, 2);
     const to = lastMove.m.slice(2, 4);
     speak(conv, Ask.moveToCorrect(from, to, lastMove.c));
-    conv.contexts.set('correct-move', 1); */
+    conv.contexts.set('correct-move', 1);
   }
 );
 
