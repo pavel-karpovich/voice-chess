@@ -3,13 +3,15 @@ import { Vocabulary as Voc } from './locales/vocabulary';
 import { upFirst, pause } from './helpers';
 
 export interface HistoryFrame {
-  c: string;     // piece code
-  m: string;     // move
-  b?: string;    // beated piece code
-  p?: string;   // promote to
+  c: string; // piece code
+  m: string; // move
+  b?: string; // beated piece code
 }
 
-export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
+export function historyOfMoves(
+  moves: HistoryFrame[],
+  pSide: ChessSide
+): string {
   let result = '';
   let isPlayerMove = false;
   if (getSide(moves[0].c) === pSide) {
@@ -49,9 +51,10 @@ export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string 
         addSeparator();
         result += Voc.youTookMyPiece(move.b);
       }
-      if (move.p) {
+      if (move.m.length === 5) {
         addSeparator();
-        result += Voc.youPromoted(move.p);
+        const promoteTo = move.m[4];
+        result += Voc.youPromoted(promoteTo);
       }
     } else {
       let firstPhrase = Voc.iMoved(move.c, from, to);
@@ -63,9 +66,10 @@ export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string 
         addSeparator();
         result += Voc.iTookYourPiece(move.b);
       }
-      if (move.p) {
+      if (move.m.length === 5) {
         addSeparator();
-        result += Voc.iPromoted(move.p);
+        const promoteTo = move.m[4];
+        result += Voc.iPromoted(promoteTo);
       }
     }
     result += '.' + pause(1) + '\n';

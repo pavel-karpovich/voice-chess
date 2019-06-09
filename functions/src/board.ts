@@ -11,7 +11,8 @@ function singleRank(rank: ChessSquareData[], rankNum: number): string {
     resultString += Voc.nRank(rankNum) + ': ';
     for (const square of rank) {
       if (square.val !== null) {
-        resultString += Voc.coloredPieceOnPosition(square.val, square.pos) + ', ';
+        resultString +=
+          Voc.coloredPieceOnPosition(square.val, square.pos) + ', ';
       }
     }
     resultString = resultString.slice(0, -2) + '.\n';
@@ -28,7 +29,11 @@ export function showRank(fen: string, rankNum: number): string {
   return result;
 }
 
-export function showRanks(fen: string, fromRank: number, toRank: number): string {
+export function showRanks(
+  fen: string,
+  fromRank: number,
+  toRank: number
+): string {
   const board = new ChessBoard(fen);
   let result = '<p>';
   for (let i = fromRank; i <= toRank; ++i) {

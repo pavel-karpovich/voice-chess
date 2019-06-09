@@ -509,7 +509,9 @@ export class Answer {
       return rand(
         ({
           en: [
-            `There is no ${Voc.piece(pieceCode)} on the square ${char(square)}! It's empty.`,
+            `There is no ${Voc.piece(pieceCode)} on the square ${char(
+              square
+            )}! It's empty.`,
             `${Voc.piece(pieceCode)} from ${char(square)}? Are you sure? ${char(
               square
             )} is empty!`,
@@ -518,11 +520,17 @@ export class Answer {
             )} no chess pieces.`,
           ],
           ru: [
-            `Но клетка ${char(square)} пустая. На ней нет ${Voc.piece(pieceCode, 'rod')}!`,
-            `${Voc.piece(pieceCode)} на ${char(square)}? Но на клетке ${char(square)} ничего нет.`,
-            `На клетке ${char(
+            `Но клетка ${char(square)} пустая. На ней нет ${Voc.piece(
+              pieceCode,
+              'rod'
+            )}!`,
+            `${Voc.piece(pieceCode)} на ${char(square)}? Но на клетке ${char(
               square
-            )} нет ${Voc.piece(pieceCode, 'rod')}. На ней вообще нет фигур - это свободная клетка.`,
+            )} ничего нет.`,
+            `На клетке ${char(square)} нет ${Voc.piece(
+              pieceCode,
+              'rod'
+            )}. На ней вообще нет фигур - это свободная клетка.`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -551,20 +559,26 @@ export class Answer {
     return rand(
       ({
         en: [
-          `But on the square ${char(
-            square
-          )} is not a ${Voc.piece(playerPiece)}, but ${Voc.piece(actualPiece)}.`,
-          `On the square ${char(square)} is a ${Voc.piece(actualPiece)}, not a ${Voc.piece(playerPiece)}.`,
-          `On ${char(square)} is not a ${Voc.piece(playerPiece)}, but ${Voc.piece(actualPiece)}.`,
+          `But on the square ${char(square)} is not a ${Voc.piece(
+            playerPiece
+          )}, but ${Voc.piece(actualPiece)}.`,
+          `On the square ${char(square)} is a ${Voc.piece(
+            actualPiece
+          )}, not a ${Voc.piece(playerPiece)}.`,
+          `On ${char(square)} is not a ${Voc.piece(
+            playerPiece
+          )}, but ${Voc.piece(actualPiece)}.`,
         ],
         ru: [
-          `Но на клетке ${char(
-            square
-          )} стоит не ${Voc.piece(playerPiece)}, a ${Voc.piece(actualPiece)}.`,
-          `Только на клетке ${char(
-            square
-          )} находится ${Voc.piece(actualPiece)}, а не ${Voc.piece(playerPiece)}.`,
-          `На ${char(square)} не ${Voc.piece(playerPiece)}, а ${Voc.piece(actualPiece)}.`,
+          `Но на клетке ${char(square)} стоит не ${Voc.piece(
+            playerPiece
+          )}, a ${Voc.piece(actualPiece)}.`,
+          `Только на клетке ${char(square)} находится ${Voc.piece(
+            actualPiece
+          )}, а не ${Voc.piece(playerPiece)}.`,
+          `На ${char(square)} не ${Voc.piece(playerPiece)}, а ${Voc.piece(
+            actualPiece
+          )}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -757,16 +771,33 @@ export class Answer {
     return rand(
       ({
         en: [
-          `I can advise you to make a ${Voc.piece(pieceCode)} move from ${char(from)} to ${char(to)}.`,
-          `If I were you, I would move a ${Voc.piece(pieceCode)} from ${char(from)} to ${char(to)}.`,
-          `The ${Voc.piece(pieceCode)} move from ${char(from)} to ${char(to)} seems pretty good!`,
-          `What about ${Voc.piece(pieceCode)} from ${char(from)} to ${char(to)}?`,
+          `I can advise you to make a ${Voc.piece(pieceCode)} move from ${char(
+            from
+          )} to ${char(to)}.`,
+          `If I were you, I would move a ${Voc.piece(pieceCode)} from ${char(
+            from
+          )} to ${char(to)}.`,
+          `The ${Voc.piece(pieceCode)} move from ${char(from)} to ${char(
+            to
+          )} seems pretty good!`,
+          `What about ${Voc.piece(pieceCode)} from ${char(from)} to ${char(
+            to
+          )}?`,
         ],
         ru: [
-          `Могу посоветовать вам походить ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
-          `Я бы на вашем месте походил ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
-          `Вы можете сыграть ${Voc.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}.`,
-          `Что насчёт хода ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}?`,
+          `Могу посоветовать вам походить ${Voc.piece(
+            pieceCode,
+            'tvr'
+          )} с ${char(from)} на ${char(to)}.`,
+          `Я бы на вашем месте походил ${Voc.piece(pieceCode, 'tvr')} с ${char(
+            from
+          )} на ${char(to)}.`,
+          `Вы можете сыграть ${Voc.piece(pieceCode, 'tvr')} ${char(
+            from
+          )} ${char(to)}.`,
+          `Что насчёт хода ${Voc.piece(pieceCode, 'tvr')} с ${char(
+            from
+          )} на ${char(to)}?`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -777,7 +808,7 @@ export class Answer {
         en: [
           'As you wish. I make a move instead of you.',
           'Ok, I make your move instead of you.',
-          'Okay, I\'ll make a move for you.',
+          "Okay, I'll make a move for you.",
           'Move instead of you? Easy!',
           'If you sure, I can do it.',
         ],
@@ -787,6 +818,26 @@ export class Answer {
           'Хорошо, я похожу за вас.',
           'Ладно, я сделаю ваш ход вместо вас.',
           'Походить за вас? Запросто!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static noMoveToCorrect(): string {
+    return rand(
+      ({
+        en: [
+          'To change the last move, you need to have the last move.',
+          'You just started a new game. What are you talking about?',
+          'You have not made any move yet!',
+          "But you just started a new game. You don't made a first move yet!",
+          'First make at least one move, to have something to change.',
+        ],
+        ru: [
+          'Чтобы изменить предыдущий ход, нужно чтобы предыдущий ход был!',
+          'Мы только начали новую игру. О чём речь?',
+          'Вы ещё не сделали ни одного хода.',
+          'В этой игре вы ещё не сделали ни одного хода.',
+          'Сначала сделайте хоть один ход, чтобы было что исправлять.',
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
