@@ -45,7 +45,7 @@ const restorableContexts = [
   'ask-to-promotion',
   'moves-next',
   'advice-made',
-  'correct-move',
+  'correct-last-move',
 ];
 
 function speak(conv: VoiceChessConv, text: string) {
@@ -248,7 +248,7 @@ app.intent('Rank - number', rankHandler);
 app.intent('Rank - next', giveNextRank);
 
 function askOrRemind(conv: VoiceChessConv): void {
-  const correctCtx = conv.contexts.get('correct-move');
+  const correctCtx = conv.contexts.get('correct-last-move');
   if (correctCtx) {
     speak(conv, Ask.correctFails());
     return;
@@ -269,7 +269,7 @@ async function moveByPlayer(
   prologue?: string
 ): Promise<void> {
   let fenstring = conv.user.storage.fen;
-  const correctCtx = conv.contexts.get('correct-move');
+  const correctCtx = conv.contexts.get('correct-last-move');
   if (correctCtx) {
     console.log('pops');
     const board = new ChessBoard(fenstring);
@@ -430,7 +430,7 @@ app.intent(
     const move = from + to;
     console.log(`From: ${from}, to: ${to}`);
     let fenstring = conv.user.storage.fen;
-    const correctCtx = conv.contexts.get('correct-move');
+    const correctCtx = conv.contexts.get('correct-last-move');
     if (correctCtx) {
       const board = new ChessBoard(fenstring);
       const histLength = conv.user.storage.history.length;
@@ -487,7 +487,7 @@ app.intent(
       speak(conv, Ask.moveWithoutPiecesMatch(actualPiece, piece, from, to));
       conv.contexts.set('confirm-move', 1, { move });
       if (correctCtx) {
-        conv.contexts.set('correct-move', 1);
+        conv.contexts.set('correct-last-move', 1);
       }
       return;
     }
@@ -496,7 +496,7 @@ app.intent(
       speak(conv, Ask.askToConfirm(from, to, actualPiece));
       conv.contexts.set('confirm-move', 1, { move });
       if (correctCtx) {
-        conv.contexts.set('correct-move', 1);
+        conv.contexts.set('correct-last-move', 1);
       }
       return;
     }
@@ -507,7 +507,7 @@ app.intent(
       speak(conv, Ask.howToPromote());
       conv.contexts.set('ask-to-promotion', 1, { move });
       if (correctCtx) {
-        conv.contexts.set('correct-move', 1);
+        conv.contexts.set('correct-last-move', 1);
       }
       return;
     }
@@ -529,8 +529,8 @@ async function acceptMove(conv: VoiceChessConv): Promise<void> {
     speak(conv, Ans.promotion(from, to));
     speak(conv, Ask.howToPromote());
     conv.contexts.set('ask-to-promotion', 1, { move });
-    if (conv.contexts.get('correct-move')) {
-      conv.contexts.set('correct-move', 1);
+    if (conv.contexts.get('correct-last-move')) {
+      conv.contexts.set('correct-last-move', 1);
     }
     return;
   }
@@ -567,7 +567,7 @@ app.intent(
     const from = lastMove.m.slice(0, 2);
     const to = lastMove.m.slice(2, 4);
     speak(conv, Ask.moveToCorrect(from, to, lastMove.c));
-    conv.contexts.set('correct-move', 1);
+    conv.contexts.set('correct-last-move', 1);
   }
 );
 
@@ -822,7 +822,7 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       speak(conv, Ask.askToMove());
     } else if (conv.contexts.get('confirm-move')) {
-      if (conv.contexts.get('correct-move')) {
+      if (conv.contexts.get('correct-last-move')) {
         speak(conv, Ask.correctFails());
       } else {
         speak(conv, Ask.askToMoveAgain());
