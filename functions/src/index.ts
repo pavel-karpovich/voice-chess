@@ -567,6 +567,7 @@ app.intent(
     // board.extract(lastPlayerMove.m, lastPlayerMove.b);
     fenstring = board.convertToFen();
     console.log('fenstring after extraction: ' + fenstring);
+    conv.ask('test');
     /* if (histLength < 2) {
       speak(conv, Ans.noMoveToCorrect());
       speak(conv, Ask.waitMove());
