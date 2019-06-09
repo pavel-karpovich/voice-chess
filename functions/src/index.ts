@@ -413,17 +413,17 @@ app.intent(
     to = to.toLowerCase();
     const move = from + to;
     console.log(`From: ${from}, to: ${to}`);
-    let fenstring = conv.user.storage.fen;
-    const correctCtx = conv.contexts.get('correct-move');
-    if (correctCtx) {
-      const board = new ChessBoard(fenstring);
-      const lastAIMove = conv.user.storage.history.pop();
-      const lastPlayerMove = conv.user.storage.history.pop();
-      board.extract(lastAIMove.m, lastAIMove.b);
-      board.extract(lastPlayerMove.m, lastPlayerMove.b);
-      fenstring = board.convertToFen();
-      console.log('fenstring after extraction: ' + fenstring);
-    }
+    const fenstring = conv.user.storage.fen;
+    // const correctCtx = conv.contexts.get('correct-move');
+    // if (correctCtx) {
+    //   const board = new ChessBoard(fenstring);
+    //   const lastAIMove = conv.user.storage.history.pop();
+    //   const lastPlayerMove = conv.user.storage.history.pop();
+    //   board.extract(lastAIMove.m, lastAIMove.b);
+    //   board.extract(lastPlayerMove.m, lastPlayerMove.b);
+    //   fenstring = board.convertToFen();
+    //   console.log('fenstring after extraction: ' + fenstring);
+    // }
     const difficulty = conv.user.storage.options.difficulty;
     const playerSide = conv.user.storage.side;
     const chess = new Chess(fenstring, difficulty);

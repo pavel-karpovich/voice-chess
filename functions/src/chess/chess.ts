@@ -52,7 +52,6 @@ export class Chess {
 
     this.stockfish.onmessage = (e: any) => {
       if (typeof e !== 'string') return;
-      console.log(e);
       if (e.startsWith('bestmove')) {
         const bestMove = e.split(' ')[1];
         this.bestMoveHandler(bestMove);
