@@ -563,8 +563,8 @@ app.intent(
     console.log('last AI move: ' + lastAIMove);
     console.log('last player move: ' + lastPlayerMove);
     console.log('fen before: ' + fenstring);
-    board.extract(lastAIMove.m, lastAIMove.b);
-    // board.extract(lastPlayerMove.m, lastPlayerMove.b);
+    // board.extract(lastAIMove.m, lastAIMove.b);
+    board.extract(lastPlayerMove.m, lastPlayerMove.b);
     fenstring = board.convertToFen();
     console.log('fenstring after extraction: ' + fenstring);
     conv.ask('test');
