@@ -127,6 +127,7 @@ export class ChessBoard {
     fen += ' ' + (this.clock === 0 ? 0 : this.clock - 1);
     fen += ' ' + (this.count - 1);
     this.fen = fen;
+    this.dirty = false;
     return fen;
   }
 }
