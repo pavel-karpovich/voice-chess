@@ -124,8 +124,11 @@ export class ChessBoard {
       fen += ' w';
     }
     fen += ` ${this.castling} ${this.enPassant}`;
-    fen += ' ' + (this.clock === 0 ? 0 : this.clock - 1);
-    fen += ' ' + (this.count - 1);
+    if (this.clock !== 0) {
+      this.clock--;
+    }
+    this.count--;
+    fen += ` ${this.clock} ${this.count}`;
     this.fen = fen;
     this.dirty = false;
     return fen;
