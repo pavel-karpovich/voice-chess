@@ -422,6 +422,7 @@ app.intent(
       board.extract(lastAIMove.m, lastAIMove.b);
       board.extract(lastPlayerMove.m, lastPlayerMove.b);
       fenstring = board.convertToFen();
+      console.log('fenstring after extraction: ' + fenstring);
     }
     const difficulty = conv.user.storage.options.difficulty;
     const playerSide = conv.user.storage.side;
