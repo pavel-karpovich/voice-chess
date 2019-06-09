@@ -262,20 +262,26 @@ function askOrRemind(conv: VoiceChessConv): void {
   }
 }
 
-function buildChess(conv: VoiceChessConv): Chess {
-  const fenstring = conv.user.storage.fen;
-  const difficulty = conv.user.storage.options.difficulty;
-  const chess = new Chess(fenstring, difficulty);
-  return chess;
-}
-
 async function moveByPlayer(
   conv: VoiceChessConv,
   move: string,
   chess?: Chess,
   prologue?: string
 ): Promise<void> {
-  chess = chess || buildChess(conv);
+  let fenstring = conv.user.storage.fen;
+  const correctCtx = conv.contexts.get('correct-move');
+  if (correctCtx) {
+    const board = new ChessBoard(fenstring);
+    const lastAIMove = conv.user.storage.history.pop();
+    const lastPlayerMove = conv.user.storage.history.pop();
+    board.extract(lastAIMove.m, lastAIMove.b);
+    board.extract(lastPlayerMove.m, lastPlayerMove.b);
+    fenstring = board.convertToFen();
+  }
+  const difficulty = conv.user.storage.options.difficulty;
+  if (!chess || correctCtx) {
+    chess = new Chess(fenstring, difficulty);
+  }
   const from = move.slice(0, 2);
   const to = move.slice(2, 4);
   const board = new ChessBoard(chess.fenstring);
@@ -301,6 +307,7 @@ async function moveByPlayer(
   }
   // TODO: history.info for castling and En passant
   conv.user.storage.history.push(historyItem);
+  conv.user.storage.fen = chess.fenstring;
   if (chess.currentGameState === ChessGameState.CHECKMATE) {
     speak(conv, answer + ' \n' + Ans.youWin());
     speak(conv, Ask.askToNewGame());
@@ -329,7 +336,11 @@ async function moveByPlayer(
 }
 
 async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
-  chess = chess || buildChess(conv);
+  if (!chess) {
+    const fenstring = conv.user.storage.fen;
+    const difficulty = conv.user.storage.options.difficulty;
+    chess = new Chess(fenstring, difficulty);
+  }
   let board = new ChessBoard(chess.fenstring);
   await chess.moveAuto();
   console.log('Fen after AI move: ' + chess.fenstring);
@@ -396,7 +407,11 @@ async function playerMoveByAI(
   conv: VoiceChessConv,
   chess?: Chess
 ): Promise<void> {
-  chess = chess || buildChess(conv);
+  if (!chess) {
+    const fenstring = conv.user.storage.fen;
+    const difficulty = conv.user.storage.options.difficulty;
+    chess = new Chess(fenstring, difficulty);
+  }
   const answer = Ans.playerAutoMove();
   const move = await chess.bestMove();
   await moveByPlayer(conv, move, chess, answer);
@@ -417,13 +432,11 @@ app.intent(
     const correctCtx = conv.contexts.get('correct-move');
     if (correctCtx) {
       const board = new ChessBoard(fenstring);
-      const lastAIMove = conv.user.storage.history.pop();
-      const lastPlayerMove = conv.user.storage.history.pop();
-      console.log(fenstring);
-      console.log(lastAIMove);
-      console.log(lastPlayerMove);
-      // board.extract(lastAIMove.m, lastAIMove.b);
-      // board.extract(lastPlayerMove.m, lastPlayerMove.b);
+      const histLength = conv.user.storage.history.length;
+      const lastAIMove = conv.user.storage.history[histLength - 1];
+      const lastPlayerMove = conv.user.storage.history[histLength - 2];
+      board.extract(lastAIMove.m, lastAIMove.b);
+      board.extract(lastPlayerMove.m, lastPlayerMove.b);
       fenstring = board.convertToFen();
       console.log('fenstring after extraction: ' + fenstring);
     }
@@ -472,12 +485,18 @@ app.intent(
       speak(conv, Ans.piecesDontMatch(piece, actualPiece, from));
       speak(conv, Ask.moveWithoutPiecesMatch(actualPiece, piece, from, to));
       conv.contexts.set('confirm-move', 1, { move });
+      if (correctCtx) {
+        conv.contexts.set('correct-move', 1);
+      }
       return;
     }
     const needConfirm = conv.user.storage.options.confirm;
     if (needConfirm) {
       speak(conv, Ask.askToConfirm(from, to, actualPiece));
       conv.contexts.set('confirm-move', 1, { move });
+      if (correctCtx) {
+        conv.contexts.set('correct-move', 1);
+      }
       return;
     }
     if (chess.isPromotion(move)) {
@@ -486,6 +505,9 @@ app.intent(
       speak(conv, Ans.promotion(from, to));
       speak(conv, Ask.howToPromote());
       conv.contexts.set('ask-to-promotion', 1, { move });
+      if (correctCtx) {
+        conv.contexts.set('correct-move', 1);
+      }
       return;
     }
     await moveByPlayer(conv, move, chess);
@@ -505,6 +527,9 @@ async function acceptMove(conv: VoiceChessConv): Promise<void> {
     speak(conv, Ans.promotion(from, to));
     speak(conv, Ask.howToPromote());
     conv.contexts.set('ask-to-promotion', 1, { move });
+    if (conv.contexts.get('correct-move')) {
+      conv.contexts.set('correct-move', 1);
+    }
     return;
   }
   await moveByPlayer(conv, move, chess);
@@ -577,7 +602,9 @@ app.intent(
 app.intent(
   'Auto move',
   async (conv: VoiceChessConv): Promise<void> => {
-    const chess = buildChess(conv);
+    const fenstring = conv.user.storage.fen;
+    const difficulty = conv.user.storage.options.difficulty;
+    const chess = new Chess(fenstring, difficulty);
     await playerMoveByAI(conv, chess);
     await moveByAI(conv, chess);
   }
@@ -792,7 +819,11 @@ app.intent(
     } else if (conv.contexts.get('turn-showboard')) {
       speak(conv, Ask.askToMove());
     } else if (conv.contexts.get('confirm-move')) {
-      speak(conv, Ask.askToMoveAgain());
+      if (conv.contexts.get('correct-move')) {
+        speak(conv, Ask.correctFails());
+      } else {
+        speak(conv, Ask.askToMoveAgain());
+      }
     } else if (conv.contexts.get('advice-made')) {
       speak(conv, Ask.askToMove());
     } else {

@@ -427,7 +427,7 @@ export class Ask {
           'You are back to the original move. What will you do?',
           'Everything remains the same, and you should make a move',
           'The change did not happen and you returned to the original move. Move.',
-          "Then we will continue our game as usual. No it's your turn to move.",
+          "Then we will continue our game as usual. Now it's your turn to move.",
         ],
         ru: [
           'Вы вернулись к оргинальному ходу. Что будете делать?',
