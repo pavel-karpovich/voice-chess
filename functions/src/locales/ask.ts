@@ -288,15 +288,22 @@ export class Ask {
           `But move is legal. Save it?`,
           `But move is legal. Confirm it with ${Voc.piece(actualPiece)}?`,
           `Did you want to say ${Voc.piece(actualPiece)}?`,
-          `Then, your move is ${Voc.piece(actualPiece)} from ${char(from)} to ${char(
-            to
-          )}?`,
+          `Then, your move is ${Voc.piece(actualPiece)} from ${char(
+            from
+          )} to ${char(to)}?`,
         ],
         ru: [
-          `Вы просто перепутали? Будете ходить ${Voc.piece(actualPiece, 'tvr')}?`,
+          `Вы просто перепутали? Будете ходить ${Voc.piece(
+            actualPiece,
+            'tvr'
+          )}?`,
           `Но сам ход корректный. Оставляем его?`,
-          `Вы хотели сказать ${Voc.piece(actualPiece)} с ${char(from)} на ${char(to)}?`,
-          `Будете ходить ${Voc.piece(actualPiece, 'rod')} с ${char(from)} на ${char(to)}?`,
+          `Вы хотели сказать ${Voc.piece(actualPiece)} с ${char(
+            from
+          )} на ${char(to)}?`,
+          `Будете ходить ${Voc.piece(actualPiece, 'rod')} с ${char(
+            from
+          )} на ${char(to)}?`,
           `Значит, ${Voc.piece(actualPiece)} ${char(from)} ${char(to)}?`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
@@ -380,6 +387,53 @@ export class Ask {
           'Походите так, или у вас есть предложение получше?',
           'Будете ходить так?',
           'Послушаете меня, или походите по-своему?',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static moveToCorrect(from: string, to: string, pieceCode: string): string {
+    return rand(
+      ({
+        en: [
+          `How do you want to change the move ${char(from)} ${char(to)}?`,
+          `You want to change your last move ${char(from)} ${char(
+            to
+          )}? Ok. To what move?`,
+          `What move do you want re-play instead of ${Voc.piece(
+            pieceCode
+          )} ${char(from)} ${char(to)}?`,
+          `And how do you want to move instead of ${char(from)} ${char(to)}?`,
+          `${Voc.piece(pieceCode)} ${char(from)} ${char(
+            to
+          )} is your last move. And what move will you play instead?`,
+        ],
+        ru: [
+          `Вы хотите изменить ход ${char(from)} ${char(to)}? На какой?`,
+          `Какой ход вы хотите сделать вместо ${char(from)} ${char(to)}?`,
+          `Значит вы хотите поменять свой ход ${Voc.piece(
+            pieceCode,
+            'tvr'
+          )} ${char(from)} ${char(to)}? На что?`,
+          `И как вы хотите походить вместо ${char(from)} ${char(to)}?`,
+          `И какой ход вы хотите на замену старому ${char(from)} ${char(to)}?`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static correctFails() {
+    return rand(
+      ({
+        en: [
+          'You are back to the original move. What will you do?',
+          'Everything remains the same, and you should make a move',
+          'The change did not happen and you returned to the original move. Move.',
+          "Then we will continue our game as usual. No it's your turn to move.",
+        ],
+        ru: [
+          'Вы вернулись к оргинальному ходу. Что будете делать?',
+          'Всё осталось по прежнему, и вам нужно ходить.',
+          'Корректировки хода не произошло и вы вернулись к оригинальному варианту. Ходите.',
+          'Значит продолжаем партию как обычно. Ваш ход.',
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

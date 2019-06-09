@@ -18,7 +18,12 @@ interface MovesBulk {
   pieces: PieceMoves[];
 }
 
-export function getBulkOfMoves(fen: string, allMoves: string[], n: number, beatsSorted = true): MovesBulk {
+export function getBulkOfMoves(
+  fen: string,
+  allMoves: string[],
+  n: number,
+  beatsSorted = true
+): MovesBulk {
   const ret = { end: true, next: n, pieces: [] as PieceMoves[] };
   if (n >= allMoves.length) {
     return ret;
@@ -52,9 +57,8 @@ export function getBulkOfMoves(fen: string, allMoves: string[], n: number, beats
   const standardSize = 10;
   const permissibleVariation = 5;
   const unnecessary =
-    allMoves
-      .slice(n)
-      .reduce((sum, el) => (sum += Number(el.length === 5)), 0) * 0.75;
+    allMoves.slice(n).reduce((sum, el) => (sum += Number(el.length === 5)), 0) *
+    0.75;
   const maxN = n + standardSize + permissibleVariation + unnecessary;
   if (maxN > allMoves.length) {
     ret.next = allMoves.length;
