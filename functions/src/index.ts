@@ -415,9 +415,8 @@ app.intent(
     const correctCtx = conv.contexts.get('correct-move');
     if (correctCtx) {
       const board = new ChessBoard(fenstring);
-      const histLength = conv.user.storage.history.length;
-      const lastAIMove = conv.user.storage.history[histLength - 1];
-      const lastPlayerMove = conv.user.storage.history[histLength - 2];
+      const lastAIMove = conv.user.storage.history.pop();
+      const lastPlayerMove = conv.user.storage.history.pop();
       board.extract(lastAIMove.m, lastAIMove.b);
       board.extract(lastPlayerMove.m, lastPlayerMove.b);
       fenstring = board.convertToFen();
