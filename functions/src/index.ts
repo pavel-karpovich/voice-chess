@@ -559,9 +559,9 @@ app.intent(
     const board = new ChessBoard(fenstring);
     const histLength = conv.user.storage.history.length;
     const lastAIMove = conv.user.storage.history[histLength - 1];
-    const lastPlayerMove = conv.user.storage.history[histLength - 2];
+    // const lastPlayerMove = conv.user.storage.history[histLength - 2];
     board.extract(lastAIMove.m, lastAIMove.b);
-    board.extract(lastPlayerMove.m, lastPlayerMove.b);
+    // board.extract(lastPlayerMove.m, lastPlayerMove.b);
     fenstring = board.convertToFen();
     console.log('fenstring after extraction: ' + fenstring);
     /* if (histLength < 2) {
