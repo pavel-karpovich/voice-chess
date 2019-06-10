@@ -217,7 +217,7 @@ function rankHandler(
     }
     speak(conv, showRank(fenstring, rankNum));
     speak(conv, Ask.askToGoNext());
-    conv.contexts.set('rank-next', 1, { rank: rankNum });
+    conv.contexts.set('rank-next', 1, { rank: rankNum, dir: 'u' });
   } else {
     speak(conv, Ask.askRankNumber());
   }
@@ -240,13 +240,35 @@ function giveNextRank(conv: VoiceChessConv): void {
     speak(conv, Ask.whatToDo());
   } else {
     speak(conv, Ask.askToGoNext());
-    conv.contexts.set('rank-next', 1, { rank: thisRank });
+    conv.contexts.set('rank-next', 1, { rank: thisRank, dir: 'u' });
+  }
+}
+
+function givePrevRank(conv: VoiceChessConv): void {
+  console.log('prev rank');
+  const rankContext = conv.contexts.get('rank-next');
+  const lastRank = Number(rankContext.parameters.rank);
+  if (lastRank === 1) {
+    speak(conv, Ans.noPrevRank());
+    speak(conv, Ask.waitMove());
+    conv.contexts.set('turn-intent', 1);
+    return;
+  }
+  const fenstring = conv.user.storage.fen;
+  const thisRank = lastRank - 1;
+  speak(conv, showRank(fenstring, thisRank));
+  if (thisRank === 1) {
+    speak(conv, Ask.whatToDo());
+  } else {
+    speak(conv, Ask.askToGoNext());
+    conv.contexts.set('rank-next', 1, { rank: thisRank, dir: 'd' });
   }
 }
 
 app.intent('Rank', rankHandler);
 app.intent('Rank - number', rankHandler);
 app.intent('Rank - next', giveNextRank);
+app.intent('Rank - previous', givePrevRank);
 
 function askOrRemind(conv: VoiceChessConv): void {
   const correctCtx = conv.contexts.get('correct-last-move');
@@ -790,7 +812,12 @@ app.intent('Next', async (conv: VoiceChessConv) => {
   } else if (conv.contexts.get('board-next')) {
     giveSecondPartOfTheBoard(conv);
   } else if (conv.contexts.get('rank-next')) {
-    giveNextRank(conv);
+    const dir = conv.contexts.get('rank-next').parameters.dir;
+    if (dir === 'u') {
+      giveNextRank(conv);
+    } else {
+      givePrevRank(conv);
+    }
   } else {
     isFallback = true;
     fallbackHandler(conv);
@@ -848,14 +875,17 @@ app.intent(
     if (conv.contexts.get('turn-intent')) {
       speak(conv, Ask.askToMove());
     } else if (conv.contexts.get('moves-next')) {
-      await listOfMoves(
-        conv,
-        Number(conv.contexts.get('moves-next').parameters.start)
-      );
+      const n = Number(conv.contexts.get('moves-next').parameters.start);
+      await listOfMoves(conv, n);
     } else if (conv.contexts.get('board-next')) {
       giveSecondPartOfTheBoard(conv);
     } else if (conv.contexts.get('rank-next')) {
-      giveNextRank(conv);
+      const dir = conv.contexts.get('rank-next').parameters.dir;
+      if (dir === 'u') {
+        giveNextRank(conv);
+      } else {
+        givePrevRank(conv);
+      }
     } else if (conv.contexts.get('ask-to-new-game')) {
       startNewGame(conv);
     } else if (conv.contexts.get('ask-to-continue')) {

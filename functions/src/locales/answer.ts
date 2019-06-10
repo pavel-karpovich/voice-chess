@@ -331,12 +331,29 @@ export class Answer {
         en: [
           'There is no next rank.',
           'It was the 8th rank.\nThere is no next rank!',
-          'It was the last rank.\n',
+          'It was the last rank.',
         ],
         ru: [
           'Следующего ряда нет.',
           'Это был восьмой ряд.\nДальше некуда!',
           'Это был последний ряд.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static noPrevRank(): string {
+    return rand(
+      ({
+        en: [
+          'There is no previous rank.',
+          'It was the 1th rank.\nThere is no previous rank!',
+          'It was the first rank on the chess board. What is the "previous"?',
+        ],
+        ru: [
+          'Это был первый ряд, куда дальше то!',
+          'Только что был первый ряд, перед ним на доске ничего нет.',
+          'Это вам не программирование, в шахматах нумерация не с нуля, а с единицы идёт!',
+          'Больше предыдущих нет!',
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
