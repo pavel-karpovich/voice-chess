@@ -35,7 +35,7 @@ export class Chess {
   constructor(fenstring: string, difficulty: number) {
     const stockfishWasm = stockfishPath;
     this.stockfish = loadEngine(path.join(__dirname, stockfishWasm));
-    this.fen = fenstring;
+    this.fen = fenstring || Chess.initialFen;
     this.stateChangeHandler = null;
     this.bestMoveHandler = null;
     this.enemy = null;
@@ -45,9 +45,6 @@ export class Chess {
     this.configureDifficulty(difficulty);
     this.stockfish.postMessage('setoption name Ponder value false');
     this.stockfish.postMessage('setoption name Slow Mover value 10');
-    if (!this.fen) {
-      this.fen = Chess.initialFen;
-    }
     this.stockfish.postMessage(`position fen ${this.fen}`);
 
     this.stockfish.onmessage = (e: any) => {
@@ -194,6 +191,9 @@ export class Chess {
    */
   get fenstring(): string {
     return this.fen;
+  }
+  set fenstring(fen: string) {
+    this.fen = fen;
   }
 
   /**

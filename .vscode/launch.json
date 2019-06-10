@@ -7,8 +7,9 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}\\test.js"
+            "name": "Test",
+            "program": "${workspaceFolder}\\test.js",
+            "sourceMaps": true
         },
         {
             "type": "node",

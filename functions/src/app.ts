@@ -270,6 +270,10 @@ async function moveByPlayer(
   prologue?: string
 ): Promise<void> {
   let fenstring = conv.user.storage.fen;
+  const difficulty = conv.user.storage.options.difficulty;
+  if (!chess) {
+    chess = new Chess(fenstring, difficulty);
+  }
   const correctCtx = conv.contexts.get('correct-last-move');
   if (correctCtx) {
     const board = new ChessBoard(fenstring);
@@ -278,10 +282,7 @@ async function moveByPlayer(
     board.extract(lastAIMove.m, lastAIMove.b);
     board.extract(lastPlayerMove.m, lastPlayerMove.b);
     fenstring = board.convertToFen();
-  }
-  const difficulty = conv.user.storage.options.difficulty;
-  if (!chess || correctCtx) {
-    chess = new Chess(fenstring, difficulty);
+    chess.fenstring = fenstring;
   }
   const from = move.slice(0, 2);
   const to = move.slice(2, 4);
