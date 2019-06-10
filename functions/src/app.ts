@@ -1,4 +1,3 @@
-import * as functions from 'firebase-functions';
 import { dialogflow, DialogflowConversation } from 'actions-on-google';
 
 import { Answer as Ans } from './locales/answer';
@@ -899,4 +898,4 @@ app.intent(
   }
 );
 
-module.exports.fulfillment = functions.https.onRequest(app);
+export { app };
