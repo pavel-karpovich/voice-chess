@@ -54,6 +54,8 @@ function speak(conv: VoiceChessConv, text: string) {
 
 const app = dialogflow<ConversationData, LongStorageData>();
 
+app.debug = true;
+
 app.middleware(
   (conv: VoiceChessConv): void => {
     if (conv.user.locale) {
