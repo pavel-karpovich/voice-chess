@@ -4,6 +4,7 @@ import { ChessSide } from './chessUtils';
 const stockfishPath = '../../node_modules/stockfish/src/stockfish.wasm';
 
 export const chessBoardSize = 8;
+export const maxDifficulty = 20;
 
 export const enum ChessGameState {
   OK = 1,
@@ -73,13 +74,13 @@ export class Chess {
     if (level < 0) {
       level = 0;
     }
-    if (level > 20) {
-      level = 20;
+    if (level > maxDifficulty) {
+      level = maxDifficulty;
     }
     this.depth = level === 0 ? 1 : level / 2;
     const setopt = 'setoption name Skill Level ';
     this.stockfish.postMessage(setopt + 'value ' + level);
-    const maxErr = Math.round(level * -20 + 450);
+    const maxErr = Math.round(level * -maxDifficulty + 450);
     const errProb = Math.round(level * 12.7 + 1);
     this.stockfish.postMessage(setopt + 'Maximum Error value ' + maxErr);
     this.stockfish.postMessage(setopt + 'Probability value ' + errProb);
@@ -89,9 +90,7 @@ export class Chess {
    * The const fen string value of te start chess position
    */
   static get initialFen(): string {
-    // fen for En Passant
-    return '7k/1p4R1/5P2/P1P5/5p2/8/6P1/4K3 w - - 0 1';
-    // return 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+    return 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
   }
 
   /**

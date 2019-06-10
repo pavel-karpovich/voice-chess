@@ -3,7 +3,12 @@ import { dialogflow, DialogflowConversation } from 'actions-on-google';
 import { Answer as Ans } from './locales/answer';
 import { Ask } from './locales/ask';
 import { Vocabulary as Voc } from './locales/vocabulary';
-import { Chess, chessBoardSize, ChessGameState } from './chess/chess';
+import {
+  Chess,
+  chessBoardSize,
+  ChessGameState,
+  maxDifficulty,
+} from './chess/chess';
 import { ChessSide, getSide } from './chess/chessUtils';
 import { ChessBoard } from './chess/chessboard';
 import { pause, gaussianRandom } from './support/helpers';
@@ -653,17 +658,6 @@ app.intent(
   }
 );
 
-app.intent(
-  'Difficulty',
-  (conv: VoiceChessConv): void => {
-    console.log('difficulty');
-    safeGameContext(conv);
-    const currentDifficulty = conv.user.storage.options.difficulty;
-    speak(conv, Ans.showDifficulty(currentDifficulty));
-    speak(conv, Ask.askToChangeDifficulty());
-  }
-);
-
 function directToNextLogicalAction(conv: VoiceChessConv): void {
   const gameContext = conv.contexts.get('game');
   if (gameContext) {
@@ -676,26 +670,42 @@ function directToNextLogicalAction(conv: VoiceChessConv): void {
 }
 
 app.intent(
-  'Difficulty - number',
-  (
-    conv: VoiceChessConv,
-    { ord, num }: { ord?: number; num?: number }
-  ): void => {
-    console.log('difficulte - number');
+  'Difficulty',
+  (conv: VoiceChessConv): void => {
+    console.log('difficulty');
     safeGameContext(conv);
-    if (ord || num) {
-      const currentDifficulty = conv.user.storage.options.difficulty;
-      const newDifficulty = num ? num : ord;
-      if (currentDifficulty === newDifficulty) {
-        speak(conv, Ans.difficultyTheSame(newDifficulty));
-      } else {
-        speak(conv, Ans.difficultyChanged(newDifficulty, currentDifficulty));
-      }
-      directToNextLogicalAction(conv);
-    } else {
-      speak(conv, Ask.difficultyWithoutValue());
-      conv.contexts.set('difficulty-followup', 1);
-    }
+    const currentDifficulty = conv.user.storage.options.difficulty;
+    speak(conv, Ans.showDifficulty(currentDifficulty));
+    speak(conv, Ask.askToChangeDifficulty());
+  }
+);
+
+function modifyDifficulty(conv: VoiceChessConv, num: number): void {
+  safeGameContext(conv);
+  const currentDifficulty = conv.user.storage.options.difficulty;
+  num = num > maxDifficulty ? maxDifficulty : num;
+  if (currentDifficulty === num) {
+    speak(conv, Ans.difficultyTheSame(num));
+  } else {
+    speak(conv, Ans.difficultyChanged(num, currentDifficulty));
+    conv.user.storage.options.difficulty = num;
+  }
+  directToNextLogicalAction(conv);
+}
+
+app.intent(
+  'Difficulty - number',
+  (conv: VoiceChessConv, { num }: { num: number }): void => {
+    console.log('difficulte - number');
+    modifyDifficulty(conv, num);
+  }
+);
+
+app.intent(
+  'Difficulty - full',
+  (conv: VoiceChessConv, { num }: { num: number }): void => {
+    console.log('difficulty - full');
+    modifyDifficulty(conv, num);
   }
 );
 

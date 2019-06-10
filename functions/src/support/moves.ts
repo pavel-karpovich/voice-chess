@@ -37,14 +37,16 @@ export function getBulkOfMoves(
       const beat1 = board.pos(move1.slice(2, 4));
       const beat2 = board.pos(move2.slice(2, 4));
       if (
-          move1.slice(2, 4) !== board.enPassant && 
-          move2.slice(2, 4) === board.enPassant
-        ) return 1;
-      else if (
-        move1.slice(2, 4) === board.enPassant && 
+        move1.slice(2, 4) !== board.enPassant &&
+        move2.slice(2, 4) === board.enPassant
+      ) {
+        return 1;
+      } else if (
+        move1.slice(2, 4) === board.enPassant &&
         move2.slice(2, 4) !== board.enPassant
-      ) return -1;
-      else if (move1.length === 4 && move2.length === 5) return 1;
+      ) {
+        return -1;
+      } else if (move1.length === 4 && move2.length === 5) return 1;
       else if (move1.length === 5 && move2.length === 4) return -1;
       else if (beat1 === null && beat2 !== null) return 1;
       else if (beat1 !== null && beat2 === null) return -1;
@@ -57,14 +59,16 @@ export function getBulkOfMoves(
       const beat1 = board.pos(move1.slice(2, 4));
       const beat2 = board.pos(move2.slice(2, 4));
       if (
-          move1.slice(2, 4) !== board.enPassant && 
-          move2.slice(2, 4) === board.enPassant
-        ) return 1;
-      else if (
-        move1.slice(2, 4) === board.enPassant && 
+        move1.slice(2, 4) !== board.enPassant &&
+        move2.slice(2, 4) === board.enPassant
+      ) {
+        return 1;
+      } else if (
+        move1.slice(2, 4) === board.enPassant &&
         move2.slice(2, 4) !== board.enPassant
-      ) return -1;
-      else if (from1.localeCompare(from2) === 1) return 1;
+      ) {
+        return -1;
+      } else if (from1.localeCompare(from2) === 1) return 1;
       else if (from1.localeCompare(from2) === -1) return -1;
       else if (beat1 === null && beat2 !== null) return 1;
       else if (beat1 !== null && beat2 === null) return -1;
@@ -86,7 +90,7 @@ export function getBulkOfMoves(
     let posTo = allMoves[n].slice(2, 4);
     let prevEnPassant = posTo === board.enPassant;
     let piece;
-    if (!prevEnPassant){
+    if (!prevEnPassant) {
       piece = {
         pos: lastPos,
         type: board.pos(lastPos),
@@ -127,18 +131,20 @@ export function getBulkOfMoves(
         mv = { to: posTo, from: currentPos };
       }
       if (
-          (currentPos === lastPos && isEnPassant === prevEnPassant && isEnPassant === false) ||
-          (isEnPassant === prevEnPassant && isEnPassant === true)
-        ) {
-          piece.moves.push(mv);
+        (currentPos === lastPos &&
+          isEnPassant === prevEnPassant &&
+          isEnPassant === false) ||
+        (isEnPassant === prevEnPassant && isEnPassant === true)
+      ) {
+        piece.moves.push(mv);
       } else {
         ret.pieces.push(piece);
         lastPos = currentPos;
         if (!isEnPassant) {
-          piece = { 
-            pos: lastPos, 
-            type: board.pos(lastPos), 
-            moves: [mv] ,
+          piece = {
+            pos: lastPos,
+            type: board.pos(lastPos),
+            moves: [mv],
           };
         } else {
           piece = {
@@ -203,18 +209,20 @@ export function getBulkOfMoves(
         mv = { to: posTo, from: currentPos };
       }
       if (
-          (currentPos === lastPos && isEnPassant === prevEnPassant && isEnPassant === false) || 
-          (isEnPassant === prevEnPassant && isEnPassant === true)
-        ) {
-          if (i === maxN) {
-            if (totalLength(ret) <= standardSize - permissibleVariation) {
-              ret.pieces.push(piece);
-            } else {
-              i -= piece.moves.length;
-            }
-            break;
+        (currentPos === lastPos &&
+          isEnPassant === prevEnPassant &&
+          isEnPassant === false) ||
+        (isEnPassant === prevEnPassant && isEnPassant === true)
+      ) {
+        if (i === maxN) {
+          if (totalLength(ret) <= standardSize - permissibleVariation) {
+            ret.pieces.push(piece);
+          } else {
+            i -= piece.moves.length;
           }
-          piece.moves.push(mv);
+          break;
+        }
+        piece.moves.push(mv);
       } else {
         ret.pieces.push(piece);
         if (totalLength(ret) >= standardSize) {
@@ -222,9 +230,9 @@ export function getBulkOfMoves(
         }
         lastPos = currentPos;
         if (!isEnPassant) {
-          piece = { 
-            pos: lastPos, 
-            type: board.pos(lastPos), 
+          piece = {
+            pos: lastPos,
+            type: board.pos(lastPos),
             moves: [mv],
           };
         } else {
