@@ -389,6 +389,53 @@ export class Vocabulary {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static byPlay(): string {
+    return rand(
+      ({
+        en: [
+          'if you make a move',
+        ],
+        ru: [
+          'сыграв',
+          'походив',
+          'сделав ход',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static canMakeEnPassant(to: string, pawn: string): string {
+    return rand(
+      ({
+        en: [
+          `The enemy pawn has just made a double move to ${char(pawn)}, and can be captured in pass,`,
+          `You can capture the opponent's pawn 'En Passant' on ${char(pawn)} through square ${char(to)},`,
+          `An enemy pawn from ${char(pawn)} can be captured via 'En Passant',`,
+        ],
+        ru: [
+          `Вражеская пешка только что сделала двойной ход на ${char(pawn)}, и её можно перехватить на проходе,`,
+          `Можно взять вражескую пешку на проходе к ${char(pawn)} через клетку ${char(to)},`,
+          `Пешку на ${char(pawn)} можно взять 'Энпассан',`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static enPassantByMove(from: string, to: string): string {
+    return rand(
+      ({
+        en: [
+          `from ${char(from)} to ${char(to)}`,
+          `by pawn from ${char(from)}`,
+          `from ${char(from)}`,
+        ],
+        ru: [
+          `пешкой с ${char(from)} на ${char(to)}`,
+          `пешкой ${char(from)} ${char(to)}`,
+          `с ${char(from)} на ${char(to)}`,
+          `пешкой с ${char(from)}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
   static firstMoveInHistoryIntro(): string {
     return rand(
       ({

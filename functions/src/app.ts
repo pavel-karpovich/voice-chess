@@ -596,18 +596,16 @@ app.intent(
   'Correct',
   (conv: VoiceChessConv): void => {
     console.log('correct');
-    const histLength = conv.user.storage.history.length;
-    if (histLength < 2) {
+    const hist = conv.user.storage.history;
+    if (hist.length < 2) {
       speak(conv, Ans.noMoveToCorrect());
       speak(conv, Ask.waitMove());
       return;
     }
-    const lastMove = conv.user.storage.history[histLength - 2];
-    const from = lastMove.m.slice(0, 2);
-    const to = lastMove.m.slice(2, 4);
-    const fenstring = conv.user.storage.fen;
-    const board = new ChessBoard(fenstring);
-    const piece = board.pos(from);
+    const lastMove = hist[hist.length - 2];
+    const from = lastMove.m.slice(1, 3);
+    const to = lastMove.m.slice(3, 5);
+    const piece = lastMove.m[0];
     speak(conv, Ask.moveToCorrect(from, to, piece));
     conv.contexts.set('correct-last-move', 1);
   }

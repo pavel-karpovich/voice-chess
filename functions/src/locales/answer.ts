@@ -622,13 +622,13 @@ export class Answer {
         en: [
           `But on the square ${char(square)} is not a ${Voc.piece(
             playerPiece
-          )}, but ${Voc.piece(actualPiece)}.`,
+          )}, but a ${Voc.piece(actualPiece)}.`,
           `On the square ${char(square)} is a ${Voc.piece(
             actualPiece
           )}, not a ${Voc.piece(playerPiece)}.`,
           `On ${char(square)} is not a ${Voc.piece(
             playerPiece
-          )}, but ${Voc.piece(actualPiece)}.`,
+          )}, but a ${Voc.piece(actualPiece)}.`,
         ],
         ru: [
           `Но на клетке ${char(square)} стоит не ${Voc.piece(
