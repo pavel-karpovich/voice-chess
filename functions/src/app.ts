@@ -302,10 +302,10 @@ async function moveByPlayer(
   }
   let historyItem;
   if (beatedPiece) {
-    historyItem = { c: piece, m: move, b: beatedPiece };
+    historyItem = { m: piece + move, b: beatedPiece };
     answer += Ans.playerBeat(beatedPiece);
   } else {
-    historyItem = { c: piece, m: move };
+    historyItem = { m: piece + move };
   }
   // TODO: history.info for castling and En passant
   conv.user.storage.history.push(historyItem);
@@ -362,10 +362,10 @@ async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
   }
   let historyItem;
   if (beatedPiece) {
-    historyItem = { c: 'p', m: chess.enemyMove, b: beatedPiece };
+    historyItem = { m: enemyPiece + chess.enemyMove, b: beatedPiece };
     answer += Ans.enemyBeat(beatedPiece);
   } else {
-    historyItem = { c: enemyPiece, m: chess.enemyMove };
+    historyItem = { m: enemyPiece + chess.enemyMove };
   }
   // history.info for castling and En passant
   conv.user.storage.history.push(historyItem);
@@ -565,7 +565,10 @@ app.intent(
     const lastMove = conv.user.storage.history[histLength - 2];
     const from = lastMove.m.slice(0, 2);
     const to = lastMove.m.slice(2, 4);
-    speak(conv, Ask.moveToCorrect(from, to, lastMove.c));
+    const fenstring = conv.user.storage.fen;
+    const board = new ChessBoard(fenstring);
+    const piece = board.pos(from);
+    speak(conv, Ask.moveToCorrect(from, to, piece));
     conv.contexts.set('correct-last-move', 1);
   }
 );
@@ -592,7 +595,7 @@ app.intent(
       const enemyTo = chess.enemyMove.slice(2, 4);
       const board = new ChessBoard(chess.fenstring);
       const enemyPiece = board.pos(enemyTo);
-      const historyItem = { c: enemyPiece, m: chess.enemyMove };
+      const historyItem = { m: enemyPiece + chess.enemyMove };
       conv.user.storage.history.push(historyItem);
       const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
       const askYouStr = Ask.nowYouNeedToMove();

@@ -3,8 +3,7 @@ import { Vocabulary as Voc } from '../locales/vocabulary';
 import { upFirst, pause } from './helpers';
 
 export interface HistoryFrame {
-  c: string; // piece code
-  m: string; // move
+  m: string; // pieceCode + move: "pg2g4", "Pe7e8Q"
   b?: string; // beated piece code
 }
 
@@ -14,7 +13,7 @@ export function historyOfMoves(
 ): string {
   let result = '';
   let isPlayerMove = false;
-  if (getSide(moves[0].c) === pSide) {
+  if (getSide(moves[0].m[0]) === pSide) {
     isPlayerMove = true;
   }
   let intro = false;
@@ -24,8 +23,9 @@ export function historyOfMoves(
     intro = true;
   }
   for (const move of moves) {
-    const from = move.m.slice(0, 2);
-    const to = move.m.slice(2, 4);
+    const piece = move.m[0];
+    const from = move.m.slice(1, 3);
+    const to = move.m.slice(3, 5);
     const optTotal = Number('beat' in move) + Number('promo' in move);
     let optCount = 0;
     const addSeparator = () => {
@@ -42,7 +42,7 @@ export function historyOfMoves(
       intro = true;
     }
     if (isPlayerMove) {
-      let firstPhrase = Voc.youMoved(move.c, from, to);
+      let firstPhrase = Voc.youMoved(piece, from, to);
       if (!intro) {
         firstPhrase = upFirst(firstPhrase);
       }
@@ -51,13 +51,13 @@ export function historyOfMoves(
         addSeparator();
         result += Voc.youTookMyPiece(move.b);
       }
-      if (move.m.length === 5) {
+      if (move.m.length === 6) {
         addSeparator();
-        const promoteTo = move.m[4];
+        const promoteTo = move.m[5];
         result += Voc.youPromoted(promoteTo);
       }
     } else {
-      let firstPhrase = Voc.iMoved(move.c, from, to);
+      let firstPhrase = Voc.iMoved(piece, from, to);
       if (!intro) {
         firstPhrase = upFirst(firstPhrase);
       }
@@ -66,9 +66,9 @@ export function historyOfMoves(
         addSeparator();
         result += Voc.iTookYourPiece(move.b);
       }
-      if (move.m.length === 5) {
+      if (move.m.length === 6) {
         addSeparator();
-        const promoteTo = move.m[4];
+        const promoteTo = move.m[5];
         result += Voc.iPromoted(promoteTo);
       }
     }
