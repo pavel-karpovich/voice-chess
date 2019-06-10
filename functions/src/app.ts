@@ -345,8 +345,6 @@ async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
   }
   let board = new ChessBoard(chess.fenstring);
   await chess.moveAuto();
-  console.log('Fen after AI move: ' + chess.fenstring);
-  console.log('And state: ' + chess.currentGameState);
   const enemyFrom = chess.enemyMove.slice(0, 2);
   const enemyTo = chess.enemyMove.slice(2, 4);
   const beatedPiece = board.pos(enemyTo);

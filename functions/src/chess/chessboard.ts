@@ -73,7 +73,7 @@ export class ChessBoard {
     if (isReverseMoveValid) {
       let piece;
       if (move.length === 5) {
-        piece = 'p';
+        piece = (this.side === 'w' ? 'p' : 'P');
       } else {
         piece = this.board.get(to);
       }
