@@ -1,6 +1,6 @@
-import { ChessBoard, ChessSquareData } from './chess/chessboard';
+import { ChessBoard, ChessSquareData } from '../chess/chessboard';
 import { upFirst, pause } from './helpers';
-import { Vocabulary as Voc } from './locales/vocabulary';
+import { Vocabulary as Voc } from '../locales/vocabulary';
 
 function singleRank(rank: ChessSquareData[], rankNum: number): string {
   let resultString = '';

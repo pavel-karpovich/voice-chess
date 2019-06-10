@@ -1,5 +1,5 @@
-import { ChessSide, getSide } from './chess/chessUtils';
-import { Vocabulary as Voc } from './locales/vocabulary';
+import { ChessSide, getSide } from '../chess/chessUtils';
+import { Vocabulary as Voc } from '../locales/vocabulary';
 import { upFirst, pause } from './helpers';
 
 export interface HistoryFrame {

@@ -1,4 +1,4 @@
-import { rand, LocalizationObject, char, upFirst } from '../helpers';
+import { rand, LocalizationObject, char, upFirst } from '../support/helpers';
 import { Vocabulary as Voc } from './vocabulary';
 
 export class Ask {

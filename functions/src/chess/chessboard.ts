@@ -85,6 +85,15 @@ export class ChessBoard {
       } else {
         this.board.set(to, null);
       }
+      if (this.side === 'w') {
+        this.side = 'b';
+        this.count--;
+      } else {
+        this.side = 'w';
+      }
+      if (this.clock !== 0) {
+        this.clock--;
+      }
       this.dirty = true;
       return true;
     } else {
@@ -119,16 +128,8 @@ export class ChessBoard {
         fen += '/';
       }
     }
-    if (this.side === 'w') {
-      fen += ' b';
-      this.count--;
-    } else {
-      fen += ' w';
-    }
+    fen += ` ${this.side}`;
     fen += ` ${this.castling} ${this.enPassant}`;
-    if (this.clock !== 0) {
-      this.clock--;
-    }
     fen += ` ${this.clock} ${this.count}`;
     this.fen = fen;
     this.dirty = false;

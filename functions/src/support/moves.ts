@@ -1,5 +1,5 @@
-import { ChessBoard } from './chess/chessboard';
-import { Vocabulary as Voc } from './locales/vocabulary';
+import { ChessBoard } from '../chess/chessboard';
+import { Vocabulary as Voc } from '../locales/vocabulary';
 import { char, upFirst, pause } from './helpers';
 
 interface Move {

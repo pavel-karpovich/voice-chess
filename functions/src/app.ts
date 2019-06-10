@@ -6,10 +6,10 @@ import { Vocabulary as Voc } from './locales/vocabulary';
 import { Chess, chessBoardSize, ChessGameState } from './chess/chess';
 import { ChessSide, getSide } from './chess/chessUtils';
 import { ChessBoard } from './chess/chessboard';
-import { pause, gaussianRandom } from './helpers';
-import { HistoryFrame, historyOfMoves } from './history';
-import { showRank, showRanks } from './board';
-import { getBulkOfMoves, listMoves } from './moves';
+import { pause, gaussianRandom } from './support/helpers';
+import { HistoryFrame, historyOfMoves } from './support/history';
+import { showRank, showRanks } from './support/board';
+import { getBulkOfMoves, listMoves } from './support/moves';
 
 process.env.DEBUG = 'dialogflow:debug';
 
@@ -272,11 +272,9 @@ async function moveByPlayer(
   let fenstring = conv.user.storage.fen;
   const correctCtx = conv.contexts.get('correct-last-move');
   if (correctCtx) {
-    console.log('pops');
     const board = new ChessBoard(fenstring);
-    const histLength = conv.user.storage.history.length;
-    const lastAIMove = conv.user.storage.history[histLength - 1];
-    const lastPlayerMove = conv.user.storage.history[histLength - 2];
+    const lastAIMove = conv.user.storage.history.pop();
+    const lastPlayerMove = conv.user.storage.history.pop();
     board.extract(lastAIMove.m, lastAIMove.b);
     board.extract(lastPlayerMove.m, lastPlayerMove.b);
     fenstring = board.convertToFen();
@@ -426,11 +424,10 @@ app.intent(
     conv: VoiceChessConv,
     { from, to, piece }: { from: string; to: string; piece?: string }
   ): Promise<void> => {
-    console.log('chess turn');
+    console.log('turn');
     from = from.toLowerCase();
     to = to.toLowerCase();
     const move = from + to;
-    console.log(`From: ${from}, to: ${to}`);
     let fenstring = conv.user.storage.fen;
     const correctCtx = conv.contexts.get('correct-last-move');
     if (correctCtx) {
@@ -441,7 +438,6 @@ app.intent(
       board.extract(lastAIMove.m, lastAIMove.b);
       board.extract(lastPlayerMove.m, lastPlayerMove.b);
       fenstring = board.convertToFen();
-      console.log('fenstring after extraction: ' + fenstring);
     }
     const difficulty = conv.user.storage.options.difficulty;
     const playerSide = conv.user.storage.side;

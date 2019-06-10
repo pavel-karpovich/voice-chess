@@ -1,6 +1,6 @@
 import { ChessSide, getSide } from '../chess/chessUtils';
-import { WordForms, LocalizationObject } from '../helpers';
-import { rand, char } from '../helpers';
+import { WordForms, LocalizationObject } from '../support/helpers';
+import { rand, char } from '../support/helpers';
 
 export class Vocabulary {
   private static lang: string;
