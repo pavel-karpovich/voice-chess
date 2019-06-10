@@ -303,7 +303,11 @@ async function moveByPlayer(
     const lastAIMove = hist.pop();
     const lastPlayerMove = hist.pop();
     board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e);
-    board.extract(lastPlayerMove.m.slice(1), lastPlayerMove.b, lastPlayerMove.e);
+    board.extract(
+      lastPlayerMove.m.slice(1),
+      lastPlayerMove.b,
+      lastPlayerMove.e
+    );
     fenstring = board.convertToFen();
     chess.fenstring = fenstring;
   }
@@ -317,7 +321,7 @@ async function moveByPlayer(
   if (prologue) {
     answer += prologue + pause(1) + '\n';
   }
-  const isEnPassant = (board.enPassant === to);
+  const isEnPassant = board.enPassant === to;
   let enPassPawn = null;
   if (!isEnPassant) {
     answer += Ans.playerMove(from, to, piece);
@@ -383,7 +387,7 @@ async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
   const boardAfterMove = new ChessBoard(chess.fenstring);
   const enemyPiece = boardAfterMove.pos(enemyTo);
   let answer = '';
-  const isEnPassant = (boardBeforeMove.enPassant === enemyTo);
+  const isEnPassant = boardBeforeMove.enPassant === enemyTo;
   let enPassPawn = null;
   if (!isEnPassant) {
     if (chess.enemyMove.length === 5) {
@@ -422,7 +426,7 @@ async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
     conv.contexts.delete('game');
     return;
   } else if (chess.currentGameState === ChessGameState.FIFTYMOVEDRAW) {
-    answer +=  ` \n${Ans.fiftymove()} \n`;
+    answer += ` \n${Ans.fiftymove()} \n`;
     answer += `${Ans.draw()} \n${Ask.askToNewGame()}`;
     speak(conv, answer);
     conv.contexts.set('ask-to-new-game', 1);
@@ -469,7 +473,11 @@ app.intent(
       const lastAIMove = hist[hist.length - 1];
       const lastPlayerMove = hist[hist.length - 2];
       board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e);
-      board.extract(lastPlayerMove.m.slice(1), lastPlayerMove.b, lastPlayerMove.e);
+      board.extract(
+        lastPlayerMove.m.slice(1),
+        lastPlayerMove.b,
+        lastPlayerMove.e
+      );
       fenstring = board.convertToFen();
     }
     const difficulty = conv.user.storage.options.difficulty;

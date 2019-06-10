@@ -73,7 +73,7 @@ export class ChessBoard {
     if (isReverseMoveValid) {
       let piece;
       if (move.length === 5) {
-        piece = (this.side === 'w' ? 'p' : 'P');
+        piece = this.side === 'w' ? 'p' : 'P';
       } else {
         piece = this.board.get(to);
       }
@@ -85,7 +85,7 @@ export class ChessBoard {
         this.board.set(to, null);
       }
       if (enPassantPawnPos) {
-        const enemyPawn = (this.side === 'w' ? 'P' : 'p');
+        const enemyPawn = this.side === 'w' ? 'P' : 'p';
         this.board.set(enPassantPawnPos, enemyPawn);
         this.enpsnt = to;
       }

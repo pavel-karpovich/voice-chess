@@ -306,12 +306,20 @@ export class Answer {
     return rand(
       ({
         en: [
-          `En passant! You move your pawn from ${char(from)} to ${char(to)} and capture my pawn in passing to ${char(pawn)}!`,
-          `En passant! You capture my pawn in passing to ${char(pawn)}! You made a move by pawn from ${char(from)} to ${char(to)}.`,
+          `En passant! You move your pawn from ${char(from)} to ${char(
+            to
+          )} and capture my pawn in passing to ${char(pawn)}!`,
+          `En passant! You capture my pawn in passing to ${char(
+            pawn
+          )}! You made a move by pawn from ${char(from)} to ${char(to)}.`,
         ],
         ru: [
-          `Энпассант! Вы ходите пешкой с ${char(from)} на ${char(to)} и забираете мою пешку на проходе к ${char(pawn)}!`,
-          `Энпассант! Вы забираете мою пешку на проходе к ${char(pawn)} ходом ${char(from)} ${char(to)}!`,
+          `Энпассант! Вы ходите пешкой с ${char(from)} на ${char(
+            to
+          )} и забираете мою пешку на проходе к ${char(pawn)}!`,
+          `Энпассант! Вы забираете мою пешку на проходе к ${char(
+            pawn
+          )} ходом ${char(from)} ${char(to)}!`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -320,16 +328,23 @@ export class Answer {
     return rand(
       ({
         en: [
-          `En passant! I move my pawn from ${char(from)} to ${char(to)} and capture your pawn in passing to ${char(pawn)}!`,
-          `En passant! I will capture your pawn in passing to ${char(pawn)}! My move is pawn ${char(from)} ${char(to)}.`,
+          `En passant! I move my pawn from ${char(from)} to ${char(
+            to
+          )} and capture your pawn in passing to ${char(pawn)}!`,
+          `En passant! I will capture your pawn in passing to ${char(
+            pawn
+          )}! My move is pawn ${char(from)} ${char(to)}.`,
         ],
         ru: [
-          `Энпассант! Я хожу пешкой с ${char(from)} на ${char(to)} и забираю вашу пешку ${char(pawn)} на проходе!`,
-          `Энпассант! Я заберу вашу пешку на проходе к ${char(pawn)}! Мой ход - пешка ${char(from)} ${char(to)}.`,
+          `Энпассант! Я хожу пешкой с ${char(from)} на ${char(
+            to
+          )} и забираю вашу пешку ${char(pawn)} на проходе!`,
+          `Энпассант! Я заберу вашу пешку на проходе к ${char(
+            pawn
+          )}! Мой ход - пешка ${char(from)} ${char(to)}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
-
   }
   static emptyPosition(pos: string): string {
     return rand(
