@@ -5,6 +5,7 @@ import { upFirst, pause } from './helpers';
 export interface HistoryFrame {
   m: string; // pieceCode + move: "pg2g4", "Pe7e8Q"
   b?: string; // beated piece code
+  e?: string; // beated 'en passant' piece code
 }
 
 export function historyOfMoves(
@@ -41,35 +42,52 @@ export function historyOfMoves(
       result += Voc.nextMoveInHistoryIntro() + ' ';
       intro = true;
     }
+    const enPassant = move.e;
     if (isPlayerMove) {
-      let firstPhrase = Voc.youMoved(piece, from, to);
-      if (!intro) {
-        firstPhrase = upFirst(firstPhrase);
-      }
-      result += firstPhrase;
-      if (move.b) {
-        addSeparator();
-        result += Voc.youTookMyPiece(move.b);
-      }
-      if (move.m.length === 6) {
-        addSeparator();
-        const promoteTo = move.m[5];
-        result += Voc.youPromoted(promoteTo);
+      if (!enPassant) {
+        let firstPhrase = Voc.youMoved(piece, from, to);
+        if (!intro) {
+          firstPhrase = upFirst(firstPhrase);
+        }
+        result += firstPhrase;
+        if (move.b) {
+          addSeparator();
+          result += Voc.youTookMyPiece(move.b);
+        }
+        if (move.m.length === 6) {
+          addSeparator();
+          const promoteTo = move.m[5];
+          result += Voc.youPromoted(promoteTo);
+        }
+      } else {
+        let enPassPhrase = Voc.youDoEnPassant(from, to, enPassant);
+        if (!intro) {
+          enPassPhrase = upFirst(enPassPhrase);
+        }
+        result += enPassPhrase;
       }
     } else {
-      let firstPhrase = Voc.iMoved(piece, from, to);
-      if (!intro) {
-        firstPhrase = upFirst(firstPhrase);
-      }
-      result += firstPhrase;
-      if (move.b) {
-        addSeparator();
-        result += Voc.iTookYourPiece(move.b);
-      }
-      if (move.m.length === 6) {
-        addSeparator();
-        const promoteTo = move.m[5];
-        result += Voc.iPromoted(promoteTo);
+      if (!enPassant) {
+        let firstPhrase = Voc.iMoved(piece, from, to);
+        if (!intro) {
+          firstPhrase = upFirst(firstPhrase);
+        }
+        result += firstPhrase;
+        if (move.b) {
+          addSeparator();
+          result += Voc.iTookYourPiece(move.b);
+        }
+        if (move.m.length === 6) {
+          addSeparator();
+          const promoteTo = move.m[5];
+          result += Voc.iPromoted(promoteTo);
+        }
+      } else {
+        let enPassPhrase = Voc.iDoEnPassant(from, to, enPassant);
+        if (!intro) {
+          enPassPhrase = upFirst(enPassPhrase);
+        }
+        result += enPassPhrase;
       }
     }
     result += '.' + pause(1) + '\n';

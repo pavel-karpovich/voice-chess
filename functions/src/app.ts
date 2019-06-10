@@ -297,12 +297,13 @@ async function moveByPlayer(
     chess = new Chess(fenstring, difficulty);
   }
   const correctCtx = conv.contexts.get('correct-last-move');
+  const hist = conv.user.storage.history;
   if (correctCtx) {
     const board = new ChessBoard(fenstring);
-    const lastAIMove = conv.user.storage.history.pop();
-    const lastPlayerMove = conv.user.storage.history.pop();
-    board.extract(lastAIMove.m, lastAIMove.b);
-    board.extract(lastPlayerMove.m, lastPlayerMove.b);
+    const lastAIMove = hist.pop();
+    const lastPlayerMove = hist.pop();
+    board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e);
+    board.extract(lastPlayerMove.m.slice(1), lastPlayerMove.b, lastPlayerMove.e);
     fenstring = board.convertToFen();
     chess.fenstring = fenstring;
   }
@@ -316,21 +317,29 @@ async function moveByPlayer(
   if (prologue) {
     answer += prologue + pause(1) + '\n';
   }
-  answer += Ans.playerMove(from, to, piece);
-  const isPromo = move.length === 5;
-  if (isPromo) {
-    const promotionPieceCode = move[4];
-    answer += ' ' + Ans.moveWithPromotion(promotionPieceCode);
+  const isEnPassant = (board.enPassant === to);
+  let enPassPawn = null;
+  if (!isEnPassant) {
+    answer += Ans.playerMove(from, to, piece);
+    if (move.length === 5) {
+      const promotionPieceCode = move[4];
+      answer += ' ' + Ans.moveWithPromotion(promotionPieceCode);
+    }
+  } else {
+    enPassPawn = hist[hist.length - 1].m.slice(3, 5);
+    answer += Ans.enPassantPlayer(from, to, enPassPawn);
   }
   let historyItem;
   if (beatedPiece) {
     historyItem = { m: piece + move, b: beatedPiece };
     answer += Ans.playerBeat(beatedPiece);
+  } else if (isEnPassant) {
+    historyItem = { m: piece + move, e: enPassPawn };
   } else {
     historyItem = { m: piece + move };
   }
-  // TODO: history.info for castling and En passant
-  conv.user.storage.history.push(historyItem);
+  // TODO: history for castling
+  hist.push(historyItem);
   conv.user.storage.fen = chess.fenstring;
   if (chess.currentGameState === ChessGameState.CHECKMATE) {
     speak(conv, answer + ' \n' + Ans.youWin());
@@ -365,54 +374,57 @@ async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
     const difficulty = conv.user.storage.options.difficulty;
     chess = new Chess(fenstring, difficulty);
   }
-  let board = new ChessBoard(chess.fenstring);
+  const hist = conv.user.storage.history;
+  const boardBeforeMove = new ChessBoard(chess.fenstring);
   await chess.moveAuto();
   const enemyFrom = chess.enemyMove.slice(0, 2);
   const enemyTo = chess.enemyMove.slice(2, 4);
-  const beatedPiece = board.pos(enemyTo);
-  board = new ChessBoard(chess.fenstring);
-  const enemyPiece = board.pos(enemyTo);
+  const beatedPiece = boardBeforeMove.pos(enemyTo);
+  const boardAfterMove = new ChessBoard(chess.fenstring);
+  const enemyPiece = boardAfterMove.pos(enemyTo);
   let answer = '';
-  const isPromo = chess.enemyMove.length === 5;
-  if (isPromo) {
-    answer = Ans.enemyMove(enemyFrom, enemyTo, 'p');
-    answer += ' ' + Ans.moveWithPromotion(enemyPiece);
+  const isEnPassant = (boardBeforeMove.enPassant === enemyTo);
+  let enPassPawn = null;
+  if (!isEnPassant) {
+    if (chess.enemyMove.length === 5) {
+      answer = Ans.enemyMove(enemyFrom, enemyTo, 'p');
+      answer += ' ' + Ans.moveWithPromotion(enemyPiece);
+    } else {
+      answer = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
+    }
   } else {
-    answer = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
+    enPassPawn = hist[hist.length - 1].m.slice(3, 5);
+    answer += Ans.enPassantEnemy(enemyFrom, enemyTo, enPassPawn);
   }
   let historyItem;
   if (beatedPiece) {
     historyItem = { m: enemyPiece + chess.enemyMove, b: beatedPiece };
     answer += Ans.enemyBeat(beatedPiece);
+  } else if (isEnPassant) {
+    historyItem = { m: enemyPiece + chess.enemyMove, e: enPassPawn };
   } else {
     historyItem = { m: enemyPiece + chess.enemyMove };
   }
-  // history.info for castling and En passant
-  conv.user.storage.history.push(historyItem);
-  if ((chess.currentGameState as ChessGameState) === ChessGameState.CHECKMATE) {
+  // history for castling
+  hist.push(historyItem);
+  if (chess.currentGameState === ChessGameState.CHECKMATE) {
     speak(conv, `${answer} \n${Ans.youLose()} \n${Ask.askToNewGame()}`);
     conv.contexts.set('ask-to-new-game', 1);
     conv.user.storage.fen = null;
     conv.contexts.delete('game');
     return;
-  } else if (
-    (chess.currentGameState as ChessGameState) === ChessGameState.STALEMATE
-  ) {
-    speak(
-      conv,
-      `${answer} \n${Ans.stalemateToPlayer()} \n${Ans.draw()} \n${Ask.askToNewGame()}`
-    );
+  } else if (chess.currentGameState === ChessGameState.STALEMATE) {
+    answer += ` \n${Ans.stalemateToPlayer()} \n`;
+    answer += `${Ans.draw()} \n${Ask.askToNewGame()}`;
+    speak(conv, answer);
     conv.contexts.set('ask-to-new-game', 1);
     conv.user.storage.fen = null;
     conv.contexts.delete('game');
     return;
-  } else if (
-    (chess.currentGameState as ChessGameState) === ChessGameState.FIFTYMOVEDRAW
-  ) {
-    speak(
-      conv,
-      `${answer} \n${Ans.fiftymove()} \n${Ans.draw()} \n${Ask.askToNewGame()}`
-    );
+  } else if (chess.currentGameState === ChessGameState.FIFTYMOVEDRAW) {
+    answer +=  ` \n${Ans.fiftymove()} \n`;
+    answer += `${Ans.draw()} \n${Ask.askToNewGame()}`;
+    speak(conv, answer);
     conv.contexts.set('ask-to-new-game', 1);
     conv.user.storage.fen = null;
     conv.contexts.delete('game');
@@ -452,12 +464,12 @@ app.intent(
     let fenstring = conv.user.storage.fen;
     const correctCtx = conv.contexts.get('correct-last-move');
     if (correctCtx) {
+      const hist = conv.user.storage.history;
       const board = new ChessBoard(fenstring);
-      const histLength = conv.user.storage.history.length;
-      const lastAIMove = conv.user.storage.history[histLength - 1];
-      const lastPlayerMove = conv.user.storage.history[histLength - 2];
-      board.extract(lastAIMove.m, lastAIMove.b);
-      board.extract(lastPlayerMove.m, lastPlayerMove.b);
+      const lastAIMove = hist[hist.length - 1];
+      const lastPlayerMove = hist[hist.length - 2];
+      board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e);
+      board.extract(lastPlayerMove.m.slice(1), lastPlayerMove.b, lastPlayerMove.e);
       fenstring = board.convertToFen();
     }
     const difficulty = conv.user.storage.options.difficulty;

@@ -13,7 +13,7 @@ export class ChessBoard {
   private dirty: boolean;
   private side: string;
   private castling: string;
-  private enPassant: string;
+  private enpsnt: string;
   private clock: number;
   private count: number;
 
@@ -38,7 +38,7 @@ export class ChessBoard {
     }
     this.side = fenParts[chessBoardSize];
     this.castling = fenParts[chessBoardSize + 1];
-    this.enPassant = fenParts[chessBoardSize + 2];
+    this.enpsnt = fenParts[chessBoardSize + 2];
     this.clock = Number(fenParts[chessBoardSize + 3]);
     this.count = Number(fenParts[chessBoardSize + 4]);
   }
@@ -62,7 +62,7 @@ export class ChessBoard {
     }
   }
 
-  extract(move: string, captured?: string): boolean {
+  extract(move: string, captured?: string, enPassantPawnPos?: string): boolean {
     let isReverseMoveValid = true;
     const from = move.slice(0, 2);
     const to = move.slice(2, 4);
@@ -78,12 +78,16 @@ export class ChessBoard {
         piece = this.board.get(to);
       }
       // TODO: castling
-      // TODO: en-passant
       this.board.set(from, piece);
       if (captured) {
         this.board.set(to, captured);
       } else {
         this.board.set(to, null);
+      }
+      if (enPassantPawnPos) {
+        const enemyPawn = (this.side === 'w' ? 'P' : 'p');
+        this.board.set(enPassantPawnPos, enemyPawn);
+        this.enpsnt = to;
       }
       if (this.side === 'w') {
         this.side = 'b';
@@ -129,10 +133,14 @@ export class ChessBoard {
       }
     }
     fen += ` ${this.side}`;
-    fen += ` ${this.castling} ${this.enPassant}`;
+    fen += ` ${this.castling} ${this.enpsnt}`;
     fen += ` ${this.clock} ${this.count}`;
     this.fen = fen;
     this.dirty = false;
     return fen;
+  }
+
+  get enPassant(): string {
+    return this.enpsnt;
   }
 }

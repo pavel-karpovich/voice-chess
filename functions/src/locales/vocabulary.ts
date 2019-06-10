@@ -519,4 +519,36 @@ export class Vocabulary {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static youDoEnPassant(from: string, to: string, pawn: string): string {
+    return rand(
+      ({
+        en: [
+          `you moved pawn from ${char(from)} to ${char(to)} and made 'En Passant', capturing my pawn on ${char(pawn)}`,
+          `you made in passing capturing of my pawn on ${char(pawn)} by move from ${char(from)} to ${char(to)}`,
+          `you captured my pawn 'En Passant' by moving from ${char(from)} to ${char(to)}`,
+        ],
+        ru: [
+          `вы походили пешкой с ${char(from)} на ${char(to)} и сделали Энпассант, забрав мою пешку на ${char(pawn)}`,
+          `вы выполнили взятие на проходе моей пешки к ${char(pawn)} своим ходом с ${char(from)} на ${char(to)}`,
+          `вы взяли мою пешку 'Эн пассант', сделав ход с ${char(from)} на ${char(to)}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static iDoEnPassant(from: string, to: string, pawn: string): string {
+    return rand(
+      ({
+        en: [
+          `you moved pawn from ${char(from)} to ${char(to)} and made 'En Passant', capturing my pawn on ${char(pawn)}`,
+          `you made in passing capturing of my pawn on ${char(pawn)} by move from ${char(from)} to ${char(to)}`,
+          `you captured my pawn 'En Passant' by moving from ${char(from)} to ${char(to)}`,
+        ],
+        ru: [
+          `я походил пешкой с ${char(from)} на ${char(to)} и совершил Энпассант, забрав вашу пешку на ${char(pawn)}`,
+          `своим ходом с ${char(from)} на ${char(to)}, я выполнил взятие вашей пешки на проходе к ${char(pawn)}`,
+          `я взял вашу пешку 'Эн пассант', сделав ход с ${char(from)} на ${char(to)}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }
