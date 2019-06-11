@@ -68,6 +68,20 @@ export class Vocabulary {
     const gen = this.pieceGender(pieceCode);
     return this.your(`${gen}/${opt}`) + ' ' + this.coloredPiece(pieceCode, opt);
   }
+  static someonesColoredPiece(pieceCode: string, side: ChessSide, opt = 'sin'): string {
+    if (getSide(pieceCode) === side) {
+      return this.yourColoredPiece(pieceCode, opt);
+    } else {
+      return this.myColoredPiece(pieceCode, opt);
+    }
+  }
+  static someonesPiece(pieceCode: string, side: ChessSide, opt = 'sin'): string {
+    if (getSide(pieceCode) === side) {
+      return this.yourPiece(pieceCode, opt);
+    } else {
+      return this.myPiece(pieceCode, opt);
+    }
+  }
   static black(opt = 'mus'): string {
     return ({
       en: ({

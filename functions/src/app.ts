@@ -961,6 +961,19 @@ function acceptAdvice(conv: VoiceChessConv) {
 
 app.intent('Accept Advice', acceptAdvice);
 
+app.intent('Square', (conv: VoiceChessConv, { square }: { square: string }) => {
+  const fenstring = conv.user.storage.fen;
+  const playerSide = conv.user.storage.side;
+  const board = new ChessBoard(fenstring);
+  const reqestedPiece = board.pos(square);
+  if (reqestedPiece) {
+    speak(conv, Ans.hereIsPieceOnPosition(square, reqestedPiece, playerSide));
+  } else {
+    speak(conv, Ans.emptyPosition(square));
+  }
+  speak(conv, Ask.nextSquareOrMove());
+});
+
 app.intent('Next', async (conv: VoiceChessConv) => {
   let isFallback = false;
   if (conv.contexts.get('moves-next')) {

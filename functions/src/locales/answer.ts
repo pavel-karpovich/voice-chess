@@ -433,14 +433,6 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static emptyPosition(pos: string): string {
-    return rand(
-      ({
-        en: [`${char(pos)} is free.`],
-        ru: [`Клетка ${char(pos)} свободна.`],
-      } as LocalizationObject<string[]>)[this.lang]
-    );
-  }
   static incorrectRankNumber(num: number): string {
     return rand(
       ({
@@ -1011,5 +1003,43 @@ export class Answer {
     let result = `${Voc.canMakeCastling(king)} ${Voc.castlingTo(to1)}`;
     result += ` ${Voc.and()} ${Voc.castlingTo(to2)}.`;
     return result;
+  }
+  static emptyPosition(pos: string): string {
+    return rand(
+      ({
+        en: [
+          `${char(pos)} is free.`,
+          `Square ${char(pos)} is empty!`,
+          `There is no piece on the square ${char(pos)}.`,
+          `Square ${char(pos)} is not occupied by anyone.`,
+        ],
+        ru: [
+          `Клетка ${char(pos)} свободна.`,
+          `Клетка ${char(pos)} никем не занята.`,
+          `На клетке ${char(pos)} ничего нет.`,
+          `Клетка ${char(pos)} пустая.`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static hereIsPieceOnPosition(pos: string, pieceCode: string, side: ChessSide): string {
+    return rand(
+      ({
+        en: [
+          `On ${char(pos)} is ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+          `On the square ${char(pos)} is the ${Voc.someonesPiece(pieceCode, side)}.`,
+          `Position ${char(pos)} is occupied by ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+          `Here is ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+          `On the square ${char(pos)} stands ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+        ],
+        ru: [
+          `На ${char(pos)} ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+          `На клетке ${char(pos)} стоит ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+          `Позиция ${char(pos)} занята ${Voc.someonesPiece(pieceCode, side, 'rod')}.`,
+          `Здесь находится ${Voc.someonesPiece(pieceCode, side)}.`,
+          `На квадрате ${char(pos)} находится ${Voc.someonesPiece(pieceCode, side)}.`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
   }
 }
