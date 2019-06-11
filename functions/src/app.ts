@@ -32,6 +32,7 @@ interface LongStorageData {
   side?: ChessSide;
   history?: HistoryFrame[];
   options?: Options;
+  cstFen?: string;
 }
 
 type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
@@ -320,12 +321,15 @@ async function moveByPlayer(
       lastPlayerMove.e,
       lastPlayerMove.c
     );
+    const cstFen = conv.user.storage.cstFen;
+    board.loadCorrectCastlingFen(cstFen);
     fenstring = board.convertToFen();
     chess.fenstring = fenstring;
   }
   const from = move.slice(0, 2);
   const to = move.slice(2, 4);
   const board = new ChessBoard(chess.fenstring);
+  conv.user.storage.cstFen = board.cstFen;
   const piece = board.pos(from);
   const beatedPiece = board.pos(to);
   await chess.move(move);
@@ -514,6 +518,8 @@ app.intent(
         lastPlayerMove.e,
         lastPlayerMove.c
       );
+      const cstFen = conv.user.storage.cstFen;
+      board.loadCorrectCastlingFen(cstFen);
       fenstring = board.convertToFen();
     }
     const difficulty = conv.user.storage.options.difficulty;
@@ -695,7 +701,7 @@ app.intent(
     const fenstring = conv.user.storage.fen;
     const board = new ChessBoard(fenstring);
     const playerSide = conv.user.storage.side;
-    const castlings = board.canCastling(playerSide);
+    const castlings = board.getAvailableCastlingMoves(playerSide);
     if (castlings.length === 0) {
       speak(conv, Ans.cantCastling());
       askOrRemind(conv);
@@ -738,7 +744,7 @@ app.intent(
     const fenstring = conv.user.storage.fen;
     const board = new ChessBoard(fenstring);
     const playerSide = conv.user.storage.side;
-    const castlings = board.canCastling(playerSide);
+    const castlings = board.getAvailableCastlingMoves(playerSide);
     const to1 = castlings[0].slice(2, 4);
     const to2 = castlings[1].slice(2, 4);
     const kingPiece = playerSide === ChessSide.WHITE ? 'K' : 'k';

@@ -76,7 +76,7 @@ export class ChessBoard {
     }
   }
 
-  canCastling(side: ChessSide): string[] {
+  getAvailableCastlingMoves(side: ChessSide): string[] {
     const availableCastling = [] as string[];
     const rank = side === ChessSide.WHITE ? '1' : '8';
     const c = (p: string): string => {
@@ -142,15 +142,6 @@ export class ChessBoard {
         const rock = this.board.get(rockTo);
         this.board.set(rockTo, null);
         this.board.set(rockFrom, rock);
-        const isWhiteCastle = rock === 'R';
-        const castlFenStr = isWhiteCastle ? 'KQ' : 'kq';
-        if (this.castling === '-') {
-          this.castling = castlFenStr;
-        } else if (isWhiteCastle) {
-          this.castling = castlFenStr + this.castling;
-        } else {
-          this.castling += castlFenStr;
-        }
       }
       if (this.side === 'w') {
         this.side = 'b';
@@ -166,6 +157,10 @@ export class ChessBoard {
     } else {
       return false;
     }
+  }
+
+  loadCorrectCastlingFen(cstFen: string): void {
+    this.castling = cstFen;
   }
 
   convertToFen(): string {
@@ -205,5 +200,9 @@ export class ChessBoard {
 
   get enPassant(): string {
     return this.enpsnt;
+  }
+
+  get cstFen(): string {
+    return this.castling;
   }
 }
