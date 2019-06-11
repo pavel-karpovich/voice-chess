@@ -239,18 +239,20 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static playerBeat(beatedPieceCode: string): string {
+  static playerEat(eatedPieceCode: string): string {
     return rand(
       ({
         en: [
-          `And grab ${Voc.myPiece(beatedPieceCode, 'vin')}.`,
-          `And you take off ${Voc.myPiece(beatedPieceCode, 'vin')}.`,
-          `And I loose ${Voc.myPiece(beatedPieceCode, 'vin')}!`,
+          `And grab ${Voc.myPiece(eatedPieceCode, 'vin')}.`,
+          `And you take off ${Voc.myPiece(eatedPieceCode, 'vin')}.`,
+          `And I loose ${Voc.myPiece(eatedPieceCode, 'vin')}!`,
+          `And you eat ${Voc.myPiece(eatedPieceCode)}.`,
         ],
         ru: [
-          `Ко всему прочему я теряю ${Voc.myPiece(beatedPieceCode, 'vin')}.`,
-          `И вы забираете ${Voc.myPiece(beatedPieceCode, 'vin')}, чёрт...`,
-          `И я лишаюсь ${Voc.myPiece(beatedPieceCode, 'rod')}!`,
+          `Ко всему прочему я теряю ${Voc.myPiece(eatedPieceCode, 'vin')}.`,
+          `И вы забираете ${Voc.myPiece(eatedPieceCode, 'vin')}, чёрт...`,
+          `И я лишаюсь ${Voc.myPiece(eatedPieceCode, 'rod')}!`,
+          `Вы съедаете ${Voc.myPiece(eatedPieceCode, 'vin')}!`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -279,25 +281,28 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static enemyBeat(beatedPieceCode: string): string {
+  static enemyEat(eatedPieceCode: string): string {
     return rand(
       ({
         en: [
-          `I beat ${Voc.yourPiece(beatedPieceCode, 'vin')}!`,
-          `And I will take ${Voc.yourPiece(beatedPieceCode, 'vin')}!`,
-          `Minus ${Voc.yourPiece(beatedPieceCode, 'vin')}.`,
+          `I eat ${Voc.yourPiece(eatedPieceCode)}!`,
+          `And I will take ${Voc.yourPiece(eatedPieceCode)}!`,
+          `Minus ${Voc.yourPiece(eatedPieceCode)}.`,
+          `And I captured ${Voc.yourPiece(eatedPieceCode)}!`,
+          `I captured ${Voc.yourPiece(eatedPieceCode)}.`,
         ],
         ru: [
-          `${upFirst(Voc.yourPiece(beatedPieceCode, 'sin'))} теперь ${Voc.my(
-            Voc.pieceGender(beatedPieceCode)
+          `${upFirst(Voc.yourPiece(eatedPieceCode, 'sin'))} теперь ${Voc.my(
+            Voc.pieceGender(eatedPieceCode)
           )}!`,
-          `И я лишу вас ${Voc.piece(beatedPieceCode, 'rod')}.`,
-          `И я забираю ${Voc.yourPiece(beatedPieceCode, 'vin')}.`,
-          `${upFirst(Voc.yourPiece(beatedPieceCode, 'vin'))} в минусе.`,
+          `И я лишу вас ${Voc.piece(eatedPieceCode, 'rod')}.`,
+          `И я забираю ${Voc.yourPiece(eatedPieceCode, 'vin')}.`,
+          `${upFirst(Voc.yourPiece(eatedPieceCode, 'vin'))} уходит в минус.`,
           `С вашего позволения, я забираю ${Voc.yourPiece(
-            beatedPieceCode,
+            eatedPieceCode,
             'vin'
           )}.`,
+          `Я съедаю ${Voc.yourPiece(eatedPieceCode, 'vin')}!`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

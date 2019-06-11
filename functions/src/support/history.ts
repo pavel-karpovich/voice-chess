@@ -68,7 +68,7 @@ export function historyOfMoves(
         result += firstPhrase;
         if (move.b) {
           addSeparator();
-          result += Voc.youTookMyPiece(move.b);
+          result += Voc.youAteMyPiece(move.b);
         }
         if (move.m.length === 6) {
           addSeparator();
@@ -99,7 +99,7 @@ export function historyOfMoves(
         result += firstPhrase;
         if (move.b) {
           addSeparator();
-          result += Voc.iTookYourPiece(move.b);
+          result += Voc.iAteYourPiece(move.b);
         }
         if (move.m.length === 6) {
           addSeparator();

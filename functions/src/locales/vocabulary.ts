@@ -1,6 +1,6 @@
 import { ChessSide, getSide } from '../chess/chessUtils';
 import { WordForms, LocalizationObject } from '../support/helpers';
-import { rand, char } from '../support/helpers';
+import { rand, char, upFirst } from '../support/helpers';
 
 export class Vocabulary {
   private static lang: string;
@@ -117,14 +117,14 @@ export class Vocabulary {
         mus: 'белый',
         fem: 'белая',
         plr: 'белые',
-        'mus/sin': 'чёрный',
-        'fem/sin': 'чёрная',
-        'mus/vin': 'чёрного',
-        'fem/vin': 'чёрную',
-        'mus/rod': 'чёрного',
-        'fem/rod': 'чёрной',
-        'plr/rod': 'чёрных',
-        'plr/tvr': 'чёрными',
+        'mus/sin': 'белый',
+        'fem/sin': 'белая',
+        'mus/vin': 'белого',
+        'fem/vin': 'белую',
+        'mus/rod': 'белого',
+        'fem/rod': 'белой',
+        'plr/rod': 'белых',
+        'plr/tvr': 'белыми',
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
@@ -215,66 +215,66 @@ export class Vocabulary {
     switch (n) {
       case 1:
         return ({
-          en: 'First rank',
+          en: 'first rank',
           ru: ({
-            mus: 'Первый ряд',
-            na: 'Первом ряду',
+            mus: 'первый ряд',
+            na: 'первом ряду',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 2:
         return ({
-          en: 'Second rank',
+          en: 'second rank',
           ru: ({
-            mus: 'Второй ряд',
-            na: 'Втором ряду',
+            mus: 'второй ряд',
+            na: 'втором ряду',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 3:
         return ({
-          en: 'Third rank',
+          en: 'third rank',
           ru: ({
-            mus: 'Третий ряд',
-            na: 'Третьем ряду',
+            mus: 'третий ряд',
+            na: 'третьем ряду',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 4:
         return ({
-          en: 'Fourth rank',
+          en: 'fourth rank',
           ru: ({
-            mus: 'Четвёртый ряд',
-            na: 'Четвёртом ряду',
+            mus: 'четвёртый ряд',
+            na: 'четвёртом ряду',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 5:
         return ({
-          en: 'Fifth rank',
+          en: 'fifth rank',
           ru: ({
-            mus: 'Пятый ряд',
-            na: 'Пятом ряду',
+            mus: 'пятый ряд',
+            na: 'пятом ряду',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 6:
         return ({
-          en: 'Sixth rank',
+          en: 'sixth rank',
           ru: ({
-            mus: 'Шестой ряд',
-            na: 'Шестом ряду',
+            mus: 'шестой ряд',
+            na: 'шестом ряду',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 7:
         return ({
-          en: 'Seventh rank',
+          en: 'seventh rank',
           ru: ({
-            mus: 'Седьмой ряд',
-            na: 'Седьмом ряду',
+            mus: 'седьмой ряд',
+            na: 'седьмом ряду',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 8:
         return ({
-          en: 'Eighth rank',
+          en: 'eighth rank',
           ru: ({
-            mus: 'Восьмой ряд',
-            na: 'Восьмом ряду',
+            mus: 'восьмой ряд',
+            na: 'восьмом ряду',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       default:
@@ -284,7 +284,7 @@ export class Vocabulary {
   static emptyRank(n: number): string {
     return rand(
       ({
-        en: [`${this.nRank(n)} is empty.`],
+        en: [`${upFirst(this.nRank(n))} is empty.`],
         ru: [`На ${this.nRank(n, 'na')} нет фигур.`],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -562,33 +562,37 @@ export class Vocabulary {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static youTookMyPiece(pieceCode: string): string {
+  static youAteMyPiece(pieceCode: string): string {
     return rand(
       ({
         en: [
-          `killed ${this.myPiece(pieceCode)}`,
+          `ate ${this.myPiece(pieceCode)}`,
           `took ${this.myPiece(pieceCode)}`,
           `left me without ${this.myPiece(pieceCode)}`,
+          `captured ${this.myPiece(pieceCode)}`,
         ],
         ru: [
           `забрали ${this.myPiece(pieceCode, 'vin')}`,
-          `убили ${this.myPiece(pieceCode, 'vin')}`,
+          `съели ${this.myPiece(pieceCode, 'vin')}`,
+          `захватили ${this.myPiece(pieceCode, 'vin')}`,
           `лишили меня ${this.piece(pieceCode, 'rod')}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static iTookYourPiece(pieceCode: string): string {
+  static iAteYourPiece(pieceCode: string): string {
     return rand(
       ({
         en: [
-          `killed ${this.yourPiece(pieceCode)}`,
+          `ate ${this.yourPiece(pieceCode)}`,
           `took ${this.yourPiece(pieceCode)}`,
           `left you without ${this.yourPiece(pieceCode)}`,
+          `captured ${this.yourPiece(pieceCode)}`,
         ],
         ru: [
           `забрал ${this.yourPiece(pieceCode, 'vin')}`,
-          `убил ${this.yourPiece(pieceCode, 'vin')}`,
+          `съел ${this.yourPiece(pieceCode, 'vin')}`,
+          `захватил ${this.yourPiece(pieceCode, 'vin')}`,
           `лишил вас ${this.piece(pieceCode, 'rod')}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]

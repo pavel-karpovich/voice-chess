@@ -5,10 +5,10 @@ import { Vocabulary as Voc } from '../locales/vocabulary';
 function singleRank(rank: ChessSquareData[], rankNum: number): string {
   let resultString = '';
   if (rank.every(el => el.val === null)) {
-    const emptyRankString = upFirst(Voc.emptyRank(rankNum));
+    const emptyRankString = Voc.emptyRank(rankNum);
     resultString += emptyRankString + '\n';
   } else {
-    resultString += Voc.nRank(rankNum) + ': ';
+    resultString += upFirst(Voc.nRank(rankNum)) + ': ';
     for (const square of rank) {
       if (square.val !== null) {
         resultString +=
@@ -22,9 +22,7 @@ function singleRank(rank: ChessSquareData[], rankNum: number): string {
 
 export function showRank(fen: string, rankNum: number): string {
   const board = new ChessBoard(fen);
-  console.log('rankNum 2: ' + rankNum);
   const rankData = board.rank(rankNum);
-  console.log('rankData length: ' + rankData.length);
   const result = singleRank(rankData, rankNum);
   return result;
 }

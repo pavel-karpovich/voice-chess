@@ -360,7 +360,7 @@ async function moveByPlayer(
   let historyItem;
   if (beatedPiece) {
     historyItem = { m: piece + move, b: beatedPiece };
-    answer += Ans.playerBeat(beatedPiece);
+    answer += Ans.playerEat(beatedPiece);
   } else if (cast) {
     historyItem = { m: piece + move, c: cast };
   } else if (isEnPassant) {
@@ -436,7 +436,7 @@ async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
   let historyItem;
   if (beatedPiece) {
     historyItem = { m: enemyPiece + chess.enemyMove, b: beatedPiece };
-    answer += Ans.enemyBeat(beatedPiece);
+    answer += Ans.enemyEat(beatedPiece);
   } else if (cast) {
     historyItem = { m: enemyPiece + chess.enemyMove, c: cast };
   } else if (isEnPassant) {
