@@ -1,4 +1,5 @@
 import { chessBoardSize } from './chess';
+import { ChessSide } from './chessUtils';
 
 export interface ChessSquareData {
   pos: string;
@@ -6,6 +7,9 @@ export interface ChessSquareData {
 }
 
 const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+const wCastling = new Map([['e1g1', 'h1f1'], ['e1c1', 'a1d1']]);
+const bCastling = new Map([['e8g8', 'h8f8'], ['e8c8', 'a8d8']]);
 
 export class ChessBoard {
   private board: Map<string, string>;
@@ -62,7 +66,52 @@ export class ChessBoard {
     }
   }
 
-  extract(move: string, captured?: string, enPassantPawnPos?: string): boolean {
+  isCastling(move: string, piece: string): string {
+    if (piece === 'K' && wCastling.has(move)) {
+      return wCastling.get(move);
+    } else if (piece === 'k' && bCastling.has(move)) {
+      return bCastling.get(move);
+    } else {
+      return null;
+    }
+  }
+
+  canCastling(side: ChessSide): string[] {
+    const availableCastling = [] as string[];
+    const rank = side === ChessSide.WHITE ? '1' : '8';
+    const c = (p: string): string => {
+      return side === ChessSide.WHITE ? p.toUpperCase() : p.toLowerCase();
+    };
+    if (this.castling.includes(c('Q'))) {
+      if (
+        this.board.get(`a${rank}`) === c('R') &&
+        this.board.get(`b${rank}`) === null &&
+        this.board.get(`c${rank}`) === null &&
+        this.board.get(`d${rank}`) === null &&
+        this.board.get(`e${rank}`) === c('K')
+      ) {
+        availableCastling.push(`e${rank}c${rank}`);
+      }
+    }
+    if (this.castling.includes(c('K'))) {
+      if (
+        this.board.get(`e${rank}`) === c('K') &&
+        this.board.get(`f${rank}`) === null &&
+        this.board.get(`g${rank}`) === null &&
+        this.board.get(`h${rank}`) === c('R')
+      ) {
+        availableCastling.push(`e${rank}g${rank}`);
+      }
+    }
+    return availableCastling;
+  }
+
+  extract(
+    move: string,
+    captured?: string,
+    enPassantPawnPos?: string,
+    castlingRockMove?: string
+  ): boolean {
     let isReverseMoveValid = true;
     const from = move.slice(0, 2);
     const to = move.slice(2, 4);
@@ -77,7 +126,6 @@ export class ChessBoard {
       } else {
         piece = this.board.get(to);
       }
-      // TODO: castling
       this.board.set(from, piece);
       if (captured) {
         this.board.set(to, captured);
@@ -88,6 +136,21 @@ export class ChessBoard {
         const enemyPawn = this.side === 'w' ? 'P' : 'p';
         this.board.set(enPassantPawnPos, enemyPawn);
         this.enpsnt = to;
+      } else if (castlingRockMove) {
+        const rockFrom = castlingRockMove.slice(0, 2);
+        const rockTo = castlingRockMove.slice(2, 4);
+        const rock = this.board.get(rockTo);
+        this.board.set(rockTo, null);
+        this.board.set(rockFrom, rock);
+        const isWhiteCastle = rock === 'R';
+        const castlFenStr = isWhiteCastle ? 'KQ' : 'kq';
+        if (this.castling === '-') {
+          this.castling = castlFenStr;
+        } else if (isWhiteCastle) {
+          this.castling = castlFenStr + this.castling;
+        } else {
+          this.castling += castlFenStr;
+        }
       }
       if (this.side === 'w') {
         this.side = 'b';

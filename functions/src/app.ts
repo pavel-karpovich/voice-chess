@@ -9,7 +9,7 @@ import {
   ChessGameState,
   maxDifficulty,
 } from './chess/chess';
-import { ChessSide, getSide } from './chess/chessUtils';
+import { ChessSide, CastlingType, getSide } from './chess/chessUtils';
 import { ChessBoard } from './chess/chessboard';
 import { pause, gaussianRandom } from './support/helpers';
 import { HistoryFrame, historyOfMoves } from './support/history';
@@ -50,6 +50,7 @@ const restorableContexts = [
   'moves-next',
   'advice-made',
   'correct-last-move',
+  'choose-castling',
 ];
 
 function speak(conv: VoiceChessConv, text: string) {
@@ -307,11 +308,17 @@ async function moveByPlayer(
     const board = new ChessBoard(fenstring);
     const lastAIMove = hist.pop();
     const lastPlayerMove = hist.pop();
-    board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e);
+    board.extract(
+      lastAIMove.m.slice(1),
+      lastAIMove.b,
+      lastAIMove.e,
+      lastAIMove.c
+    );
     board.extract(
       lastPlayerMove.m.slice(1),
       lastPlayerMove.b,
-      lastPlayerMove.e
+      lastPlayerMove.e,
+      lastPlayerMove.c
     );
     fenstring = board.convertToFen();
     chess.fenstring = fenstring;
@@ -327,27 +334,36 @@ async function moveByPlayer(
     answer += prologue + pause(1) + '\n';
   }
   const isEnPassant = board.enPassant === to;
+  const cast = board.isCastling(move, piece);
   let enPassPawn = null;
-  if (!isEnPassant) {
+  if (cast) {
+    answer += Ans.castlingByPlayer(
+      from,
+      to,
+      cast.slice(0, 2),
+      cast.slice(2, 4)
+    );
+  } else if (isEnPassant) {
+    enPassPawn = hist[hist.length - 1].m.slice(3, 5);
+    answer += Ans.enPassantPlayer(from, to, enPassPawn);
+  } else {
     answer += Ans.playerMove(from, to, piece);
     if (move.length === 5) {
       const promotionPieceCode = move[4];
       answer += ' ' + Ans.moveWithPromotion(promotionPieceCode);
     }
-  } else {
-    enPassPawn = hist[hist.length - 1].m.slice(3, 5);
-    answer += Ans.enPassantPlayer(from, to, enPassPawn);
   }
   let historyItem;
   if (beatedPiece) {
     historyItem = { m: piece + move, b: beatedPiece };
     answer += Ans.playerBeat(beatedPiece);
+  } else if (cast) {
+    historyItem = { m: piece + move, c: cast };
   } else if (isEnPassant) {
     historyItem = { m: piece + move, e: enPassPawn };
   } else {
     historyItem = { m: piece + move };
   }
-  // TODO: history for castling
   hist.push(historyItem);
   conv.user.storage.fen = chess.fenstring;
   if (chess.currentGameState === ChessGameState.CHECKMATE) {
@@ -393,28 +409,37 @@ async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
   const enemyPiece = boardAfterMove.pos(enemyTo);
   let answer = '';
   const isEnPassant = boardBeforeMove.enPassant === enemyTo;
+  const cast = boardBeforeMove.isCastling(chess.enemyMove, enemyPiece);
   let enPassPawn = null;
-  if (!isEnPassant) {
+  if (cast) {
+    answer += Ans.castlingByOpponent(
+      enemyFrom,
+      enemyTo,
+      cast.slice(0, 2),
+      cast.slice(2, 4)
+    );
+  } else if (isEnPassant) {
+    enPassPawn = hist[hist.length - 1].m.slice(3, 5);
+    answer += Ans.enPassantEnemy(enemyFrom, enemyTo, enPassPawn);
+  } else {
     if (chess.enemyMove.length === 5) {
       answer = Ans.enemyMove(enemyFrom, enemyTo, 'p');
       answer += ' ' + Ans.moveWithPromotion(enemyPiece);
     } else {
       answer = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
     }
-  } else {
-    enPassPawn = hist[hist.length - 1].m.slice(3, 5);
-    answer += Ans.enPassantEnemy(enemyFrom, enemyTo, enPassPawn);
   }
   let historyItem;
   if (beatedPiece) {
     historyItem = { m: enemyPiece + chess.enemyMove, b: beatedPiece };
     answer += Ans.enemyBeat(beatedPiece);
+  } else if (cast) {
+    historyItem = { m: enemyPiece + chess.enemyMove, c: cast };
   } else if (isEnPassant) {
     historyItem = { m: enemyPiece + chess.enemyMove, e: enPassPawn };
   } else {
     historyItem = { m: enemyPiece + chess.enemyMove };
   }
-  // history for castling
   hist.push(historyItem);
   if (chess.currentGameState === ChessGameState.CHECKMATE) {
     speak(conv, `${answer} \n${Ans.youLose()} \n${Ask.askToNewGame()}`);
@@ -477,11 +502,17 @@ app.intent(
       const board = new ChessBoard(fenstring);
       const lastAIMove = hist[hist.length - 1];
       const lastPlayerMove = hist[hist.length - 2];
-      board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e);
+      board.extract(
+        lastAIMove.m.slice(1),
+        lastAIMove.b,
+        lastAIMove.e,
+        lastAIMove.c
+      );
       board.extract(
         lastPlayerMove.m.slice(1),
         lastPlayerMove.b,
-        lastPlayerMove.e
+        lastPlayerMove.e,
+        lastPlayerMove.c
       );
       fenstring = board.convertToFen();
     }
@@ -655,6 +686,98 @@ app.intent(
     const chess = new Chess(fenstring, difficulty);
     await playerMoveByAI(conv, chess);
     await moveByAI(conv, chess);
+  }
+);
+
+app.intent(
+  'Castling',
+  async (conv: VoiceChessConv): Promise<void> => {
+    const fenstring = conv.user.storage.fen;
+    const board = new ChessBoard(fenstring);
+    const playerSide = conv.user.storage.side;
+    const castlings = board.canCastling(playerSide);
+    if (castlings.length === 0) {
+      speak(conv, Ans.cantCastling());
+      askOrRemind(conv);
+      return;
+    }
+    const kingPos = castlings[0].slice(0, 2);
+    const to1 = castlings[0].slice(2, 4);
+    if (castlings.length === 2) {
+      const to2 = castlings[1].slice(2, 4);
+      speak(conv, Ans.twoTypesOfCastling(kingPos, to1, to2));
+      speak(conv, Ask.chooseCastling());
+      conv.contexts.set('choose-castling', 1);
+      return;
+    }
+    const needConfirm = conv.user.storage.options.confirm;
+    if (needConfirm) {
+      const king = playerSide === ChessSide.WHITE ? 'K' : 'k';
+      const rockMove = board.isCastling(castlings[0], king);
+      const rFrom = rockMove.slice(0, 2);
+      const rTo = rockMove.slice(2, 4);
+      speak(conv, Ask.askToConfirmCastling(kingPos, to1, rFrom, rTo));
+      conv.contexts.set('confirm-move', 1, { move: castlings[0] });
+      return;
+    }
+    await moveByPlayer(conv, castlings[0]);
+    await moveByAI(conv);
+  }
+);
+
+app.intent(
+  'Choose Castling',
+  async (
+    conv: VoiceChessConv,
+    {
+      cast,
+      piece,
+      cell,
+    }: { cast?: CastlingType; piece?: string; cell?: string }
+  ) => {
+    const fenstring = conv.user.storage.fen;
+    const board = new ChessBoard(fenstring);
+    const playerSide = conv.user.storage.side;
+    const castlings = board.canCastling(playerSide);
+    const to1 = castlings[0].slice(2, 4);
+    const to2 = castlings[1].slice(2, 4);
+    const kingPiece = playerSide === ChessSide.WHITE ? 'K' : 'k';
+    const rockMove1 = board.isCastling(castlings[0], kingPiece);
+    const rockFrom1 = rockMove1.slice(0, 2);
+    const rockTo1 = rockMove1.slice(2, 4);
+    const rockMove2 = board.isCastling(castlings[1], kingPiece);
+    const rockFrom2 = rockMove2.slice(0, 2);
+    const rockTo2 = rockMove2.slice(2, 4);
+    let playerMove;
+    if (
+      cast === CastlingType.KINGSIDE ||
+      piece === 'k' ||
+      (cell === to1 || cell === rockFrom1 || cell === rockTo1)
+    ) {
+      playerMove = castlings[0];
+    } else if (
+      cast === CastlingType.QUEENSIDE ||
+      piece === 'q' ||
+      (cell === to2 || cell === rockFrom2 || cell === rockTo2)
+    ) {
+      playerMove = castlings[1];
+    } else {
+      fallbackHandler(conv);
+      return;
+    }
+    const needConfirm = conv.user.storage.options.confirm;
+    if (needConfirm) {
+      const kingPos = playerMove.slice(0, 2);
+      if (playerMove === castlings[0]) {
+        speak(conv, Ask.askToConfirmCastling(kingPos, to1, rockFrom1, rockTo1));
+      } else {
+        speak(conv, Ask.askToConfirmCastling(kingPos, to2, rockFrom2, rockTo2));
+      }
+      conv.contexts.set('confirm-move', 1, { move: playerMove });
+      return;
+    }
+    await moveByPlayer(conv, playerMove);
+    await moveByAI(conv);
   }
 );
 
@@ -884,6 +1007,8 @@ app.intent(
       }
     } else if (conv.contexts.get('advice-made')) {
       speak(conv, Ask.askToMove());
+    } else if (conv.contexts.get('correct-last-move')) {
+      speak(conv, Ask.correctFails());
     } else {
       isFallback = true;
       fallbackHandler(conv);

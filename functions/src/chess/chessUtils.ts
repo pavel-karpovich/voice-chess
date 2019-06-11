@@ -3,6 +3,11 @@ export const enum ChessSide {
   BLACK = '2',
 }
 
+export const enum CastlingType {
+  KINGSIDE = '1',
+  QUEENSIDE = '2',
+}
+
 export function getSide(pieceCode: string): ChessSide {
   if (pieceCode === pieceCode.toUpperCase()) {
     return ChessSide.WHITE;

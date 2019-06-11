@@ -171,7 +171,7 @@ export class Ask {
       ({
         en: [
           'You can think your move and answer me later.',
-          'Do you have another option?',
+          'Do you have another move on your mind?',
           'Choose the correct move.',
           'Then try something else.',
         ],
@@ -355,6 +355,51 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static askToConfirmCastling(
+    kFrom: string,
+    kTo: string,
+    rFrom: string,
+    rTo: string
+  ): string {
+    return rand(
+      ({
+        en: [
+          `You are going to castling. The king will go from ${char(
+            kFrom
+          )} to ${char(kTo)}, you confirm?`,
+          `When castling, the king will make a double move from ${char(
+            kFrom
+          )} to ${char(kTo)}, and rock from ${char(rFrom)} will move to ${char(
+            rTo
+          )}. Does it suit you?`,
+          `When castling, the king will move to the square ${char(
+            kTo
+          )}, and rock will move to ${char(rTo)}. Do you confirm this move?`,
+          `Castling a king with a rock will cause the king to move to square ${char(
+            kTo
+          )}, and the rock from ${char(rFrom)} to ${char(rTo)}. Okay?`,
+        ],
+        ru: [
+          `Вы собираетесь выполнить рокировку королём с ${char(
+            kFrom
+          )} на ${char(kTo)}, всё верно?`,
+          `При рокировке король переместится на две клетки, с ${char(
+            kFrom
+          )} на ${char(kTo)}, а ладья с ${char(
+            rFrom
+          )} встанет за королём на ${char(rTo)}. Вы подтвержаете ход?`,
+          `При рокировке король перейдёт на клетку ${char(
+            kTo
+          )}, а ладья с ${char(rFrom)} встанет на ${char(
+            rTo
+          )}. Вы подтверждаете рокировку?`,
+          `Рокировка короля с ладьёй приведёт к перемещению короля на клетку ${char(
+            kTo
+          )}, а ладью на клетку ${char(rTo)}. Вы согласны?`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
   static isAnybodyHere(): string {
     return rand(
       ({
@@ -434,6 +479,25 @@ export class Ask {
           'Всё осталось по прежнему, и вам нужно ходить.',
           'Корректировки хода не произошло и вы вернулись к оригинальному варианту. Ходите.',
           'Значит продолжаем партию как обычно. Ваш ход.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static chooseCastling(): string {
+    return rand(
+      ({
+        en: [
+          'What do you choose?',
+          'Which one do you want to choose?',
+          'In which direction do you want castling?',
+          'How do you castling?',
+        ],
+        ru: [
+          'Какую вы выбираете?',
+          'Какую из них вы хотите сделать?',
+          'В каком направлении вы хотите сделать рокировку?',
+          'Какую из этих двух рокировок вы хотите совершить?',
+          'Какую рокировку вы сделаете?',
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

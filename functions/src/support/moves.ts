@@ -14,6 +14,7 @@ interface PieceMoves {
   pos: string;
   moves: Move[];
   enPassant?: boolean;
+  castling?: boolean;
 }
 interface MovesBulk {
   end: boolean;
@@ -36,6 +37,8 @@ export function getBulkOfMoves(
     allMoves.sort((move1, move2) => {
       const beat1 = board.pos(move1.slice(2, 4));
       const beat2 = board.pos(move2.slice(2, 4));
+      const cast1 = board.isCastling(move1, board.pos(move1.slice(0, 2)));
+      const cast2 = board.isCastling(move2, board.pos(move2.slice(0, 2)));
       if (
         move1.slice(2, 4) !== board.enPassant &&
         move2.slice(2, 4) === board.enPassant
@@ -50,6 +53,8 @@ export function getBulkOfMoves(
       else if (move1.length === 5 && move2.length === 4) return -1;
       else if (beat1 === null && beat2 !== null) return 1;
       else if (beat1 !== null && beat2 === null) return -1;
+      else if (cast1 === null && cast2 !== null) return 1;
+      else if (cast1 !== null && cast2 === null) return -1;
       else return move1.localeCompare(move2);
     });
   } else {
@@ -58,6 +63,8 @@ export function getBulkOfMoves(
       const from2 = move2.slice(0, 2);
       const beat1 = board.pos(move1.slice(2, 4));
       const beat2 = board.pos(move2.slice(2, 4));
+      const cast1 = board.isCastling(move1, board.pos(from1));
+      const cast2 = board.isCastling(move2, board.pos(from2));
       if (
         move1.slice(2, 4) !== board.enPassant &&
         move2.slice(2, 4) === board.enPassant
@@ -68,7 +75,9 @@ export function getBulkOfMoves(
         move2.slice(2, 4) !== board.enPassant
       ) {
         return -1;
-      } else if (from1.localeCompare(from2) === 1) return 1;
+      } else if (cast1 === null && cast2 !== null) return 1;
+      else if (cast1 !== null && cast2 === null) return -1;
+      else if (from1.localeCompare(from2) === 1) return 1;
       else if (from1.localeCompare(from2) === -1) return -1;
       else if (beat1 === null && beat2 !== null) return 1;
       else if (beat1 !== null && beat2 === null) return -1;
@@ -88,29 +97,44 @@ export function getBulkOfMoves(
     ret.next = allMoves.length;
     let lastPos = allMoves[n].slice(0, 2);
     let posTo = allMoves[n].slice(2, 4);
+    let pieceType = board.pos(lastPos);
+    let prevCastling = board.isCastling(allMoves[n], pieceType);
     let prevEnPassant = posTo === board.enPassant;
     let piece;
-    if (!prevEnPassant) {
+    if (prevCastling) {
       piece = {
         pos: lastPos,
-        type: board.pos(lastPos),
+        type: pieceType,
         moves: [] as Move[],
+        castling: true,
+      };
+    } else if (prevEnPassant) {
+      piece = {
+        pos: enPawnPos(board.enPassant),
+        type: pieceType,
+        moves: [] as Move[],
+        enPassant: true,
       };
     } else {
       piece = {
-        pos: enPawnPos(board.enPassant),
-        type: board.pos(lastPos),
+        pos: lastPos,
+        type: pieceType,
         moves: [] as Move[],
-        enPassant: true,
       };
     }
     for (let i = n; i < allMoves.length; ++i) {
       const currentPos = allMoves[i].slice(0, 2);
       posTo = allMoves[i].slice(2, 4);
+      pieceType = board.pos(currentPos);
       const promo = allMoves[i].length === 5;
       let mv = null;
+      const isCastling = board.isCastling(allMoves[i], pieceType);
       const isEnPassant = posTo === board.enPassant;
-      if (!isEnPassant) {
+      if (isEnPassant) {
+        mv = { to: posTo, from: currentPos };
+      } else if (isCastling) {
+        mv = { to: posTo };
+      } else {
         if (promo) {
           const beat = board.pos(posTo);
           if (beat) {
@@ -127,35 +151,44 @@ export function getBulkOfMoves(
             mv = { to: posTo };
           }
         }
-      } else {
-        mv = { to: posTo, from: currentPos };
       }
       if (
         (currentPos === lastPos &&
-          isEnPassant === prevEnPassant &&
-          isEnPassant === false) ||
-        (isEnPassant === prevEnPassant && isEnPassant === true)
+          isEnPassant === false &&
+          prevEnPassant === false &&
+          isCastling === null &&
+          prevCastling === null) ||
+        (isEnPassant === true && prevEnPassant === true) ||
+        (isCastling !== null && prevCastling !== null)
       ) {
         piece.moves.push(mv);
       } else {
         ret.pieces.push(piece);
         lastPos = currentPos;
-        if (!isEnPassant) {
+        if (isEnPassant) {
+          piece = {
+            pos: enPawnPos(board.enPassant),
+            type: pieceType,
+            moves: [] as Move[],
+            enPassant: true,
+          };
+        } else if (isCastling) {
           piece = {
             pos: lastPos,
-            type: board.pos(lastPos),
+            type: pieceType,
             moves: [mv],
+            castling: true,
           };
         } else {
           piece = {
-            pos: enPawnPos(board.enPassant),
-            type: board.pos(lastPos),
-            moves: [] as Move[],
-            enPassant: true,
+            pos: lastPos,
+            type: pieceType,
+            moves: [mv],
           };
         }
       }
       prevEnPassant = isEnPassant;
+      prevCastling = isCastling;
     }
     ret.pieces.push(piece);
   } else {
@@ -165,30 +198,45 @@ export function getBulkOfMoves(
     ret.end = false;
     let lastPos = allMoves[n].slice(0, 2);
     let posTo = allMoves[n].slice(2, 4);
+    let pieceType = board.pos(lastPos);
+    let prevCastling = board.isCastling(allMoves[n], pieceType);
     let prevEnPassant = posTo === board.enPassant;
     let piece;
-    if (!prevEnPassant) {
-      piece = {
-        pos: lastPos,
-        type: board.pos(lastPos),
-        moves: [] as Move[],
-      };
-    } else {
+    if (prevEnPassant) {
       piece = {
         pos: enPawnPos(board.enPassant),
         type: board.pos(lastPos),
         moves: [] as Move[],
         enPassant: true,
       };
+    } else if (prevCastling) {
+      piece = {
+        pos: lastPos,
+        type: pieceType,
+        moves: [] as Move[],
+        castling: true,
+      };
+    } else {
+      piece = {
+        pos: lastPos,
+        type: pieceType,
+        moves: [] as Move[],
+      };
     }
     let i;
     for (i = n; i < maxN + 1; ++i) {
       const currentPos = allMoves[i].slice(0, 2);
+      pieceType = board.pos(currentPos);
       posTo = allMoves[i].slice(2, 4);
       const promo = allMoves[i].length === 5;
       let mv = null;
+      const isCastling = board.isCastling(allMoves[i], pieceType);
       const isEnPassant = posTo === board.enPassant;
-      if (!isEnPassant) {
+      if (isEnPassant) {
+        mv = { to: posTo, from: currentPos };
+      } else if (isCastling) {
+        mv = { to: posTo };
+      } else {
         if (promo) {
           const beat = board.pos(posTo);
           if (beat) {
@@ -205,14 +253,15 @@ export function getBulkOfMoves(
             mv = { to: posTo };
           }
         }
-      } else {
-        mv = { to: posTo, from: currentPos };
       }
       if (
         (currentPos === lastPos &&
-          isEnPassant === prevEnPassant &&
-          isEnPassant === false) ||
-        (isEnPassant === prevEnPassant && isEnPassant === true)
+          isEnPassant === false &&
+          prevEnPassant === false &&
+          isCastling === null &&
+          prevCastling === null) ||
+        (isEnPassant === true && prevEnPassant === true) ||
+        (isCastling !== null && prevCastling !== null)
       ) {
         if (i === maxN) {
           if (totalLength(ret) <= standardSize - permissibleVariation) {
@@ -229,22 +278,30 @@ export function getBulkOfMoves(
           break;
         }
         lastPos = currentPos;
-        if (!isEnPassant) {
+        if (isEnPassant) {
+          piece = {
+            pos: enPawnPos(board.enPassant),
+            type: pieceType,
+            moves: [] as Move[],
+            enPassant: true,
+          };
+        } else if (isCastling) {
           piece = {
             pos: lastPos,
-            type: board.pos(lastPos),
+            type: pieceType,
             moves: [mv],
+            castling: true,
           };
         } else {
           piece = {
-            pos: enPawnPos(board.enPassant),
-            type: board.pos(lastPos),
-            moves: [] as Move[],
-            enPassant: true,
+            pos: lastPos,
+            type: pieceType,
+            moves: [mv],
           };
         }
       }
       prevEnPassant = isEnPassant;
+      prevCastling = isCastling;
     }
     ret.next = i;
   }
@@ -329,14 +386,28 @@ function enPassantFromBulk(pos: PieceMoves): string {
   return result;
 }
 
+function castlingFromBulk(pos: PieceMoves): string {
+  let result = Voc.canMakeCastling(pos.pos);
+  result += ' ' + Voc.castlingTo(pos.moves[0].to);
+  if (pos.moves.length === 2) {
+    result += ' ' + Voc.and() + ' ';
+    result += Voc.castlingTo(pos.moves[1].to);
+  }
+  result += '.';
+  return result;
+}
+
 export function listMoves(bulk: PieceMoves[]): string {
   let result = '';
-  for (const move of bulk) {
-    if (!move.enPassant) {
-      result += onePosFromBulk(move) + pause(1) + ' ';
+  for (const piece of bulk) {
+    if (piece.enPassant) {
+      result += enPassantFromBulk(piece);
+    } else if (piece.castling) {
+      result += castlingFromBulk(piece);
     } else {
-      result += enPassantFromBulk(move) + pause(1) + ' ';
+      result += onePosFromBulk(piece);
     }
+    result += pause(1) + ' ';
   }
   return result;
 }

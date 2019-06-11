@@ -6,6 +6,7 @@ export interface HistoryFrame {
   m: string; // pieceCode + move: "pg2g4", "Pe7e8Q"
   b?: string; // beated piece code
   e?: string; // beated 'en passant' piece code
+  c?: string; // rock move when castling
 }
 
 export function historyOfMoves(
@@ -43,8 +44,23 @@ export function historyOfMoves(
       intro = true;
     }
     const enPassant = move.e;
+    const castling = move.c;
     if (isPlayerMove) {
-      if (!enPassant) {
+      if (castling) {
+        const rockFrom = castling.slice(0, 2);
+        const rockTo = castling.slice(2, 4);
+        let castlingPhrase = Voc.youDoCastling(from, to, rockFrom, rockTo);
+        if (!intro) {
+          castlingPhrase = upFirst(castlingPhrase);
+        }
+        result += castlingPhrase;
+      } else if (enPassant) {
+        let enPassPhrase = Voc.youDoEnPassant(from, to, enPassant);
+        if (!intro) {
+          enPassPhrase = upFirst(enPassPhrase);
+        }
+        result += enPassPhrase;
+      } else {
         let firstPhrase = Voc.youMoved(piece, from, to);
         if (!intro) {
           firstPhrase = upFirst(firstPhrase);
@@ -59,15 +75,23 @@ export function historyOfMoves(
           const promoteTo = move.m[5];
           result += Voc.youPromoted(promoteTo);
         }
-      } else {
-        let enPassPhrase = Voc.youDoEnPassant(from, to, enPassant);
+      }
+    } else {
+      if (castling) {
+        const rockFrom = castling.slice(0, 2);
+        const rockTo = castling.slice(2, 4);
+        let castlingPhrase = Voc.iDoCastling(from, to, rockFrom, rockTo);
+        if (!intro) {
+          castlingPhrase = upFirst(castlingPhrase);
+        }
+        result += castlingPhrase;
+      } else if (enPassant) {
+        let enPassPhrase = Voc.iDoEnPassant(from, to, enPassant);
         if (!intro) {
           enPassPhrase = upFirst(enPassPhrase);
         }
         result += enPassPhrase;
-      }
-    } else {
-      if (!enPassant) {
+      } else {
         let firstPhrase = Voc.iMoved(piece, from, to);
         if (!intro) {
           firstPhrase = upFirst(firstPhrase);
@@ -82,12 +106,6 @@ export function historyOfMoves(
           const promoteTo = move.m[5];
           result += Voc.iPromoted(promoteTo);
         }
-      } else {
-        let enPassPhrase = Voc.iDoEnPassant(from, to, enPassant);
-        if (!intro) {
-          enPassPhrase = upFirst(enPassPhrase);
-        }
-        result += enPassPhrase;
       }
     }
     result += '.' + pause(1) + '\n';

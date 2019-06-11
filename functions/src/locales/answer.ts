@@ -346,6 +346,88 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static castlingByPlayer(
+    kFrom: string,
+    kTo: string,
+    rFrom: string,
+    rTo: string
+  ): string {
+    return rand(
+      ({
+        en: [
+          `You made castling! The king moves from square ${char(
+            kFrom
+          )} to ${char(kTo)} and the rock moves from ${char(rFrom)} to ${char(
+            rTo
+          )}!`,
+          `This is castling! You move the king through two squares from ${char(
+            kFrom
+          )} to ${char(kTo)}, and place your rock from ${char(
+            rFrom
+          )} to the square ${char(rTo)} behind the king.`,
+          `This move you castling, moving your king from ${char(
+            kFrom
+          )} to ${char(kTo)} and the rock from ${char(rFrom)} to ${char(rTo)}.`,
+        ],
+        ru: [
+          `Вы делаете рокировку! Король перемещается с позиции ${char(
+            kFrom
+          )} на ${char(kTo)}, а ладья с ${rFrom} двигается за короля на ${char(
+            rTo
+          )}.`,
+          `И это рокировка! Вы перемещаете короля на две клетки c ${char(
+            kFrom
+          )} на ${char(kTo)} и ставите ладью с ${char(
+            rFrom
+          )} за короля на ${char(rTo)}.`,
+          `Этим ходом вы совершаете рокировку, перемещая своего короля с ${char(
+            kFrom
+          )} на ${char(kTo)} и ладью с ${char(rFrom)} на ${char(rTo)}!`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static castlingByOpponent(
+    kFrom: string,
+    kTo: string,
+    rFrom: string,
+    rTo: string
+  ): string {
+    return rand(
+      ({
+        en: [
+          `I will do castling! My king from square ${char(
+            kFrom
+          )} moves to ${char(kTo)} and my rock from ${char(
+            rFrom
+          )} moves to ${char(rTo)}!`,
+          `And I make castling! I move the king from ${char(kFrom)} to ${char(
+            kTo
+          )}, and place the rock from ${char(rFrom)} on the square ${char(
+            rTo
+          )} behind the king.`,
+          `I will do castling in my turn. I move my king from ${char(
+            kFrom
+          )} to ${char(kTo)} and rock from ${char(rFrom)} to ${char(rTo)}.`,
+        ],
+        ru: [
+          `Я сделаю рокировку! Мой король перемещается с позиции ${char(
+            kFrom
+          )} на ${char(kTo)}, а ладья с ${rFrom} встаёт за короля на ${char(
+            rTo
+          )}.`,
+          `И это рокировка! Я перемещаю короля на две клетки c ${char(
+            kFrom
+          )} на ${char(kTo)} и ставлю ладью с ${char(
+            rFrom
+          )} за короля на ${char(rTo)}.`,
+          `Я совершу своим ходом рокировку, и перемещу короля с позиции ${char(
+            kFrom
+          )} на ${char(kTo)}, а ладью с ${char(rFrom)} на ${char(rTo)}!`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
   static emptyPosition(pos: string): string {
     return rand(
       ({
@@ -902,5 +984,28 @@ export class Answer {
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
+  }
+  static cantCastling(): string {
+    return rand(
+      ({
+        en: [
+          "You can't castling now!",
+          'For castling you need untouched king and rock and no pieces between them.',
+          "You can't castling from the current position!",
+          "Castling? But you can't castling now!",
+        ],
+        ru: [
+          'Вы не можете сыграть рокировку сейчас!',
+          'Для рокировки у вас должны быть нетронутые король и ладья, между которыми не должно быть ни одной фигуры.',
+          'Вы не можете сделать рокировку из такой позиции!',
+          'Рокировка? Но вы не можете сейчас сделать рокировку.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static twoTypesOfCastling(king: string, to1: string, to2: string): string {
+    let result = `${Voc.canMakeCastling(king)} ${Voc.castlingTo(to1)}`;
+    result += ` ${Voc.and()} ${Voc.castlingTo(to2)}.`;
+    return result;
   }
 }

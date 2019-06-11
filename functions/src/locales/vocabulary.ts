@@ -438,6 +438,60 @@ export class Vocabulary {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static castlingTo(castTo: string): string {
+    if (castTo[0] === 'c') {
+      return rand(
+        ({
+          en: [
+            `to square ${char(castTo)}`,
+            `to ${char(castTo)}`,
+            `on the queenside to ${char(castTo)}`,
+            `to the long side ${char(castTo)}`,
+          ],
+          ru: [
+            `на позицию ${char(castTo)}`,
+            `на ${char(castTo)}`,
+            `в направлении ферзевого фланга на ${char(castTo)}`,
+            `в длинную сторону на ${char(castTo)}`,
+          ],
+        } as LocalizationObject<string[]>)[this.lang]
+      );
+    } else {
+      return rand(
+        ({
+          en: [
+            `to square ${char(castTo)}`,
+            `to ${char(castTo)}`,
+            `on the kingside to ${char(castTo)}`,
+            `to the short side ${char(castTo)}`,
+          ],
+          ru: [
+            `на позицию ${char(castTo)}`,
+            `на ${char(castTo)}`,
+            `в направлении королевского фланга на ${char(castTo)}`,
+            `в короткую сторону на ${char(castTo)}`,
+          ],
+        } as LocalizationObject<string[]>)[this.lang]
+      );
+    }
+  }
+  static canMakeCastling(kingPos: string): string {
+    return rand(
+      ({
+        en: [
+          'You can do castling by the king',
+          'You have the castling move',
+          `King from ${char(kingPos)} can castling`,
+          'You can castling',
+        ],
+        ru: [
+          'Вы можете сделать рокировку своим королём',
+          'Вам доступна рокировка',
+          `Король на ${char(kingPos)} может сделать рокировку`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
   static firstMoveInHistoryIntro(): string {
     return rand(
       ({
@@ -620,6 +674,78 @@ export class Vocabulary {
           `я взял вашу пешку 'Эн пассант', сделав ход с ${char(from)} на ${char(
             to
           )}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static youDoCastling(
+    kFrom: string,
+    kTo: string,
+    rFrom: string,
+    rTo: string
+  ): string {
+    return rand(
+      ({
+        en: [
+          `you made castling by your king from ${char(kFrom)} to ${char(
+            kTo
+          )} and also moved your rock from ${char(rFrom)} to ${char(rTo)}`,
+          `you made castling and moved the king from ${char(kFrom)} to ${char(
+            kTo
+          )}, and the rock from ${char(rFrom)} to ${char(rTo)}`,
+          `you castling and moved your king through two squares from ${char(
+            kFrom
+          )} to ${char(kTo)}, and your rock from ${char(rFrom)} to ${char(
+            rTo
+          )}`,
+        ],
+        ru: [
+          `вы произвели рокировку королём с ${char(kFrom)} на ${char(
+            kTo
+          )} и ладьёй с ${char(rFrom)} на ${char(rTo)}`,
+          `вы сделали рокировку, походив королём с ${char(kFrom)} на ${char(
+            kTo
+          )} и ладьёй с ${char(rFrom)} на ${char(rTo)}`,
+          `вы совершили рокировку и переместили своего короля на 2 клетки с ${char(
+            kFrom
+          )} на ${char(kTo)}, и, вместе с тем, передвинули ладью с ${char(
+            rFrom
+          )} на ${char(rTo)}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static iDoCastling(
+    kFrom: string,
+    kTo: string,
+    rFrom: string,
+    rTo: string
+  ): string {
+    return rand(
+      ({
+        en: [
+          `I made castling by the king from ${char(kFrom)} to ${char(
+            kTo
+          )} and also moved my rock from ${char(rFrom)} to ${char(rTo)}`,
+          `I made castling and moved the king from ${char(kFrom)} to ${char(
+            kTo
+          )}, and the rock from ${char(rFrom)} to ${char(rTo)}`,
+          `I castling and moved my king through two squares from ${char(
+            kFrom
+          )} to ${char(kTo)}, and my rock from ${char(rFrom)} to ${char(rTo)}`,
+        ],
+        ru: [
+          `я сделал рокировку королём с ${char(kFrom)} на ${char(
+            kTo
+          )} и ладьёй с ${char(rFrom)} на ${char(rTo)}`,
+          `я выполнил рокировку, походив королём с ${char(kFrom)} на ${char(
+            kTo
+          )} и ладьёй с ${char(rFrom)} на ${char(rTo)}`,
+          `я совершил рокировку и переместил своего короля на 2 клетки с ${char(
+            kFrom
+          )} на ${char(kTo)}, а также передвинул ладью с ${char(
+            rFrom
+          )} на ${char(rTo)}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
