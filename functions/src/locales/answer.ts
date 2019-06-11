@@ -655,7 +655,7 @@ export class Answer {
             `There is no ${Voc.piece(pieceCode)} on the square ${char(
               square
             )}! It's empty.`,
-            `${Voc.piece(pieceCode)} from ${char(square)}? Are you sure? ${char(
+            `${upFirst(Voc.piece(pieceCode))} from ${char(square)}? Are you sure? ${char(
               square
             )} is empty!`,
             `You confused something. In the square ${char(
@@ -667,7 +667,7 @@ export class Answer {
               pieceCode,
               'rod'
             )}!`,
-            `${Voc.piece(pieceCode)} на ${char(square)}? Но на клетке ${char(
+            `${upFirst(Voc.piece(pieceCode))} на ${char(square)}? Но на клетке ${char(
               square
             )} ничего нет.`,
             `На клетке ${char(square)} нет ${Voc.piece(
@@ -749,17 +749,16 @@ export class Answer {
     );
   }
   static moveWithPromotion(pieceCode: string): string {
-    const piece = Voc.piece(pieceCode);
     return rand(
       ({
         en: [
-          `And pawn transforms to ${piece}!`,
-          `And now it\'s a ${piece}!`,
-          `Pawn promotes into a ${piece}!`,
+          `And pawn transforms to ${Voc.piece(pieceCode)}!`,
+          `And now it\'s a ${Voc.piece(pieceCode)}!`,
+          `Pawn promotes into a ${Voc.piece(pieceCode)}!`,
         ],
         ru: [
           `И пешка становится ${Voc.piece(pieceCode, 'tvr')}!`,
-          `Теперь это ${piece}!`,
+          `Теперь это ${Voc.piece(pieceCode)}!`,
           `Пешка превратилась в ${Voc.piece(pieceCode, 'vin')}!`,
         ],
       } as LocalizationObject<string[]>)[this.lang]

@@ -143,62 +143,62 @@ export class Vocabulary {
     switch (code) {
       case 'p':
         return ({
-          en: 'Pawn',
+          en: 'pawn',
           ru: ({
-            sin: 'Пешка',
-            rod: 'Пешки',
-            vin: 'Пешку',
-            tvr: 'Пешкой',
+            sin: 'пешка',
+            rod: 'пешки',
+            vin: 'пешку',
+            tvr: 'пешкой',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'r':
         return ({
-          en: 'Rook',
+          en: 'rook',
           ru: ({
-            sin: 'Ладья',
-            rod: 'Ладьи',
-            vin: 'Ладью',
-            tvr: 'Ладьёй',
+            sin: 'ладья',
+            rod: 'ладьи',
+            vin: 'ладью',
+            tvr: 'ладьёй',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'n':
         return ({
-          en: 'Knight',
+          en: 'knight',
           ru: ({
-            sin: 'Конь',
-            rod: 'Коня',
-            vin: 'Коня',
-            tvr: 'Конём',
+            sin: 'конь',
+            rod: 'коня',
+            vin: 'коня',
+            tvr: 'конём',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'b':
         return ({
-          en: 'Bishop',
+          en: 'bishop',
           ru: ({
-            sin: 'Слон',
-            rod: 'Слона',
-            vin: 'Слона',
-            tvr: 'Слоном',
+            sin: 'слон',
+            rod: 'слона',
+            vin: 'слона',
+            tvr: 'слоном',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'q':
         return ({
-          en: 'Queen',
+          en: 'queen',
           ru: ({
-            sin: 'Ферзь',
-            rod: 'Ферзя',
-            vin: 'Ферзя',
-            tvr: 'Ферзём',
+            sin: 'ферзь',
+            rod: 'ферзя',
+            vin: 'ферзя',
+            tvr: 'ферзём',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'k':
         return ({
-          en: 'King',
+          en: 'king',
           ru: ({
-            sin: 'Король',
-            rod: 'Короля',
-            vin: 'Короля',
-            tvr: 'Королём',
+            sin: 'король',
+            rod: 'короля',
+            vin: 'короля',
+            tvr: 'королём',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       default:
