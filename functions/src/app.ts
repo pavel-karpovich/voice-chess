@@ -18,7 +18,12 @@ import {
 import { ChessBoard } from './chess/chessboard';
 import { pause, gaussianRandom, WhoseSide } from './support/helpers';
 import { HistoryFrame, historyOfMoves } from './support/history';
-import { showRank, showRanks, showAllPieces } from './support/board';
+import {
+  oneRank,
+  manyRanks,
+  allPiecesForType,
+  allPiecesForSide,
+} from './support/board';
 import { getBulkOfMoves, listMoves } from './support/moves';
 
 interface ConversationData {
@@ -191,7 +196,7 @@ function beginShowingTheBoard(conv: VoiceChessConv): void {
   console.log('viewing the board');
   const fenstring = conv.user.storage.fen;
   let longString = `<p><s>${Ans.board1()}</s></p>\n`;
-  longString += showRanks(fenstring, 1, chessBoardSize / 2);
+  longString += manyRanks(fenstring, 1, chessBoardSize / 2);
   speak(conv, longString);
   speak(conv, Ask.askToGoNext());
   conv.contexts.set('board-next', 1);
@@ -201,7 +206,7 @@ function giveSecondPartOfTheBoard(conv: VoiceChessConv): void {
   console.log('board - next');
   const fenstring = conv.user.storage.fen;
   let longString = `<p><s>${Ans.board2()}</s></p>\n`;
-  longString += showRanks(fenstring, chessBoardSize / 2 + 1, chessBoardSize);
+  longString += manyRanks(fenstring, chessBoardSize / 2 + 1, chessBoardSize);
   conv.contexts.set('turn-intent', 1);
   speak(conv, longString);
   speak(conv, Ask.waitMove());
@@ -223,7 +228,7 @@ function rankHandler(
       speak(conv, Ask.askRankNumber());
       return;
     }
-    speak(conv, showRank(fenstring, rankNum));
+    speak(conv, oneRank(fenstring, rankNum));
     speak(conv, Ask.askToGoNext());
     conv.contexts.set('rank-next', 1, { rank: rankNum, dir: 'u' });
   } else {
@@ -243,7 +248,7 @@ function giveNextRank(conv: VoiceChessConv): void {
   }
   const fenstring = conv.user.storage.fen;
   const thisRank = lastRank + 1;
-  speak(conv, showRank(fenstring, thisRank));
+  speak(conv, oneRank(fenstring, thisRank));
   if (thisRank === 8) {
     speak(conv, Ask.whatToDo());
   } else {
@@ -264,7 +269,7 @@ function givePrevRank(conv: VoiceChessConv): void {
   }
   const fenstring = conv.user.storage.fen;
   const thisRank = lastRank - 1;
-  speak(conv, showRank(fenstring, thisRank));
+  speak(conv, oneRank(fenstring, thisRank));
   if (thisRank === 1) {
     speak(conv, Ask.whatToDo());
   } else {
@@ -1011,10 +1016,39 @@ app.intent(
     if (positions.length === 0) {
       speak(conv, Ans.noSuchPieces(piece, whose));
     } else {
-      const ans = showAllPieces(piece, positions, side, whose, playerSide);
+      const ans = allPiecesForType(piece, positions, whose, playerSide);
       speak(conv, ans);
     }
     speak(conv, pause(0.6) + Ask.nextPiece() + ' ' + Ask.orMove());
+  }
+);
+
+app.intent(
+  'All',
+  (
+    conv: VoiceChessConv,
+    { side, whose }: { side?: ChessSide; whose?: WhoseSide }
+  ) => {
+    if (!side && !whose) {
+      fallbackHandler(conv);
+      return;
+    }
+    const playerSide = conv.user.storage.side;
+    if (!side) {
+      if (whose === WhoseSide.PLAYER) {
+        side = playerSide;
+      } else {
+        side = oppositeSide(playerSide);
+      }
+    }
+    const fenstring = conv.user.storage.fen;
+    const board = new ChessBoard(fenstring);
+    const positions = board.allPiecesBySide(side);
+    speak(
+      conv,
+      allPiecesForSide(positions, side, playerSide) + ' \n' + Ans.itsAll()
+    );
+    speak(conv, Ask.waitMove());
   }
 );
 

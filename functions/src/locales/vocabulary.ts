@@ -108,26 +108,7 @@ export class Vocabulary {
   }
   static black(opt = 'mus'): string {
     return ({
-      en: ({
-        mus: 'black',
-        fem: 'white',
-        sin: 'black',
-        plr: 'black',
-        'mus/sin': 'black',
-        'fem/sin': 'black',
-        'mus/plr': 'black',
-        'fem/plr': 'black',
-        'mus/vin': 'black',
-        'fem/vin': 'black',
-        'mus/rod': 'black',
-        'fem/rod': 'black',
-        'plr/rod': 'black',
-        'plr/tvr': 'black',
-        'fem/sin/rod': 'black',
-        'mus/sin/rod': 'black',
-        'fem/plr/rod': 'black',
-        'mus/plr/rod': 'black',
-      } as WordForms)[opt],
+      en: 'black',
       ru: ({
         mus: 'чёрный',
         fem: 'чёрная',
@@ -147,31 +128,14 @@ export class Vocabulary {
         'mus/sin/rod': 'чёрного',
         'fem/plr/rod': 'чёрных',
         'mus/plr/rod': 'чёрных',
+        'fem/plr/tvr': 'чёрным',
+        'mys/plr/tvr': 'чёрным',
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
   static white(opt = 'mus'): string {
     return ({
-      en: ({
-        mus: 'white',
-        fem: 'white',
-        sin: 'white',
-        plr: 'white',
-        'mus/sin': 'white',
-        'fem/sin': 'white',
-        'mus/plr': 'white',
-        'fem/plr': 'white',
-        'mus/vin': 'white',
-        'fem/vin': 'white',
-        'mus/rod': 'white',
-        'fem/rod': 'white',
-        'plr/rod': 'white',
-        'plr/tvr': 'white',
-        'fem/sin/rod': 'white',
-        'mus/sin/rod': 'white',
-        'fem/plr/rod': 'white',
-        'mus/plr/rod': 'white',
-      } as WordForms)[opt],
+      en: 'white',
       ru: ({
         mus: 'белый',
         fem: 'белая',
@@ -191,6 +155,8 @@ export class Vocabulary {
         'mus/sin/rod': 'белого',
         'fem/plr/rod': 'белых',
         'mus/plr/rod': 'белых',
+        'fem/plr/tvr': 'белым',
+        'mys/plr/tvr': 'белым',
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
@@ -987,12 +953,12 @@ export class Vocabulary {
   static someonesOnlyOnePieceIsHere(
     pieceCode: string,
     pos: string,
-    side: ChessSide,
-    whose: WhoseSide
+    whose: WhoseSide,
+    mixPerc: number
   ): string {
     const gen = this.pieceGender(pieceCode);
     let piece;
-    if (mix(!!whose)) {
+    if (mix(!!whose, mixPerc)) {
       piece =
         upFirst(this.yourOrMy(pieceCode, whose, 'sin')) +
         ' ' +
@@ -1060,10 +1026,11 @@ export class Vocabulary {
     pieceCode: string,
     pos: string,
     whose: WhoseSide,
-    playerSide: ChessSide
+    playerSide: ChessSide,
+    mixPerc: number
   ): string {
     const gen = this.pieceGender(pieceCode);
-    if (mix(!!whose)) {
+    if (mix(!!whose, mixPerc)) {
       whose =
         whose ||
         (playerSide === getSide(pieceCode)
@@ -1159,10 +1126,11 @@ export class Vocabulary {
     pieceCode: string,
     whose: WhoseSide,
     playerSide: string,
-    num: number
+    num: number,
+    mixPerc: number
   ): string {
     const side = getSide(pieceCode);
-    if (mix(!!whose)) {
+    if (mix(!!whose, mixPerc)) {
       whose =
         whose || (playerSide === side ? WhoseSide.PLAYER : WhoseSide.ENEMY);
       return rand(
@@ -1227,6 +1195,29 @@ export class Vocabulary {
       ({
         en: [char(pos)],
         ru: [`на ${char(pos)}`, `на ${char(pos)}`, `на клетке ${char(pos)}`],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static fullSidePieces(side: ChessSide): string {
+    return rand(
+      ({
+        en: [
+          `Here is the full list of ${this.color(side)} pieces:`,
+          `And what we have on the ${this.color(side)} side.. Let's see:`,
+          `Here are all the ${this.color(
+            side
+          )} pieces that are currently in the game:`,
+          `${upFirst(this.color(side))}... Here it is:`,
+        ],
+        ru: [
+          `Вот список всех фигур ${this.color(side, 'fem/rod')} стороны:`,
+          `Итак, что у ${this.color(side, 'plr/rod')} есть на доске:`,
+          `Вот все ${this.color(
+            side,
+            'plr'
+          )} фигуры, присутствующие в данный момент в игре:`,
+          `Так, что мы имеем по ${this.color(side, 'mys/plr/tvr')}:`,
+        ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }

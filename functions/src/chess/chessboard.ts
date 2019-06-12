@@ -1,5 +1,5 @@
 import { chessBoardSize } from './chess';
-import { ChessSide } from './chessUtils';
+import { ChessSide, getSide } from './chessUtils';
 
 export interface ChessSquareData {
   pos: string;
@@ -7,6 +7,7 @@ export interface ChessSquareData {
 }
 
 const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const piecesPriority = 'kqrbnp';
 
 const wCastling = new Map([['e1g1', 'h1f1'], ['e1c1', 'a1d1']]);
 const bCastling = new Map([['e8g8', 'h8f8'], ['e8c8', 'a8d8']]);
@@ -79,6 +80,33 @@ export class ChessBoard {
       i++;
     } while (this.fen[i] !== ' ');
     return ret;
+  }
+
+  allPiecesBySide(side: ChessSide): ChessSquareData[] {
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
+    }
+    const data = [] as ChessSquareData[];
+    for (const square of this.board.keys()) {
+      const piece = this.board.get(square);
+      if (piece && getSide(piece) === side) {
+        data.push({ pos: square, val: piece });
+      }
+    }
+    data.sort(
+      (sqr1, sqr2): number => {
+        const p1 = sqr1.val.toLowerCase();
+        const p2 = sqr2.val.toLowerCase();
+        if (p1 === p2) return 0;
+        else if (piecesPriority.indexOf(p1) > piecesPriority.indexOf(p2)) {
+          return 1;
+        } else {
+          return -1;
+        }
+      }
+    );
+    return data;
   }
 
   rank(i: number): ChessSquareData[] {

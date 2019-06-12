@@ -49,6 +49,8 @@ export interface WordForms {
   'mus/sin/rod'?: string;
   'fem/plr/rod'?: string;
   'mus/plr/rod'?: string;
+  'fem/plr/tvr'?: string;
+  'mys/plr/tvr'?: string;
 }
 
 export function char(str: string): string {

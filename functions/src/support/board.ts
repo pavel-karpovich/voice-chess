@@ -21,14 +21,14 @@ function singleRank(rank: ChessSquareData[], rankNum: number): string {
   return resultString;
 }
 
-export function showRank(fen: string, rankNum: number): string {
+export function oneRank(fen: string, rankNum: number): string {
   const board = new ChessBoard(fen);
   const rankData = board.rank(rankNum);
   const result = singleRank(rankData, rankNum);
   return result;
 }
 
-export function showRanks(
+export function manyRanks(
   fen: string,
   fromRank: number,
   toRank: number
@@ -42,34 +42,41 @@ export function showRanks(
   return result;
 }
 
-export function showAllPieces(
+export function allPiecesForType(
   pieceCode: string,
   positions: string[],
-  side: ChessSide,
   whose: WhoseSide,
-  playerSide: ChessSide
+  playerSide: ChessSide,
+  mixPerc = 0.2
 ): string {
-  let result = '';
+  let result = '<s>';
   if (positions.length === 1) {
     const total = totalPiecesNumber(pieceCode);
     if (total === 1) {
       result += Voc.someonesOnlyOnePieceIsHere(
         pieceCode,
         positions[0],
-        side,
-        whose
+        whose,
+        mixPerc
       );
     } else {
       result += Voc.someonesOneLeftPieceIsHere(
         pieceCode,
         positions[0],
         whose,
-        playerSide
+        playerSide,
+        mixPerc
       );
     }
   } else {
     result +=
-      Voc.someonesPieces(pieceCode, whose, playerSide, positions.length) + ' ';
+      Voc.someonesPieces(
+        pieceCode,
+        whose,
+        playerSide,
+        positions.length,
+        mixPerc
+      ) + ' ';
     for (let i = 0; i < positions.length; ++i) {
       if (i === positions.length - 1) {
         result += ' ' + Voc.and() + ' ';
@@ -80,5 +87,25 @@ export function showAllPieces(
     }
     result += '.';
   }
+  result += '</s>';
+  return result;
+}
+
+export function allPiecesForSide(
+  squares: ChessSquareData[],
+  side: ChessSide,
+  playerSide: ChessSide
+): string {
+  let result = `<p><s>${Voc.fullSidePieces(side)}</s> \n`;
+  const pos = [] as string[];
+  for (let i = 0; i < squares.length; ++i) {
+    pos.push(squares[i].pos);
+    if (i === squares.length - 1 || squares[i + 1].val !== squares[i].val) {
+      result +=
+        allPiecesForType(squares[i].val, pos, null, playerSide, 0) + ' ';
+      pos.length = 0;
+    }
+  }
+  result += '</p>';
   return result;
 }

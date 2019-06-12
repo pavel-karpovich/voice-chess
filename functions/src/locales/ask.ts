@@ -506,7 +506,7 @@ export class Ask {
     return rand(
       ({
         en: [
-          'Or will make a move?',
+          "Or maybe it's a time to make your move?",
           'Or did you decide what move to make?',
           'Or maybe you will make a move?',
           'Or will you make a move?',
