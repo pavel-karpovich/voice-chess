@@ -14,6 +14,7 @@ const bCastling = new Map([['e8g8', 'h8f8'], ['e8c8', 'a8d8']]);
 export class ChessBoard {
   private board: Map<string, string>;
   private fen: string;
+  private lazy: boolean;
   private dirty: boolean;
   private side: string;
   private castling: string;
@@ -21,11 +22,18 @@ export class ChessBoard {
   private clock: number;
   private count: number;
 
-  constructor(fen: string) {
+  constructor(fen: string, lazy = false) {
     this.board = new Map();
     this.fen = fen;
     this.dirty = false;
-    const fenParts = fen.split(/[// ]/);
+    this.lazy = lazy;
+    if (!this.lazy) {
+      this.parseFen();
+    }
+  }
+
+  private parseFen(): void {
+    const fenParts = this.fen.split(/[// ]/);
     for (let i = 1; i <= chessBoardSize; i++) {
       let j = 0;
       for (const code of fenParts[chessBoardSize - i]) {
@@ -47,10 +55,39 @@ export class ChessBoard {
     this.count = Number(fenParts[chessBoardSize + 4]);
   }
 
+  allPiecesByType(piece: string): string[] {
+    // Controversial decision
+    const ret = [] as string[];
+    let i = 0;
+    let rank = 8;
+    let file = 1;
+    do {
+      if (this.fen[i] === '/') {
+        rank--;
+        file = 1;
+      } else {
+        const int = Number(this.fen[i]);
+        if (isNaN(int)) {
+          if (this.fen[i] === piece) {
+            ret.push(`${files[file - 1]}${rank}`);
+          }
+          file++;
+        } else {
+          file += int;
+        }
+      }
+      i++;
+    } while (this.fen[i] !== ' ');
+    return ret;
+  }
+
   rank(i: number): ChessSquareData[] {
-    console.log('i: ' + i);
     if (i < 1 || i > chessBoardSize) {
       return null;
+    }
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
     }
     return files.map<ChessSquareData>(file => ({
       pos: file + i,
@@ -59,6 +96,10 @@ export class ChessBoard {
   }
 
   pos(pos: string): string {
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
+    }
     if (!this.board.has(pos)) {
       return null;
     } else {
@@ -77,6 +118,10 @@ export class ChessBoard {
   }
 
   getAvailableCastlingMoves(side: ChessSide): string[] {
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
+    }
     const availableCastling = [] as string[];
     const rank = side === ChessSide.WHITE ? '1' : '8';
     const c = (p: string): string => {
@@ -112,6 +157,10 @@ export class ChessBoard {
     enPassantPawnPos?: string,
     castlingRockMove?: string
   ): boolean {
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
+    }
     let isReverseMoveValid = true;
     const from = move.slice(0, 2);
     const to = move.slice(2, 4);
@@ -164,6 +213,10 @@ export class ChessBoard {
   }
 
   convertToFen(): string {
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
+    }
     if (!this.dirty) {
       return this.fen;
     }
@@ -199,10 +252,18 @@ export class ChessBoard {
   }
 
   get enPassant(): string {
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
+    }
     return this.enpsnt;
   }
 
   get cstFen(): string {
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
+    }
     return this.castling;
   }
 }

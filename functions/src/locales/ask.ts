@@ -502,20 +502,56 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static nextSquareOrMove(): string {
+  static orMove(): string {
     return rand(
       ({
         en: [
-          'Want some more position? Or will make a move?',
-          'Next square? Or did you decide what move to make?',
-          'Another square? Or maybe you will make a move?',
-          'Remind any more position? Or will you make a move?',
+          'Or will make a move?',
+          'Or did you decide what move to make?',
+          'Or maybe you will make a move?',
+          'Or will you make a move?',
         ],
         ru: [
-          'Хотите узнать ещё о чем-нибудь? Или сделаете свой ход?',
-          'Следующая клетка? Или вы решили какой сделаете ход?',
-          'Другую клетку? Или вы сделаете свой ход?',
-          'Напомнить ещё какую-нибудь позицию? Или походите?',
+          'Или сделаете свой ход?',
+          'Или вы решили какой сделаете ход?',
+          'Или вы сделаете свой ход?',
+          'Или вы походите?',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static nextSquare(): string {
+    return rand(
+      ({
+        en: [
+          'Want some more position?',
+          'Next square?',
+          'What next? Another square?',
+          'Remind any more position?',
+        ],
+        ru: [
+          'Хотите узнать ещё о чем-нибудь?',
+          'Следующая клетка?',
+          'Другую клетку?',
+          'Напомнить ещё какую-нибудь позицию?',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static nextPiece(): string {
+    return rand(
+      ({
+        en: [
+          'What next? Maybe another piece?',
+          'Remind you of anything else on the board?',
+          'Do you want me to remind other pieces?',
+          'Remind you more pieces?',
+        ],
+        ru: [
+          'Хотите узнать что-нибудь ещё?',
+          'Напомнить ещё о чём-нибудь?',
+          'Хотите узнать о других фигурах?',
+          'Напомнить ещё о какой-нибудь фигуре?',
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

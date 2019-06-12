@@ -30,17 +30,25 @@ export interface WordForms {
   [key: string]: string;
   mus?: string;
   fem?: string;
-  na?: string;
   sin?: string;
+  plr?: string;
+  na?: string;
   vin?: string;
   'mus/sin'?: string;
   'fem/sin'?: string;
+  'mus/plr'?: string;
+  'fem/plr'?: string;
   'mus/vin'?: string;
   'fem/vin'?: string;
   'mus/rod'?: string;
   'fem/rod'?: string;
+  'sin/rod'?: string;
   'plr/rod'?: string;
   'plr/tvr'?: string;
+  'fem/sin/rod'?: string;
+  'mus/sin/rod'?: string;
+  'fem/plr/rod'?: string;
+  'mus/plr/rod'?: string;
 }
 
 export function char(str: string): string {
@@ -57,4 +65,14 @@ export function gaussianRandom(iter = 4): number {
     sum += Math.random();
   }
   return sum / iter;
+}
+
+export const enum WhoseSide {
+  PLAYER = '1',
+  ENEMY = '2',
+}
+
+export function mix(cond: boolean, perc = 0.2): boolean {
+  const mix = Math.random();
+  return (cond && mix < 1 - perc) || mix < perc;
 }

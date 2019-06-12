@@ -9,14 +9,17 @@ import {
   ChessGameState,
   maxDifficulty,
 } from './chess/chess';
-import { ChessSide, CastlingType, getSide } from './chess/chessUtils';
+import {
+  ChessSide,
+  CastlingType,
+  getSide,
+  oppositeSide,
+} from './chess/chessUtils';
 import { ChessBoard } from './chess/chessboard';
-import { pause, gaussianRandom } from './support/helpers';
+import { pause, gaussianRandom, WhoseSide } from './support/helpers';
 import { HistoryFrame, historyOfMoves } from './support/history';
-import { showRank, showRanks } from './support/board';
+import { showRank, showRanks, showAllPieces } from './support/board';
 import { getBulkOfMoves, listMoves } from './support/moves';
-
-process.env.DEBUG = 'dialogflow:debug';
 
 interface ConversationData {
   fallbackCount?: number;
@@ -59,8 +62,6 @@ function speak(conv: VoiceChessConv, text: string) {
 }
 
 const app = dialogflow<ConversationData, LongStorageData>();
-
-app.debug = true;
 
 app.middleware(
   (conv: VoiceChessConv): void => {
@@ -971,8 +972,51 @@ app.intent('Square', (conv: VoiceChessConv, { square }: { square: string }) => {
   } else {
     speak(conv, Ans.emptyPosition(square));
   }
-  speak(conv, Ask.nextSquareOrMove());
+  speak(conv, pause(1) + Ask.nextSquare() + ' ' + Ask.orMove());
 });
+
+app.intent(
+  'Piece',
+  (
+    conv: VoiceChessConv,
+    {
+      piece,
+      side,
+      whose,
+    }: { piece: string; side?: ChessSide; whose?: WhoseSide }
+  ) => {
+    const fenstring = conv.user.storage.fen;
+    const playerSide = conv.user.storage.side;
+    const board = new ChessBoard(fenstring, true);
+    if (side === ChessSide.WHITE) {
+      piece = piece.toUpperCase();
+    }
+    if (
+      (whose === WhoseSide.PLAYER && playerSide === ChessSide.WHITE) ||
+      (whose === WhoseSide.ENEMY && playerSide === ChessSide.BLACK)
+    ) {
+      piece = piece.toUpperCase();
+      side = ChessSide.WHITE;
+    } else {
+      side = ChessSide.BLACK;
+    }
+    if (!side && !whose) {
+      whose = WhoseSide.PLAYER;
+      side = playerSide;
+      if (playerSide === ChessSide.WHITE) {
+        piece = piece.toUpperCase();
+      }
+    }
+    const positions = board.allPiecesByType(piece);
+    if (positions.length === 0) {
+      speak(conv, Ans.noSuchPieces(piece, whose));
+    } else {
+      const ans = showAllPieces(piece, positions, side, whose, playerSide);
+      speak(conv, ans);
+    }
+    speak(conv, pause(0.6) + Ask.nextPiece() + ' ' + Ask.orMove());
+  }
+);
 
 app.intent('Next', async (conv: VoiceChessConv) => {
   let isFallback = false;

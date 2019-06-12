@@ -30,3 +30,10 @@ export function enPawnPos(enPassant: string): string {
     return null;
   }
 }
+
+export function totalPiecesNumber(pieceCode: string): number {
+  pieceCode = pieceCode.toLowerCase();
+  if (pieceCode === 'p') return 8;
+  else if (pieceCode === 'k' || pieceCode === 'q') return 1;
+  else return 2;
+}

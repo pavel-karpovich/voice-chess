@@ -1,6 +1,7 @@
 import { ChessBoard, ChessSquareData } from '../chess/chessboard';
-import { upFirst, pause } from './helpers';
+import { upFirst, pause, WhoseSide } from './helpers';
 import { Vocabulary as Voc } from '../locales/vocabulary';
+import { ChessSide, totalPiecesNumber } from '../chess/chessUtils';
 
 function singleRank(rank: ChessSquareData[], rankNum: number): string {
   let resultString = '';
@@ -38,5 +39,46 @@ export function showRanks(
     result += `<s>${singleRank(board.rank(i), i)}</s>${pause(0.7)}`;
   }
   result += '</p>';
+  return result;
+}
+
+export function showAllPieces(
+  pieceCode: string,
+  positions: string[],
+  side: ChessSide,
+  whose: WhoseSide,
+  playerSide: ChessSide
+): string {
+  let result = '';
+  if (positions.length === 1) {
+    const total = totalPiecesNumber(pieceCode);
+    if (total === 1) {
+      result += Voc.someonesOnlyOnePieceIsHere(
+        pieceCode,
+        positions[0],
+        side,
+        whose
+      );
+    } else {
+      result += Voc.someonesOneLeftPieceIsHere(
+        pieceCode,
+        positions[0],
+        whose,
+        playerSide
+      );
+    }
+  } else {
+    result +=
+      Voc.someonesPieces(pieceCode, whose, playerSide, positions.length) + ' ';
+    for (let i = 0; i < positions.length; ++i) {
+      if (i === positions.length - 1) {
+        result += ' ' + Voc.and() + ' ';
+      } else if (i !== 0) {
+        result += ', ';
+      }
+      result += Voc.onPosition(positions[i]);
+    }
+    result += '.';
+  }
   return result;
 }

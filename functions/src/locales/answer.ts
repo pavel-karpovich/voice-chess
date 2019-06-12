@@ -1,4 +1,10 @@
-import { rand, LocalizationObject, char, upFirst } from '../support/helpers';
+import {
+  rand,
+  LocalizationObject,
+  char,
+  upFirst,
+  WhoseSide,
+} from '../support/helpers';
 import { ChessSide, oppositeSide } from '../chess/chessUtils';
 import { Vocabulary as Voc } from './vocabulary';
 
@@ -652,9 +658,9 @@ export class Answer {
             `There is no ${Voc.piece(pieceCode)} on the square ${char(
               square
             )}! It's empty.`,
-            `${upFirst(Voc.piece(pieceCode))} from ${char(square)}? Are you sure? ${char(
+            `${upFirst(Voc.piece(pieceCode))} from ${char(
               square
-            )} is empty!`,
+            )}? Are you sure? ${char(square)} is empty!`,
             `You confused something. In the square ${char(
               square
             )} no chess pieces.`,
@@ -664,9 +670,9 @@ export class Answer {
               pieceCode,
               'rod'
             )}!`,
-            `${upFirst(Voc.piece(pieceCode))} на ${char(square)}? Но на клетке ${char(
+            `${upFirst(Voc.piece(pieceCode))} на ${char(
               square
-            )} ничего нет.`,
+            )}? Но на клетке ${char(square)} ничего нет.`,
             `На клетке ${char(square)} нет ${Voc.piece(
               pieceCode,
               'rod'
@@ -1022,24 +1028,116 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static hereIsPieceOnPosition(pos: string, pieceCode: string, side: ChessSide): string {
+  static hereIsPieceOnPosition(
+    pos: string,
+    pieceCode: string,
+    side: ChessSide
+  ): string {
     return rand(
       ({
         en: [
           `On ${char(pos)} is ${Voc.someonesColoredPiece(pieceCode, side)}.`,
-          `On the square ${char(pos)} is the ${Voc.someonesPiece(pieceCode, side)}.`,
-          `Position ${char(pos)} is occupied by ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+          `On the square ${char(pos)} is the ${Voc.someonesPiece(
+            pieceCode,
+            side
+          )}.`,
+          `Position ${char(pos)} is occupied by ${Voc.someonesColoredPiece(
+            pieceCode,
+            side
+          )}.`,
           `Here is ${Voc.someonesColoredPiece(pieceCode, side)}.`,
-          `On the square ${char(pos)} stands ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+          `On the square ${char(pos)} stands ${Voc.someonesColoredPiece(
+            pieceCode,
+            side
+          )}.`,
         ],
         ru: [
           `На ${char(pos)} ${Voc.someonesColoredPiece(pieceCode, side)}.`,
-          `На клетке ${char(pos)} стоит ${Voc.someonesColoredPiece(pieceCode, side)}.`,
-          `Позиция ${char(pos)} занята ${Voc.someonesPiece(pieceCode, side, 'rod')}.`,
+          `На клетке ${char(pos)} стоит ${Voc.someonesColoredPiece(
+            pieceCode,
+            side
+          )}.`,
+          `Позиция ${char(pos)} занята ${Voc.someonesPiece(
+            pieceCode,
+            side,
+            'rod'
+          )}.`,
           `Здесь находится ${Voc.someonesPiece(pieceCode, side)}.`,
-          `На квадрате ${char(pos)} находится ${Voc.someonesPiece(pieceCode, side)}.`,
+          `На квадрате ${char(pos)} находится ${Voc.someonesPiece(
+            pieceCode,
+            side
+          )}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
+  }
+  static noSuchPieces(pieceCode: string, whose?: WhoseSide): string {
+    const pNum = Voc.pieceNumber(pieceCode);
+    if (!!whose) {
+      return rand(
+        ({
+          en: [
+            `${upFirst(Voc.youOrMe(whose))} have no more ${Voc.piece(
+              pieceCode,
+              pNum
+            )} left.`,
+            `${upFirst(Voc.yourOrMy(pieceCode, whose, pNum))} ${Voc.piece(
+              pieceCode,
+              pNum
+            )} are no longer on the board.`,
+            `${upFirst(Voc.youOrMe(whose))} no longer have ${Voc.piece(
+              pieceCode,
+              pNum
+            )}.`,
+            `${upFirst(Voc.allYourOrMy(pieceCode, whose, pNum))} ${Voc.piece(
+              pieceCode,
+              pNum
+            )} are already captured.`,
+          ],
+          ru: [
+            `У ${Voc.youOrMe(whose)} не осталось ${Voc.piece(
+              pieceCode,
+              `${pNum}/rod`
+            )}.`,
+            `${upFirst(
+              Voc.whosePiece(pieceCode, whose, `${pNum}/rod`)
+            )} больше нет на поле.`,
+            `У ${Voc.youOrMe(whose)} больше нет ${Voc.piece(
+              pieceCode,
+              `${pNum}/rod`
+            )}.`,
+            `${upFirst(Voc.allYourOrMy(pieceCode, whose, pNum))} ${Voc.piece(
+              pieceCode,
+              `${pNum}/rod`
+            )} уже захвачены.`,
+          ],
+        } as LocalizationObject<string[]>)[this.lang]
+      );
+    } else {
+      return rand(
+        ({
+          en: [
+            `There is no ${Voc.coloredPiece(pieceCode, pNum)}.`,
+            `There is no ${Voc.coloredPiece(pieceCode, pNum)} on the board.`,
+            `No one ${Voc.coloredPiece(pieceCode)} left.`,
+            `There is no ${Voc.coloredPiece(
+              pieceCode,
+              pNum
+            )} left in the game.`,
+          ],
+          ru: [
+            `На поле не осталось ${Voc.coloredPiece(
+              pieceCode,
+              `${pNum}/rod`
+            )}.`,
+            `На доске нет ${Voc.coloredPiece(pieceCode, `${pNum}/rod`)}.`,
+            `Здесь больше нет ${Voc.coloredPiece(pieceCode, `${pNum}/rod`)}.`,
+            `${upFirst(
+              Voc.coloredPiece(pieceCode, `${pNum}/rod`)
+            )} не осталось в игре.`,
+          ],
+        } as LocalizationObject<string[]>)[this.lang]
+      );
+    }
   }
 }
