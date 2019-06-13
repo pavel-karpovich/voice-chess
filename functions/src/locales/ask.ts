@@ -126,7 +126,7 @@ export class Ask {
     return rand(
       ({
         en: ['And what do you want to do next?'],
-        ru: ['Что вы хотите сделать?', 'И что будем делать дальше?'],
+        ru: ['И что вы хотите сделать?', 'И что будем делать дальше?'],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -552,6 +552,31 @@ export class Ask {
           'Напомнить ещё о чём-нибудь?',
           'Хотите узнать о других фигурах?',
           'Напомнить ещё о какой-нибудь фигуре?',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static confirmNewGame(): string {
+    return rand(
+      ({
+        en: [
+          'You have an unfinished game. Are you sure you want to create a new one?',
+          'If you start a new game, the old one will be deleted. Are you sure?',
+          'Creating a new game will remove your unfinished game. Are you sure you want this?',
+          'You have an unfinished game, do you really want to create a new one?',
+          'When you create a new game, your old progress will be deleted. Are you ready for this?',
+          'Starting a new game, you will overwrite your unfinished game. Are you sure?',
+          'Do you want to drop the current game and start a new one? But this time, you almost played well. Are you sure?',
+        ],
+        ru: [
+          'У вас есть незаконченная игра, вы действительно хотите создать новую?',
+          'Если вы начнёте новую игру, старая партия удалится. Вы уверены, что хотите это сделать?',
+          'Созданием новой игры вы сотрёте свою текущую незаконченную партию. Вы уверены?',
+          'У вас есть незавершённая игра! Вы уверены, что хотите начать новую партию?',
+          'Пусть я и виртуальный, но у меня есть место только для одной шахматной доски. Вы точно хотите начать новую игру и перезаписать текущую?',
+          'При создании новой игры ваш старый прогресс удалится. Вы готовы к этому?',
+          'Начав новую игру, вы перезапишете свою незавершенную партию. Вы уверены?',
+          'Вы хотите бросить текущую партию и начать новую? А ведь, на этот раз, вы почти что неплохо играли. Вы уверены?',
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

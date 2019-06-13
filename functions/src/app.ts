@@ -61,6 +61,7 @@ const restorableContexts = [
   'advice-made',
   'correct-last-move',
   'choose-castling',
+  'confirm-new-game',
 ];
 
 function speak(conv: VoiceChessConv, text: string) {
@@ -174,7 +175,20 @@ function startNewGame(conv: VoiceChessConv): void {
   speak(conv, Ask.chooseSide());
   conv.contexts.set('ask-side', 1);
 }
-app.intent('New Game', startNewGame);
+app.intent(
+  'New Game',
+  (conv: VoiceChessConv): void => {
+    const fenstring = conv.user.storage.fen;
+    const confirmNewGameCtx = conv.contexts.get('confirm-new-game');
+    if (!fenstring || confirmNewGameCtx) {
+      startNewGame(conv);
+    } else {
+      speak(conv, Ask.confirmNewGame());
+      conv.contexts.set('ask-to-new-game', 1);
+      conv.contexts.set('confirm-new-game', 1);
+    }
+  }
+);
 
 function continueGame(conv: VoiceChessConv): void {
   console.log('continue game');
@@ -496,7 +510,11 @@ async function playerMoveByAI(
   await moveByPlayer(conv, move, chess, answer);
 }
 
-async function prepareToMove(conv: VoiceChessConv, move: string, chess?: Chess): Promise<void> {
+async function prepareToMove(
+  conv: VoiceChessConv,
+  move: string,
+  chess?: Chess
+): Promise<void> {
   if (!chess) {
     const fenstring = conv.user.storage.fen;
     const difficulty = conv.user.storage.options.difficulty;
