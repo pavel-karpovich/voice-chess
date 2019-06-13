@@ -1203,4 +1203,50 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static fullmoveNumber(num: number): string {
+    return rand(
+      ({
+        en: [
+          `${num} full moves passed from the beggining of the game.`,
+          `Only ${num} full moves were made.`,
+          `We have played ${num} full moves since the beginning of the game.`,
+          `${num} full game moves passed during this time.`,
+          `During the game, we have done ${num} full moves.`,
+        ],
+        ru: [
+          `С момента начала игры ${Voc.nPassed(num)} ${num} ${Voc.nFullMoves(
+            num
+          )}.`,
+          `Эта игра насчитывает ${num} ${Voc.nFullMoves(num)}.`,
+          `За эту игру мы сделали ${num} ${Voc.nFullMoves(num)}.`,
+          `Пока что мы успели сделать только ${num} ${Voc.nFullMoves(num)}.`,
+          `У нас за спиной уже ${num} ${Voc.nFullMoves(num)}.`,
+          `Эта игра насчитывает ${num} ${Voc.nFullMoves(
+            num
+          )} с момента старта.`,
+          `От начала игры ${Voc.nPassed(num)} ${num} ${Voc.nFullMoves(num)}.`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static noFullmoves(): string {
+    return rand(
+      ({
+        en: [
+          'We just started a new game.',
+          'We have not had time to make a single full move, and you are already asking!',
+          'But we just started a new game.',
+          'We have just begun, we have not had a single full move.',
+          'Make your move, and we will have the first full move.',
+        ],
+        ru: [
+          'Мы только что начали игру.',
+          'Мы ещё не успели сделать ни одного полного хода, а вы уже спрашиваете!',
+          'Мы же только что начали новую игру.',
+          'Мы только начали, у нас ещё не было ни одного полного хода.',
+          'Сделайте свой ход, и у нас появится первых полный ход.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }

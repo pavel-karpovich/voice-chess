@@ -1515,4 +1515,25 @@ export class Vocabulary {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static nPassed(n: number): string {
+    return ({
+      en: 'passed',
+      ru: n % 100 === 1 ? 'прошёл' : 'прошло',
+    } as LocalizationObject<string>)[this.lang];
+  }
+  static nFullMoves(n: number): string {
+    if (this.lang === 'en') {
+      return n === 1 ? 'full move' : 'full moves';
+    } else if (this.lang === 'ru') {
+      const nMod10 = n % 10;
+      const nMod100 = n % 100;
+      if (nMod100 === 1) {
+        return 'полный ход';
+      } else if (nMod10 > 1 && nMod10 < 5 && (nMod100 < 10 && nMod100 > 15)) {
+        return 'полных хода';
+      } else {
+        return 'полных ходов';
+      }
+    } else return null;
+  }
 }

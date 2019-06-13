@@ -1132,6 +1132,21 @@ app.intent(
 );
 
 app.intent(
+  'Fullmove number',
+  (conv: VoiceChessConv): void => {
+    const fenstring = conv.user.storage.fen;
+    const board = new ChessBoard(fenstring);
+    const num = board.movesNumber - 1;
+    if (num === 0) {
+      speak(conv, Ans.noFullmoves());
+    } else {
+      speak(conv, Ans.fullmoveNumber(num));
+    }
+    speak(conv, Ask.waitMove());
+  }
+);
+
+app.intent(
   'Next',
   async (conv: VoiceChessConv): Promise<void> => {
     let isFallback = false;
