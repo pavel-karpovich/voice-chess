@@ -547,7 +547,7 @@ export class Answer {
   static difficultyTheSame(level: number): string {
     return rand(
       ({
-        en: [`The difficulty level is already ${level}}!`],
+        en: [`The difficulty level is already ${level}!`],
         ru: [`Уровень сложности уже равен ${level}!`, 'Сложность и так такая!'],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -555,14 +555,8 @@ export class Answer {
   static checkmateToPlayer(): string {
     return rand(
       ({
-        en: [
-          'You checkmate!',
-          'Checkmate!',
-        ],
-        ru: [
-          'Шах и мат!',
-          'Вам шах и мат!',
-        ],
+        en: ['You checkmate!', 'Checkmate!'],
+        ru: ['Шах и мат!', 'Вам шах и мат!'],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -571,7 +565,7 @@ export class Answer {
       ({
         en: [
           "I won! Don't worry, next time you get it!",
-          "This is my victory!",
+          'This is my victory!',
           'You lose this game, but who knows, maybe you are lucky in our next game!',
           'I defeated you!',
           'I won!',
@@ -1195,7 +1189,7 @@ export class Answer {
       ({
         en: [
           "But the game has just begun! It's early to throw up your hands!",
-          'Seriously? We just started! Early to give up!',
+          "Seriously? We just started! It's too Early to give up!",
           "But it's a beginning of the game! You can't surrender now!",
           "What? Resign now? This is too early! We haven't even played out yet!",
         ],

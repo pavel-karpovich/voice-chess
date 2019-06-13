@@ -275,6 +275,26 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static wantReduceDifficulty(current: number): string {
+    return rand(
+      ({
+        en: [
+          'Maybe I just reduce the level of difficulty?',
+          `I can just reduce the difficulty because it is set to ${current}. Do this?`,
+          `The difficulty is now equal to ${current}. Maybe just reduce it?`,
+          'Can we just reduce the level of difficulty? Do you agree?',
+          'But what about reducing difficulty? Maybe this is the case?',
+        ],
+        ru: [
+          'Может быть вы хотите просто уменьшить уровень сложности?',
+          `Я могу уменьшить сложность, сейчас она равна ${current} из 20. Сделать ниже?`,
+          `Уровень сложности сейчас равен ${current}? Может быть вы хотите, чтобы я его уменьшил?`,
+          'Может просто обойдёмся уменьшением уровня сложности? Хотите?',
+          'А что на счёт уменьшения уровня сложности?',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
   static moveWithoutPiecesMatch(
     actualPiece: string,
     playerPiece: string,
@@ -616,6 +636,26 @@ export class Ask {
           'Тогда продолжайте играть! Я жду, когда вы сделаете свой ход.',
           'Тогда делайте свой ход! Ещё не всё потеряно.',
           'Это ещё не конец, продолжайте играть!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static stillWantToResign(): string {
+    return rand(
+      ({
+        en: [
+          'Do you still want to resign?',
+          'Do you still want surrender?',
+          'Do you still want to give up?',
+          'Then you surrender?',
+          'Then your choice is still to admit defeat?',
+        ],
+        ru: [
+          'Вы всё так же собираетесь сдаться?',
+          'Вы так же твёрдо намерены принять поражение?',
+          'Значит вы всё-таки сдаётесь?',
+          'Значит вы приняли выбор сдаться?',
+          'То есть вы сдаётесь?',
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

@@ -63,6 +63,7 @@ const restorableContexts = [
   'choose-castling',
   'confirm-new-game',
   'ask-to-resign',
+  'reduce-difficulty-instead-of-resign',
 ];
 
 function speak(conv: VoiceChessConv, text: string) {
@@ -1088,6 +1089,15 @@ app.intent('Captured', (conv: VoiceChessConv) => {
 });
 
 app.intent('Resign', (conv: VoiceChessConv) => {
+  const rnd = Math.random();
+  if (rnd < 0.4) {
+    const difficulty = conv.user.storage.options.difficulty;
+    if (difficulty !== 0) {
+      speak(conv, Ask.wantReduceDifficulty(difficulty));
+      conv.contexts.set('reduce-difficulty-instead-of-resign', 1);
+      return;
+    }
+  }
   const fenstring = conv.user.storage.fen;
   const board = new ChessBoard(fenstring);
   if (board.movesNumber < 5) {
@@ -1137,6 +1147,9 @@ app.intent(
       speak(conv, Ask.waitMove());
     } else if (conv.contexts.get('rank-next')) {
       speak(conv, Ask.waitMove());
+    } else if (conv.contexts.get('reduce-difficulty-instead-of-resign')) {
+      speak(conv, Ask.stillWantToResign());
+      conv.contexts.set('ask-to-resign', 1);
     } else if (conv.contexts.get('ask-to-resign')) {
       speak(conv, Ask.thenPlay());
     } else if (conv.contexts.get('ask-to-new-game')) {
@@ -1186,6 +1199,9 @@ app.intent(
       } else {
         givePrevRank(conv);
       }
+    } else if (conv.contexts.get('reduce-difficulty-instead-of-resign')) {
+      const d = conv.user.storage.options.difficulty;
+      modifyDifficulty(conv, Math.floor(d / 2));
     } else if (conv.contexts.get('ask-to-resign')) {
       speak(conv, Ans.youLose());
       speak(conv, Ask.askToNewGame());
