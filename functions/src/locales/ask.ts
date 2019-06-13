@@ -581,4 +581,43 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static confirmResign(): string {
+    return rand(
+      ({
+        en: [
+          'Sure?',
+          'Are you sure about this decision?',
+          "I see you respect my skills, but it's your final decision?",
+          'Do you admit defeat?',
+          'Are you surrender?',
+        ],
+        ru: [
+          'Вы уверены?',
+          'Я, конечно, польщён, что вы меня так высоко оцениваете, но вы в этом точно уверены?',
+          'Давно пора. Значит, сдаётесь?',
+          'Это окончательное решение?',
+          'Вы признаёте поражение в этой партии?',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static thenPlay(): string {
+    return rand(
+      ({
+        en: [
+          'Then play!',
+          'Then keep playing!',
+          "Then keep playing! I'm awaiting your move!",
+          "The keep playing! I'm waiting for your move!",
+          "That's not all! Make your move!",
+        ],
+        ru: [
+          'Тогда продолжайте играть!',
+          'Тогда продолжайте играть! Я жду, когда вы сделаете свой ход.',
+          'Тогда делайте свой ход! Ещё не всё потеряно.',
+          'Это ещё не конец, продолжайте играть!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }

@@ -62,6 +62,7 @@ const restorableContexts = [
   'correct-last-move',
   'choose-castling',
   'confirm-new-game',
+  'ask-to-resign',
 ];
 
 function speak(conv: VoiceChessConv, text: string) {
@@ -467,7 +468,9 @@ async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
   }
   hist.push(historyItem);
   if (chess.currentGameState === ChessGameState.CHECKMATE) {
-    speak(conv, `${answer} \n${Ans.youLose()} \n${Ask.askToNewGame()}`);
+    answer += `${answer} \n${Ans.checkmateToPlayer()} \n`;
+    answer += `${Ans.youLose()} \n${Ask.askToNewGame()}`;
+    speak(conv, answer);
     conv.contexts.set('ask-to-new-game', 1);
     conv.user.storage.fen = null;
     conv.contexts.delete('game');
@@ -629,7 +632,7 @@ app.intent(
       }
       return;
     }
-    prepareToMove(conv, move, chess);
+    await prepareToMove(conv, move, chess);
   }
 );
 
@@ -1084,6 +1087,18 @@ app.intent('Captured', (conv: VoiceChessConv) => {
   speak(conv, Ask.waitMove());
 });
 
+app.intent('Resign', (conv: VoiceChessConv) => {
+  const fenstring = conv.user.storage.fen;
+  const board = new ChessBoard(fenstring);
+  if (board.movesNumber < 5) {
+    speak(conv, Ans.wtfYouAreJustStartedANewGame());
+    speak(conv, Ask.waitMove());
+  } else {
+    speak(conv, Ask.confirmResign());
+    conv.contexts.set('ask-to-resign', 1);
+  }
+});
+
 app.intent('Next', async (conv: VoiceChessConv) => {
   let isFallback = false;
   if (conv.contexts.get('moves-next')) {
@@ -1113,6 +1128,7 @@ app.intent(
     console.log('no');
     safeGameContext(conv);
     let isFallback = false;
+    const gameCtx = conv.contexts.get('game');
     if (conv.contexts.get('turn-intent')) {
       speak(conv, Ask.askWhatever());
     } else if (conv.contexts.get('moves-next')) {
@@ -1121,8 +1137,10 @@ app.intent(
       speak(conv, Ask.waitMove());
     } else if (conv.contexts.get('rank-next')) {
       speak(conv, Ask.waitMove());
+    } else if (conv.contexts.get('ask-to-resign')) {
+      speak(conv, Ask.thenPlay());
     } else if (conv.contexts.get('ask-to-new-game')) {
-      speak(conv, Ask.whatToDo());
+      speak(conv, gameCtx ? Ask.thenPlay() : Ask.whatToDo());
     } else if (conv.contexts.get('ask-to-continue')) {
       speak(conv, Ask.askToNewGame());
       conv.contexts.set('ask-to-new-game', 1);
@@ -1168,6 +1186,12 @@ app.intent(
       } else {
         givePrevRank(conv);
       }
+    } else if (conv.contexts.get('ask-to-resign')) {
+      speak(conv, Ans.youLose());
+      speak(conv, Ask.askToNewGame());
+      conv.contexts.set('ask-to-new-game', 1);
+      conv.user.storage.fen = null;
+      conv.contexts.delete('game');
     } else if (conv.contexts.get('ask-to-new-game')) {
       startNewGame(conv);
     } else if (conv.contexts.get('ask-to-continue')) {

@@ -368,4 +368,12 @@ export class ChessBoard {
     }
     return this.castling;
   }
+
+  get movesNumber(): number {
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
+    }
+    return this.count;
+  }
 }

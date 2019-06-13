@@ -552,11 +552,43 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static checkmateToPlayer(): string {
+    return rand(
+      ({
+        en: [
+          'You checkmate!',
+          'Checkmate!',
+        ],
+        ru: [
+          'Шах и мат!',
+          'Вам шах и мат!',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
   static youLose(): string {
     return rand(
       ({
-        en: ["You checkmate! Don't worry, next time you get!"],
-        ru: ['Вы проиграли, шах и мат! Ничего, в другой раз всё получится.'],
+        en: [
+          "I won! Don't worry, next time you get it!",
+          "This is my victory!",
+          'You lose this game, but who knows, maybe you are lucky in our next game!',
+          'I defeated you!',
+          'I won!',
+          'This time I am a winner!',
+          'You played well! But this time I became a winner!',
+          "Easy-breezy. I'm joke. Nice game!",
+        ],
+        ru: [
+          'Вы проиграли! Ничего, в другой раз всё получится.',
+          'Что ж, победа за мной!',
+          'И я выхожу из этой схватки победителем!',
+          'Я выиграл, и это было легко!',
+          'Легкая победа!',
+          'Вы неплохо справлялись, но победа за мной!',
+          'Вы хорошо играли! Но в этот раз победа досталсь мне.',
+          'На этот раз я победил! Посмотрим, что будет дальше.',
+        ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -1154,6 +1186,25 @@ export class Answer {
           'В текущей игре ещё не было ни одного захвата!',
           'Мы только начали, ещё не было съедено ни одной фигуры!',
           'Ни у вас, ни у меня, ещё нет съеденных фигур.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static wtfYouAreJustStartedANewGame(): string {
+    return rand(
+      ({
+        en: [
+          "But the game has just begun! It's early to throw up your hands!",
+          'Seriously? We just started! Early to give up!',
+          "But it's a beginning of the game! You can't surrender now!",
+          "What? Resign now? This is too early! We haven't even played out yet!",
+        ],
+        ru: [
+          'Вы смеётесь? Игра только началась! Рано опускать руки.',
+          'Серьёзно? Мы только начали! Ещё рано сдаваться!',
+          'Что это за выкрутасы? Мы не успели начать, а вы уже наровите от меня смыться. Нет уж, продолжайте играть!',
+          'Да мы же только в самом начале! У вас ещё есть все шансы победить - продолжайте игру.',
+          'Ты сможешь сдаться только когда я разрешу. Понял?',
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
