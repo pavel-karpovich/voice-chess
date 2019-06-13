@@ -24,6 +24,7 @@ import {
   allPiecesForType,
   allPiecesForSide,
   listCapturedPieces,
+  someonePlayForColor,
 } from './support/board';
 import { getBulkOfMoves, listMoves } from './support/moves';
 
@@ -971,7 +972,7 @@ app.intent(
   }
 );
 
-async function acceptAdvice(conv: VoiceChessConv) {
+async function acceptAdvice(conv: VoiceChessConv): Promise<void> {
   const needConfirm = conv.user.storage.options.confirm;
   const advCtx = conv.contexts.get('advice-made');
   const move = advCtx.parameters.move as string;
@@ -990,18 +991,21 @@ async function acceptAdvice(conv: VoiceChessConv) {
 
 app.intent('Accept Advice', acceptAdvice);
 
-app.intent('Square', (conv: VoiceChessConv, { square }: { square: string }) => {
-  const fenstring = conv.user.storage.fen;
-  const playerSide = conv.user.storage.side;
-  const board = new ChessBoard(fenstring);
-  const reqestedPiece = board.pos(square);
-  if (reqestedPiece) {
-    speak(conv, Ans.hereIsPieceOnPosition(square, reqestedPiece, playerSide));
-  } else {
-    speak(conv, Ans.emptyPosition(square));
+app.intent(
+  'Square',
+  (conv: VoiceChessConv, { square }: { square: string }): void => {
+    const fenstring = conv.user.storage.fen;
+    const playerSide = conv.user.storage.side;
+    const board = new ChessBoard(fenstring);
+    const reqestedPiece = board.pos(square);
+    if (reqestedPiece) {
+      speak(conv, Ans.hereIsPieceOnPosition(square, reqestedPiece, playerSide));
+    } else {
+      speak(conv, Ans.emptyPosition(square));
+    }
+    speak(conv, pause(1) + Ask.nextSquare() + ' ' + Ask.orMove());
   }
-  speak(conv, pause(1) + Ask.nextSquare() + ' ' + Ask.orMove());
-});
+);
 
 app.intent(
   'Piece',
@@ -1012,7 +1016,7 @@ app.intent(
       side,
       whose,
     }: { piece: string; side?: ChessSide; whose?: WhoseSide }
-  ) => {
+  ): void => {
     const fenstring = conv.user.storage.fen;
     const playerSide = conv.user.storage.side;
     const board = new ChessBoard(fenstring, true);
@@ -1051,7 +1055,7 @@ app.intent(
   (
     conv: VoiceChessConv,
     { side, whose }: { side?: ChessSide; whose?: WhoseSide }
-  ) => {
+  ): void => {
     if (!side && !whose) {
       fallbackHandler(conv);
       return;
@@ -1075,62 +1079,85 @@ app.intent(
   }
 );
 
-app.intent('Captured', (conv: VoiceChessConv) => {
-  const fenstring = conv.user.storage.fen;
-  const playerSide = conv.user.storage.side;
-  const board = new ChessBoard(fenstring, true);
-  const captured = board.capturedPieces();
-  if (captured.white.length === 0 && captured.black.length === 0) {
-    speak(conv, Ans.noCapturedPieces());
-  } else {
-    speak(conv, listCapturedPieces(captured, playerSide));
-  }
-  speak(conv, Ask.waitMove());
-});
-
-app.intent('Resign', (conv: VoiceChessConv) => {
-  const rnd = Math.random();
-  if (rnd < 0.4) {
-    const difficulty = conv.user.storage.options.difficulty;
-    if (difficulty !== 0) {
-      speak(conv, Ask.wantReduceDifficulty(difficulty));
-      conv.contexts.set('reduce-difficulty-instead-of-resign', 1);
-      return;
-    }
-  }
-  const fenstring = conv.user.storage.fen;
-  const board = new ChessBoard(fenstring);
-  if (board.movesNumber < 5) {
-    speak(conv, Ans.wtfYouAreJustStartedANewGame());
-    speak(conv, Ask.waitMove());
-  } else {
-    speak(conv, Ask.confirmResign());
-    conv.contexts.set('ask-to-resign', 1);
-  }
-});
-
-app.intent('Next', async (conv: VoiceChessConv) => {
-  let isFallback = false;
-  if (conv.contexts.get('moves-next')) {
-    const fromPoint = Number(conv.contexts.get('moves-next').parameters.start);
-    await listOfMoves(conv, fromPoint);
-  } else if (conv.contexts.get('board-next')) {
-    giveSecondPartOfTheBoard(conv);
-  } else if (conv.contexts.get('rank-next')) {
-    const dir = conv.contexts.get('rank-next').parameters.dir;
-    if (dir === 'u') {
-      giveNextRank(conv);
+app.intent(
+  'Captured',
+  (conv: VoiceChessConv): void => {
+    const fenstring = conv.user.storage.fen;
+    const playerSide = conv.user.storage.side;
+    const board = new ChessBoard(fenstring, true);
+    const captured = board.capturedPieces();
+    if (captured.white.length === 0 && captured.black.length === 0) {
+      speak(conv, Ans.noCapturedPieces());
     } else {
-      givePrevRank(conv);
+      speak(conv, listCapturedPieces(captured, playerSide));
     }
-  } else {
-    isFallback = true;
-    fallbackHandler(conv);
+    speak(conv, Ask.waitMove());
   }
-  if (!isFallback) {
-    conv.data.fallbackCount = 0;
+);
+
+app.intent(
+  'Resign',
+  (conv: VoiceChessConv): void => {
+    const rnd = Math.random();
+    if (rnd < 0.4) {
+      const difficulty = conv.user.storage.options.difficulty;
+      if (difficulty !== 0) {
+        speak(conv, Ask.wantReduceDifficulty(difficulty));
+        conv.contexts.set('reduce-difficulty-instead-of-resign', 1);
+        return;
+      }
+    }
+    const fenstring = conv.user.storage.fen;
+    const board = new ChessBoard(fenstring);
+    if (board.movesNumber < 5) {
+      speak(conv, Ans.wtfYouAreJustStartedANewGame());
+      speak(conv, Ask.waitMove());
+    } else {
+      speak(conv, Ask.confirmResign());
+      conv.contexts.set('ask-to-resign', 1);
+    }
   }
-});
+);
+
+app.intent(
+  'Side',
+  (
+    conv: VoiceChessConv,
+    { side, who }: { side?: ChessSide; who?: WhoseSide }
+  ): void => {
+    const playerSide = conv.user.storage.side;
+    speak(conv, someonePlayForColor(who, side, playerSide));
+    speak(conv, Ask.waitMove());
+  }
+);
+
+app.intent(
+  'Next',
+  async (conv: VoiceChessConv): Promise<void> => {
+    let isFallback = false;
+    if (conv.contexts.get('moves-next')) {
+      const fromPoint = Number(
+        conv.contexts.get('moves-next').parameters.start
+      );
+      await listOfMoves(conv, fromPoint);
+    } else if (conv.contexts.get('board-next')) {
+      giveSecondPartOfTheBoard(conv);
+    } else if (conv.contexts.get('rank-next')) {
+      const dir = conv.contexts.get('rank-next').parameters.dir;
+      if (dir === 'u') {
+        giveNextRank(conv);
+      } else {
+        givePrevRank(conv);
+      }
+    } else {
+      isFallback = true;
+      fallbackHandler(conv);
+    }
+    if (!isFallback) {
+      conv.data.fallbackCount = 0;
+    }
+  }
+);
 
 app.intent(
   'No',

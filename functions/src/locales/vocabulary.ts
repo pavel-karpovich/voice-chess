@@ -1466,4 +1466,53 @@ export class Vocabulary {
       )}`;
     }
   }
+  static yes(): string {
+    return rand(
+      ({
+        en: ['yes', 'yeah', 'truly', 'right'],
+        ru: ['да', 'верно', 'так точно'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static no(): string {
+    return rand(
+      ({
+        en: ['no', 'nope'],
+        ru: ['нет'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static play(who: WhoseSide): string {
+    return ({
+      en: 'play',
+      ru: ({
+        [WhoseSide.ENEMY]: 'играю',
+        [WhoseSide.PLAYER]: 'играете',
+      } as WordForms)[who],
+    } as LocalizationObject<string>)[this.lang];
+  }
+  static someonePlayForSide(who: WhoseSide, side: ChessSide): string {
+    return rand(
+      ({
+        en: [
+          `${this.youOrI(who)} play ${this.color(side)}.`,
+          `${this.youOrI(who)} play for ${this.color(side)}.`,
+          `now ${this.youOrI(who)} play for ${this.color(side, 'plr/rod')}.`,
+          `this time ${this.youOrI(who)} play ${this.color(side, 'plr/rod')}.`,
+        ],
+        ru: [
+          `${this.youOrI(who)} ${this.play(who)} за ${this.color(
+            side,
+            'plr/rod'
+          )}.`,
+          `${this.youOrI(who)} за ${this.color(side, 'plr/rod')}.`,
+          `сейчас ${this.youOrI(who)} ${this.play(who)} за ${this.color(
+            side,
+            'plr/rod'
+          )}.`,
+          `сейчас ${this.youOrI(who)} за ${this.color(side, 'plr/rod')}.`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }

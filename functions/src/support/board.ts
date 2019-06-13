@@ -1,7 +1,11 @@
 import { ChessBoard, ChessSquareData, Captured } from '../chess/chessboard';
 import { upFirst, pause, WhoseSide } from './helpers';
 import { Vocabulary as Voc } from '../locales/vocabulary';
-import { ChessSide, totalPiecesNumber } from '../chess/chessUtils';
+import {
+  ChessSide,
+  totalPiecesNumber,
+  oppositeSide,
+} from '../chess/chessUtils';
 
 function singleRank(rank: ChessSquareData[], rankNum: number): string {
   let resultString = '';
@@ -183,5 +187,40 @@ export function listCapturedPieces(
     result += '.</s>';
   }
   result += '</p>';
+  return result;
+}
+
+export function someonePlayForColor(
+  who: WhoseSide,
+  side: ChessSide,
+  playerSide: ChessSide
+): string {
+  let result = '';
+  if (side && who) {
+    const actually =
+      side ===
+      (who === WhoseSide.PLAYER ? playerSide : oppositeSide(playerSide));
+    if (actually) {
+      result += `${upFirst(Voc.yes())}, ${Voc.someonePlayForSide(who, side)}`;
+    } else {
+      const rnd = Math.random();
+      if (rnd < 0.5) {
+        who = who === WhoseSide.ENEMY ? WhoseSide.PLAYER : WhoseSide.ENEMY;
+      } else {
+        side = oppositeSide(side);
+      }
+      result += `${upFirst(Voc.no())}, ${Voc.someonePlayForSide(who, side)}`;
+    }
+  } else if (who) {
+    side = who === WhoseSide.PLAYER ? playerSide : oppositeSide(playerSide);
+    result += upFirst(Voc.someonePlayForSide(who, side));
+  } else if (side) {
+    who = side === playerSide ? WhoseSide.PLAYER : WhoseSide.ENEMY;
+    result += upFirst(Voc.someonePlayForSide(who, side));
+  } else {
+    side = playerSide;
+    who = side === playerSide ? WhoseSide.PLAYER : WhoseSide.ENEMY;
+    result += upFirst(Voc.someonePlayForSide(who, side));
+  }
   return result;
 }
