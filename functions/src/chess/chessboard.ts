@@ -6,6 +6,16 @@ export interface ChessSquareData {
   val: string;
 }
 
+export interface PieceTypeData {
+  piece: string;
+  count: number;
+}
+
+export interface Captured {
+  white: PieceTypeData[];
+  black: PieceTypeData[];
+}
+
 const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const piecesPriority = 'kqrbnp';
 
@@ -107,6 +117,70 @@ export class ChessBoard {
       }
     );
     return data;
+  }
+
+  capturedPieces(): Captured {
+    const allPieces = [
+      'r',
+      'n',
+      'b',
+      'q',
+      'k',
+      'b',
+      'n',
+      'r',
+      'p',
+      'p',
+      'p',
+      'p',
+      'p',
+      'p',
+      'p',
+      'p',
+      'R',
+      'N',
+      'B',
+      'Q',
+      'K',
+      'B',
+      'N',
+      'R',
+      'P',
+      'P',
+      'P',
+      'P',
+      'P',
+      'P',
+      'P',
+      'P',
+    ];
+    let i = 0;
+    while (this.fen[i] !== ' ') {
+      const index = allPieces.findIndex(val => val === this.fen[i]);
+      if (index !== -1) {
+        allPieces.splice(index, 1);
+      }
+      i++;
+    }
+    const ret = { white: [] as PieceTypeData[], black: [] as PieceTypeData[] };
+    for (const piece of allPieces) {
+      if (getSide(piece) === ChessSide.WHITE) {
+        const same = ret.white.find(el => el.piece === piece);
+        if (same) {
+          same.count++;
+        } else {
+          ret.white.push({ piece, count: 1 });
+        }
+      } else {
+        const same = ret.black.find(el => el.piece === piece);
+        if (same) {
+          same.count++;
+        } else {
+          ret.black.push({ piece, count: 1 });
+        }
+      }
+    }
+    return ret;
   }
 
   rank(i: number): ChessSquareData[] {

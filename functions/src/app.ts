@@ -23,6 +23,7 @@ import {
   manyRanks,
   allPiecesForType,
   allPiecesForSide,
+  listCapturedPieces,
 } from './support/board';
 import { getBulkOfMoves, listMoves } from './support/moves';
 
@@ -495,6 +496,29 @@ async function playerMoveByAI(
   await moveByPlayer(conv, move, chess, answer);
 }
 
+async function prepareToMove(conv: VoiceChessConv, move: string, chess?: Chess): Promise<void> {
+  if (!chess) {
+    const fenstring = conv.user.storage.fen;
+    const difficulty = conv.user.storage.options.difficulty;
+    chess = new Chess(fenstring, difficulty);
+  }
+  await chess.updateGameState();
+  if (chess.isPromotion(move)) {
+    const from = move.slice(0, 2);
+    const to = move.slice(2, 4);
+    speak(conv, Ans.promotion(from, to));
+    speak(conv, Ask.howToPromote());
+    conv.contexts.set('ask-to-promotion', 1, { move });
+    const correctCtx = conv.contexts.get('correct-last-move');
+    if (correctCtx) {
+      conv.contexts.set('correct-last-move', 1);
+    }
+    return;
+  }
+  await moveByPlayer(conv, move, chess);
+  await moveByAI(conv, chess);
+}
+
 app.intent(
   'Turn',
   async (
@@ -587,42 +611,14 @@ app.intent(
       }
       return;
     }
-    if (chess.isPromotion(move)) {
-      const from = move.slice(0, 2);
-      const to = move.slice(2, 4);
-      speak(conv, Ans.promotion(from, to));
-      speak(conv, Ask.howToPromote());
-      conv.contexts.set('ask-to-promotion', 1, { move });
-      if (correctCtx) {
-        conv.contexts.set('correct-last-move', 1);
-      }
-      return;
-    }
-    await moveByPlayer(conv, move, chess);
-    await moveByAI(conv, chess);
+    prepareToMove(conv, move, chess);
   }
 );
 
 async function acceptMove(conv: VoiceChessConv): Promise<void> {
-  console.log('accept move');
+  console.log('accept move in confirmation');
   const move = conv.contexts.get('confirm-move').parameters.move as string;
-  const fenstring = conv.user.storage.fen;
-  const difficulty = conv.user.storage.options.difficulty;
-  const chess = new Chess(fenstring, difficulty);
-  await chess.updateGameState();
-  if (chess.isPromotion(move)) {
-    const from = move.slice(0, 2);
-    const to = move.slice(2, 4);
-    speak(conv, Ans.promotion(from, to));
-    speak(conv, Ask.howToPromote());
-    conv.contexts.set('ask-to-promotion', 1, { move });
-    if (conv.contexts.get('correct-last-move')) {
-      conv.contexts.set('correct-last-move', 1);
-    }
-    return;
-  }
-  await moveByPlayer(conv, move, chess);
-  await moveByAI(conv, chess);
+  await prepareToMove(conv, move);
 }
 
 app.intent(
@@ -953,16 +949,21 @@ app.intent(
   }
 );
 
-function acceptAdvice(conv: VoiceChessConv) {
+async function acceptAdvice(conv: VoiceChessConv) {
+  const needConfirm = conv.user.storage.options.confirm;
   const advCtx = conv.contexts.get('advice-made');
   const move = advCtx.parameters.move as string;
-  const from = move.slice(0, 2);
-  const to = move.slice(2, 4);
-  const fenstring = conv.user.storage.fen;
-  const board = new ChessBoard(fenstring);
-  const piece = board.pos(from);
-  speak(conv, Ask.askToConfirm(from, to, piece));
-  conv.contexts.set('confirm-move', 1, { move });
+  if (needConfirm) {
+    const from = move.slice(0, 2);
+    const to = move.slice(2, 4);
+    const fenstring = conv.user.storage.fen;
+    const board = new ChessBoard(fenstring);
+    const piece = board.pos(from);
+    speak(conv, Ask.askToConfirm(from, to, piece));
+    conv.contexts.set('confirm-move', 1, { move });
+    return;
+  }
+  await prepareToMove(conv, move);
 }
 
 app.intent('Accept Advice', acceptAdvice);
@@ -1051,6 +1052,19 @@ app.intent(
     speak(conv, Ask.waitMove());
   }
 );
+
+app.intent('Captured', (conv: VoiceChessConv) => {
+  const fenstring = conv.user.storage.fen;
+  const playerSide = conv.user.storage.side;
+  const board = new ChessBoard(fenstring, true);
+  const captured = board.capturedPieces();
+  if (captured.white.length === 0 && captured.black.length === 0) {
+    speak(conv, Ans.noCapturedPieces());
+  } else {
+    speak(conv, listCapturedPieces(captured, playerSide));
+  }
+  speak(conv, Ask.waitMove());
+});
 
 app.intent('Next', async (conv: VoiceChessConv) => {
   let isFallback = false;
@@ -1145,7 +1159,7 @@ app.intent(
     } else if (conv.contexts.get('confirm-move')) {
       await acceptMove(conv);
     } else if (conv.contexts.get('advice-made')) {
-      acceptAdvice(conv);
+      await acceptAdvice(conv);
     } else {
       isFallback = true;
       fallbackHandler(conv);

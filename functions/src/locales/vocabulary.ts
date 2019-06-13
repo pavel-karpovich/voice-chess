@@ -39,6 +39,14 @@ export class Vocabulary {
         'fem/vin': 'мою',
         'mus/rod': 'моего',
         'fem/rod': 'моей',
+        'mus/tvr': 'мною',
+        'fem/tvr': 'мною',
+        'mus/sin/rod': 'моего',
+        'fem/sin/rod': 'мою',
+        'mus/plr/rod': 'моих',
+        'fem/plr/rod': 'моих',
+        'mus/plr/vin': 'моих',
+        'fem/plr/vin': 'мои',
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
@@ -58,6 +66,14 @@ export class Vocabulary {
         'fem/vin': 'вашу',
         'mus/rod': 'вашего',
         'fem/rod': 'вашей',
+        'mus/tvr': 'вами',
+        'fem/tvr': 'вами',
+        'mus/sin/rod': 'вашего',
+        'fem/sin/rod': 'вашу',
+        'mus/plr/rod': 'ваших',
+        'fem/plr/rod': 'ваших',
+        'mus/plr/vin': 'ваших',
+        'fem/plr/vin': 'ваши',
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
@@ -129,7 +145,7 @@ export class Vocabulary {
         'fem/plr/rod': 'чёрных',
         'mus/plr/rod': 'чёрных',
         'fem/plr/tvr': 'чёрным',
-        'mys/plr/tvr': 'чёрным',
+        'mus/plr/tvr': 'чёрным',
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
@@ -156,7 +172,9 @@ export class Vocabulary {
         'fem/plr/rod': 'белых',
         'mus/plr/rod': 'белых',
         'fem/plr/tvr': 'белым',
-        'mys/plr/tvr': 'белым',
+        'mus/plr/tvr': 'белым',
+        'fem/plr/vin': 'белые',
+        'mus/plr/vin': 'белых',
       } as WordForms)[opt],
     } as LocalizationObject<string>)[this.lang];
   }
@@ -183,6 +201,7 @@ export class Vocabulary {
             tvr: 'pawn',
             'sin/rod': 'pawn',
             'plr/rod': 'pawns',
+            'plr/vin': 'pawns',
           } as WordForms)[opt],
           ru: ({
             sin: 'пешка',
@@ -192,6 +211,7 @@ export class Vocabulary {
             tvr: 'пешкой',
             'sin/rod': 'пешки',
             'plr/rod': 'пешек',
+            'plr/vin': 'пешки',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'r':
@@ -204,6 +224,7 @@ export class Vocabulary {
             tvr: 'rook',
             'sin/rod': 'rook',
             'plr/rod': 'rooks',
+            'plr/vin': 'rooks',
           } as WordForms)[opt],
           ru: ({
             sin: 'ладья',
@@ -213,6 +234,7 @@ export class Vocabulary {
             tvr: 'ладьёй',
             'sin/rod': 'ладьи',
             'plr/rod': 'ладей',
+            'plr/vin': 'ладьи',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'n':
@@ -225,6 +247,7 @@ export class Vocabulary {
             tvr: 'knight',
             'sin/rod': 'knight',
             'plr/rod': 'knights',
+            'plr/vin': 'knights',
           } as WordForms)[opt],
           ru: ({
             sin: 'конь',
@@ -234,6 +257,7 @@ export class Vocabulary {
             tvr: 'конём',
             'sin/rod': 'коня',
             'plr/rod': 'коней',
+            'plr/vin': 'коней',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'b':
@@ -246,6 +270,7 @@ export class Vocabulary {
             tvr: 'bishop',
             'sin/rod': 'bishop',
             'plr/rod': 'bishops',
+            'plr/vin': 'bishops',
           } as WordForms)[opt],
           ru: ({
             sin: 'слон',
@@ -255,6 +280,7 @@ export class Vocabulary {
             tvr: 'слоном',
             'sin/rod': 'слона',
             'plr/rod': 'слонов',
+            'plr/vin': 'слонов',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'q':
@@ -267,6 +293,7 @@ export class Vocabulary {
             tvr: 'queen',
             'sin/rod': 'queen',
             'plr/rod': 'queens',
+            'plr/vin': 'королев',
           } as WordForms)[opt],
           ru: ({
             sin: 'ферзь',
@@ -276,6 +303,7 @@ export class Vocabulary {
             tvr: 'ферзём',
             'sin/rod': 'ферзя',
             'plr/rod': 'ферзей',
+            'plr/vin': 'ферзей',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 'k':
@@ -288,6 +316,7 @@ export class Vocabulary {
             tvr: 'king',
             'sin/rod': 'king',
             'plr/rod': 'kings',
+            'plr/vin': 'kings',
           } as WordForms)[opt],
           ru: ({
             sin: 'король',
@@ -297,6 +326,7 @@ export class Vocabulary {
             tvr: 'королём',
             'sin/rod': 'короля',
             'plr/rod': 'королей',
+            'plr/vin': 'королей',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       default:
@@ -317,6 +347,8 @@ export class Vocabulary {
           ru: ({
             mus: 'один',
             fem: 'одна',
+            'mus/rod': 'одного',
+            'fem/rod': 'одну',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 2:
@@ -325,17 +357,23 @@ export class Vocabulary {
           ru: ({
             mus: 'два',
             fem: 'две',
+            'mus/vin': 'двух',
+            'fem/vin': 'две',
           } as WordForms)[opt],
         } as LocalizationObject<string>)[this.lang];
       case 3:
         return ({
           en: 'three',
           ru: 'три',
+          'mus/vin': 'трёх',
+          'fem/vin': 'три',
         } as LocalizationObject<string>)[this.lang];
       case 4:
         return ({
           en: 'four',
           ru: 'четыре',
+          'mus/vin': 'четырёх',
+          'fem/vin': 'четыре',
         } as LocalizationObject<string>)[this.lang];
       case 5:
         return ({
@@ -485,6 +523,14 @@ export class Vocabulary {
       ({
         en: ['and'],
         ru: ['и'],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static andA(): string {
+    return rand(
+      ({
+        en: ['and'],
+        ru: ['а'],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -1056,15 +1102,15 @@ export class Vocabulary {
             `У ${this.youOrMe(whose)} ${this.left(gen)} только ${this.nPieces(
               1,
               pieceCode
-            )} на ${char(pos)}.`,
+            )} ${this.piecesN(pieceCode, 1)} на ${char(pos)}.`,
             `${upFirst(this.yourOrMy(pieceCode, whose, 'sin'))} ${this.nPieces(
               1,
               pieceCode
-            )} находится на клетке ${char(pos)}.`,
+            )} ${this.piecesN(pieceCode, 1)} находится на клетке ${char(pos)}.`,
             `У ${this.youOrMe(whose)} ${this.left(gen)} всего ${this.nPieces(
               1,
               pieceCode
-            )}, и она стоит на ${char(pos)}.`,
+            )} ${this.piecesN(pieceCode, 1)}, и она стоит на ${char(pos)}.`,
             `${upFirst(this.yourOrMy(pieceCode, whose, 'sin'))} ${this.only(
               gen
             )} ${this.piece(pieceCode)} ${this.located(gen)} на позиции ${char(
@@ -1102,7 +1148,7 @@ export class Vocabulary {
             `У ${this.black('plr/rod')} ${this.left(gen)} лишь ${this.nPieces(
               1,
               pieceCode
-            )} - на позиции ${char(pos)}.`,
+            )} ${this.piecesN(pieceCode, 1)} - на позиции ${char(pos)}.`,
             `${upFirst(this.last(gen))} ${this.coloredPiece(
               pieceCode,
               gen
@@ -1115,11 +1161,20 @@ export class Vocabulary {
   static nPieces(n: number, pieceCode: string): string {
     const gen = this.pieceGender(pieceCode);
     if (n === 1) {
-      return this.n(n, gen) + ' ' + this.piece(pieceCode);
+      return this.n(n, gen);
     } else if (n > 1 && n < 5) {
-      return this.n(n, gen) + ' ' + this.piece(pieceCode, 'rod');
+      return this.n(n, gen);
     } else {
-      return this.n(n, gen) + ' ' + this.piece(pieceCode, 'plr/rod');
+      return this.n(n, gen);
+    }
+  }
+  static piecesN(pieceCode: string, n: number, opt?: string): string {
+    if (n === 1) {
+      return opt ? this.piece(pieceCode, opt) : this.piece(pieceCode);
+    } else if (n > 1 && n < 5) {
+      return this.piece(pieceCode, 'rod');
+    } else {
+      return this.piece(pieceCode, 'plr/rod');
     }
   }
   static someonesPieces(
@@ -1140,7 +1195,7 @@ export class Vocabulary {
             `${upFirst(this.youOrMe(whose))} have ${this.nPieces(
               num,
               pieceCode
-            )}, on positions`,
+            )} ${this.piecesN(pieceCode, num)}, on positions`,
             `${upFirst(this.youOrMe(whose))} have ${this.piece(pieceCode)} on`,
             `${upFirst(
               this.myPiece(pieceCode, 'plr')
@@ -1150,7 +1205,10 @@ export class Vocabulary {
             `${upFirst(
               this.someonesPiece(pieceCode, side, 'plr')
             )} расположены`,
-            `У ${this.youOrMe(whose)} есть ${this.nPieces(num, pieceCode)}:`,
+            `У ${this.youOrMe(whose)} есть ${this.nPieces(
+              num,
+              pieceCode
+            )} ${this.piecesN(pieceCode, num)}:`,
             `У ${this.youOrMe(whose)} есть ${this.piece(pieceCode, 'plr')}`,
             `${upFirst(this.someonesPiece(pieceCode, side, 'plr'))} находятся`,
           ],
@@ -1169,7 +1227,7 @@ export class Vocabulary {
             `${upFirst(this.color(side))} side has ${this.nPieces(
               num,
               pieceCode
-            )}, and they are located on`,
+            )} ${this.piecesN(pieceCode, num)}, and they are located on`,
           ],
           ru: [
             `${upFirst(this.coloredPiece(pieceCode, 'plr'))} занимают позиции`,
@@ -1180,11 +1238,11 @@ export class Vocabulary {
             `У ${this.color(side, 'plr/rod')} есть ${this.nPieces(
               num,
               pieceCode
-            )}:`,
+            )} ${this.piecesN(pieceCode, num)}:`,
             `У ${this.color(side, 'plr/rod')} ${this.nPieces(
               num,
               pieceCode
-            )}. Они находятся`,
+            )} ${this.piecesN(pieceCode, num)}. Они находятся`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -1216,9 +1274,196 @@ export class Vocabulary {
             side,
             'plr'
           )} фигуры, присутствующие в данный момент в игре:`,
-          `Так, что мы имеем по ${this.color(side, 'mys/plr/tvr')}:`,
+          `Так, что мы имеем по ${this.color(side, 'mus/plr/tvr')}:`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
+  }
+  static capture(whose: WhoseSide): string {
+    return ({
+      en: 'capture',
+      ru: ({
+        [WhoseSide.ENEMY]: 'захватил',
+        [WhoseSide.PLAYER]: 'захватили',
+      } as WordForms)[whose],
+    } as LocalizationObject<string>)[this.lang];
+  }
+  static youOrI(whose: WhoseSide): string {
+    return ({
+      en: ({
+        [WhoseSide.ENEMY]: 'I',
+        [WhoseSide.PLAYER]: 'you',
+      } as WordForms)[whose],
+      ru: ({
+        [WhoseSide.ENEMY]: 'я',
+        [WhoseSide.PLAYER]: 'вы',
+      } as WordForms)[whose],
+    } as LocalizationObject<string>)[this.lang];
+  }
+  static someoneDontCapture(
+    who: WhoseSide,
+    whose: WhoseSide,
+    capturedSide: ChessSide
+  ): string {
+    return rand(
+      ({
+        en: [
+          `all ${this.yourOrMy('p', whose, 'plr')} ${this.color(
+            capturedSide,
+            'plr'
+          )} pieces are on the board.`,
+          `${this.youOrI(who)} have not captured any of ${this.yourOrMy(
+            'p',
+            whose,
+            'plr'
+          )} pieces yet.`,
+          `${this.youOrI(who)} have not yet captured any of ${this.yourOrMy(
+            'p',
+            whose,
+            'plr'
+          )} ${this.color(capturedSide)} pieces.`,
+          `${this.youOrI(who)} have not captured anything in this game.`,
+        ],
+        ru: [
+          `все ${this.yourOrMy('p', whose, 'plr')} ${this.color(
+            capturedSide,
+            'plr'
+          )} фигуры ещё на доске.`,
+          `у ${this.youOrMe(who)} нет захваченных ${this.yourOrMy(
+            'p',
+            whose,
+            'plr/rod'
+          )} фигур.`,
+          `${this.youOrI(who)} не ${this.capture(
+            who
+          )} ещё ни одной ${this.yourOrMy('p', whose, 'rod')} ${this.color(
+            capturedSide,
+            'fem/sin/rod'
+          )} фигуры.`,
+          `${this.youOrI(who)} пока не ${this.capture(
+            who
+          )} ни одной из ${this.yourOrMy('p', whose, 'plr/rod')} фигур.`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static managed(who: WhoseSide): string {
+    return ({
+      en: 'managed',
+      ru: ({
+        [WhoseSide.ENEMY]: 'успел',
+        [WhoseSide.PLAYER]: 'успели',
+      } as WordForms)[who],
+    } as LocalizationObject<string>)[this.lang];
+  }
+  static someoneCapture1(who: WhoseSide, n: number, gen: string): string {
+    return rand(
+      ({
+        en: [
+          `${upFirst(this.youOrI(who))} captured`,
+          `In this game ${this.youOrI(who)} captured`,
+          `${upFirst(this.youOrI(who))} currently captured`,
+          `So far ${this.youOrI(who)} captured`,
+        ],
+        ru: [
+          `На текущий момент ${this.youOrI(who)} ${this.capture(who)}`,
+          `${upFirst(this.youOrI(who))} ${this.capture(who)}`,
+          `В этой игре ${this.youOrI(who)} ${this.capture(who)}`,
+          `За время игры ${this.youOrI(who)} ${this.managed(who)} захватить`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static someoneCapture2(who: WhoseSide, n: number, gen: string): string {
+    return rand(
+      ({
+        en: [
+          `And ${this.youOrI(who)} captured`,
+          `And ${this.youOrI(who)} captured in this game`,
+          `And ${upFirst(this.youOrI(who))} currently captured`,
+          `And ${this.youOrI(who)} so far captured`,
+        ],
+        ru: [
+          `А ${this.youOrI(who)} на текущий момент ${this.capture(who)}`,
+          `${upFirst(this.youOrI(who))} же ${this.capture(who)}`,
+          `А ${this.youOrI(who)} в этой игре ${this.capture(who)}`,
+          `А ${this.youOrI(who)} за время этой игры ${this.managed(
+            who
+          )} захватить`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static nSomeonesColoredPieces(
+    n: number,
+    whose: WhoseSide,
+    side: ChessSide,
+    pieceCode: string
+  ): string {
+    const rnd = Math.random();
+    const gen = this.pieceGender(pieceCode);
+    if (n > 1 || rnd > 0.6) {
+      if (n === 1) {
+        return `${this.n(n, `${gen}/rod`)} ${this.yourOrMy(
+          pieceCode,
+          whose,
+          'sin/rod'
+        )} ${this.color(side, `${gen}/vin`)} ${this.piece(pieceCode, 'vin')}`;
+      } else if (n > 1 && n < 5) {
+        return `${this.n(n, `${gen}/vin`)} ${this.yourOrMy(
+          pieceCode,
+          whose,
+          'plr/vin'
+        )} ${this.color(side, `${gen}/plr/vin`)} ${this.piece(
+          pieceCode,
+          'plr/vin'
+        )}`;
+      } else {
+        return `${this.n(n)} ${this.yourOrMy(
+          pieceCode,
+          whose,
+          'plr/rod'
+        )} ${this.color(side, 'plr/rod')} ${this.piece(pieceCode, 'plr/rod')}`;
+      }
+    } else {
+      return `${this.yourOrMy(pieceCode, whose, 'sin/rod')} ${this.color(
+        side,
+        `${gen}/vin`
+      )} ${this.piece(pieceCode, 'vin')}`;
+    }
+  }
+  static nSomeonesPieces(
+    n: number,
+    whose: WhoseSide,
+    pieceCode: string
+  ): string {
+    const rnd = Math.random();
+    const gen = this.pieceGender(pieceCode);
+    if (n > 1 || rnd > 0.6) {
+      if (n === 1) {
+        return `${this.n(n, `${gen}/rod`)} ${this.yourOrMy(
+          pieceCode,
+          whose,
+          'sin/rod'
+        )} ${this.piece(pieceCode, 'vin')}`;
+      } else if (n > 1 && n < 5) {
+        return `${this.n(n, `${gen}/vin`)} ${this.yourOrMy(
+          pieceCode,
+          whose,
+          'plr/vin'
+        )} ${this.piece(pieceCode, 'plr/vin')}`;
+      } else {
+        return `${this.n(n)} ${this.yourOrMy(
+          pieceCode,
+          whose,
+          'plr/rod'
+        )} ${this.piece(pieceCode, 'plr/rod')}`;
+      }
+    } else {
+      return `${this.yourOrMy(pieceCode, whose, 'sin/rod')} ${this.piece(
+        pieceCode,
+        'vin'
+      )}`;
+    }
   }
 }

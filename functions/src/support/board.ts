@@ -1,4 +1,4 @@
-import { ChessBoard, ChessSquareData } from '../chess/chessboard';
+import { ChessBoard, ChessSquareData, Captured } from '../chess/chessboard';
 import { upFirst, pause, WhoseSide } from './helpers';
 import { Vocabulary as Voc } from '../locales/vocabulary';
 import { ChessSide, totalPiecesNumber } from '../chess/chessUtils';
@@ -105,6 +105,82 @@ export function allPiecesForSide(
         allPiecesForType(squares[i].val, pos, null, playerSide, 0) + ' ';
       pos.length = 0;
     }
+  }
+  result += '</p>';
+  return result;
+}
+
+export function listCapturedPieces(
+  captured: Captured,
+  playerSide: ChessSide
+): string {
+  let result = '<p>';
+  let who = playerSide === ChessSide.WHITE ? WhoseSide.ENEMY : WhoseSide.PLAYER;
+  let whose = who === WhoseSide.ENEMY ? WhoseSide.PLAYER : WhoseSide.ENEMY;
+  if (captured.white.length === 0) {
+    result += `<s>${upFirst(
+      Voc.someoneDontCapture(who, whose, ChessSide.WHITE)
+    )}</s>`;
+  } else {
+    const firstPiece = captured.white[0].piece;
+    const gen = Voc.pieceGender(firstPiece);
+    const totalAmount = captured.white.reduce(
+      (sum, el) => (sum += el.count),
+      0
+    );
+    result += '<s>' + Voc.someoneCapture1(who, totalAmount, gen);
+    result +=
+      ' ' +
+      Voc.nSomeonesColoredPieces(
+        captured.white[0].count,
+        whose,
+        ChessSide.WHITE,
+        firstPiece
+      );
+    for (let i = 1; i < captured.white.length; ++i) {
+      if (i === captured.white.length - 1) {
+        result += ' ' + Voc.and() + ' ';
+      } else {
+        result += ', ';
+      }
+      const el = captured.white[i];
+      result += Voc.nSomeonesPieces(el.count, whose, el.piece);
+    }
+    result += '.</s>';
+  }
+  result += ' ';
+  const tmp = who;
+  who = whose;
+  whose = tmp;
+  if (captured.black.length === 0) {
+    result += '<s>' + upFirst(Voc.andA()) + ' ';
+    result += Voc.someoneDontCapture(who, whose, ChessSide.BLACK) + '</s>';
+  } else {
+    const firstPiece = captured.black[0].piece;
+    const gen = Voc.pieceGender(firstPiece);
+    const totalAmount = captured.black.reduce(
+      (sum, el) => (sum += el.count),
+      0
+    );
+    result += '<s>' + Voc.someoneCapture2(who, totalAmount, gen);
+    result +=
+      ' ' +
+      Voc.nSomeonesColoredPieces(
+        captured.black[0].count,
+        whose,
+        ChessSide.BLACK,
+        firstPiece
+      );
+    for (let i = 1; i < captured.black.length; ++i) {
+      if (i === captured.black.length - 1) {
+        result += ' ' + Voc.and() + ' ';
+      } else {
+        result += ', ';
+      }
+      const el = captured.black[i];
+      result += Voc.nSomeonesPieces(el.count, whose, el.piece);
+    }
+    result += '.</s>';
   }
   result += '</p>';
   return result;

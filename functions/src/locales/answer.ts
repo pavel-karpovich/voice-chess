@@ -1140,4 +1140,22 @@ export class Answer {
       );
     }
   }
+  static noCapturedPieces(): string {
+    return rand(
+      ({
+        en: [
+          'We have no captured pieces at all!',
+          'This game has not been a single capture yet!',
+          'We just started, and have not eaten yet a single piece.',
+          'Neither you nor I, no captured pieces.',
+        ],
+        ru: [
+          'Ещё не было захвачено ни одной фигуры!',
+          'В текущей игре ещё не было ни одного захвата!',
+          'Мы только начали, ещё не было съедено ни одной фигуры!',
+          'Ни у вас, ни у меня, ещё нет съеденных фигур.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }
