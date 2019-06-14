@@ -1,6 +1,5 @@
 const loadEngine = require('stockfish');
 import * as path from 'path';
-import { ChessSide } from './chessUtils';
 const stockfishPath = '../../node_modules/stockfish/src/stockfish.wasm';
 
 export const chessBoardSize = 8;
@@ -179,7 +178,9 @@ export class Chess {
   }
 
   get legalMoves(): string[] {
-    console.log('ERROR: legalMoves prop first requires updateGameState() call!');
+    console.log(
+      'ERROR: legalMoves prop first requires updateGameState() call!'
+    );
     return this.moves;
   }
   /**
@@ -197,14 +198,5 @@ export class Chess {
    */
   get enemyMove(): string {
     return this.enemy;
-  }
-
-  get whoseTurn(): ChessSide {
-    const side = this.fen.split(' ')[1];
-    if (side === 'w') {
-      return ChessSide.WHITE;
-    } else {
-      return ChessSide.BLACK;
-    }
   }
 }

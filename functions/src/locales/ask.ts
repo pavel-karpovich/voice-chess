@@ -45,35 +45,48 @@ export class Ask {
   static ingameTips(): string {
     return ({
       en:
-        '<p><s>You are now in the game..</s>' +
+        '<p><s>You are now in the game.</s>' +
         "<s>And I'm wait when you make your next move.</s>" +
         '<s>If you want, you can ask me about the current state of the chessboard.</s>' +
-        '<s>I can tell you about a specific rank of the board, or about all the white or black pieces.</s>' +
-        '<s>You can also start a new game, or change the difficulty level.</s></p>' +
-        '<p><s>And what do you want to do?</s></p>',
+        '<s>I can tell you about a certain board rank, about a particular square or piece, or about color.</s>' +
+        '<s>Also I can show you the full or partial history of moves, the number of the current mover, or what color who plays.</s>' +
+        '<s>I can list all the moves available to you or give advice on how best to play.</s>' +
+        '<s>For any reason, you can always change your last move.</s>' +
+        '<s>If needed, I can even make a move automatically for you!</s>' +
+        '<s>Of course, at any time you can start a new game or resign if you think you will lose.</s>' +
+        '<s>If you want, you can change the difficulty level, and disable/enable confirmation of every move.</s></p>' +
+        '<p><s>So, what do you want to do?</s></p>',
       ru:
         '<p><s>Вы сейчас в процессе игры.</s>' +
         '<s>И я ожидаю, когда вы сделаете свой следующий ход.</s>' +
-        '<s>Если хотите, вы можете спросить меня о состоянии шахматной доски на текущий момент.</s>' +
-        '<s>Я могу рассказать о конкретном ряде доски или обо всех белых или чёрных фигурах.</s>' +
-        '<s>Вы также можете начать новую игру, или изменить уровень сложности.</s></p>' +
-        '<p><s>И что из этого вы хотите сделать?</s></p>',
+        '<s>Если вы плохо помните расположение фигур, я могу вам всё напомнить.</s>' +
+        '<s>Я могу рассказать о конкретном ряде доски, о заданной клетке, о конкретной фигуре или о цвете.</s>' +
+        '<s>Также вы можете узнать у меня полную историю ходов, какой ход сейчас по номеру, и за какой цвет вы играете.</s>' +
+        '<s>Я могу рассказать вам обо всех доступных ходах, которые вы можете совершить, или дать совет, как лучше походить.</s>' +
+        '<s>Если что, вы всегда можете откорректировать один свой последний ход.</s>' +
+        '<s>На крайний случай, я могу даже сделать ход автоматически за вас!</s>' +
+        '<s>Вы всегда можете начать новую игру, или сдаться, если чувствуете, что проиграли.</s>' +
+        '<s>Если вам нужно, вы можете изменить уровень сложности, или включить/отключить необходимость подтверждения каждого хода.</s></p>' +
+        '<p><s>Теперь, что вы хотите сделать из этого списка?</s></p>',
     } as LocalizationObject<string>)[this.lang];
   }
   static nogameTips(): string {
     return ({
       en:
-        '<p><s>You do not have a running game now.</s>' +
-        '<s>You can start a new game.</s>' +
+        '<p><s>You are not in the game now.</s>' +
+        '<s>If you have an unfinished game you can continue it.</s>' +
+        '<s>Or you can start a new one.</s>' +
         '<s>Or continue the old one if you have an unfinished game.</s>' +
-        '<s>Also, if you want, you can configure the level of difficulty.</s></p>' +
-        '<p><s>And what do you want to do?</s></p>',
+        '<s>In terms of settings, you can change the level of difficulty, ' +
+        'and enable/disable confirmation of every move.</s></p>' +
+        '<p><s>So, what do you want to do?</s></p>',
       ru:
-        '<p><s>У вас сейчас нет запущенной игровой партии.</s>' +
-        '<s>Вы можете начать новую игру.</s>' +
-        '<s>Или продолжить старую, если у вас есть незаконченная партия.</s>' +
-        '<s>Также, если хотите, можно отрегулировать уровень сложности.</s></p>' +
-        '<p><s>И что из этого вы выбираете?</s></p>',
+        '<p><s>Вы сейчас не в игре.</s>' +
+        '<s>Если у вас есть незаконченная партия, вы можете продолжить её.</s>' +
+        '<s>Или начать новую игру, ведь за этим вы сюда и пришли, разве не так?</s>' +
+        '<s>В качестве настроек вы можете отрегулировать уровень сложности игры, ' +
+        'а также включить/отключить опцию подтверждения каждого хода.</s></p>' +
+        '<p><s>Ну и что вы будете делать?</s></p>',
     } as LocalizationObject<string>)[this.lang];
   }
   static askToRemindBoard(): string {

@@ -108,13 +108,14 @@ function safeGameContext(conv: VoiceChessConv): void {
   }
 }
 
-function whatDoYouWantWithTips(conv: VoiceChessConv): void {
+function help(conv: VoiceChessConv): void {
   if (conv.contexts.get('game')) {
     speak(conv, Ask.ingameTips());
   } else {
     speak(conv, Ask.nogameTips());
   }
 }
+app.intent('Help', help);
 
 function firstGameRun(conv: VoiceChessConv): void {
   const initialDifficulty = 2;
@@ -159,11 +160,11 @@ function fallbackHandler(conv: VoiceChessConv): void {
   preserveContext(conv);
   const fallbacks = conv.data.fallbackCount;
   conv.data.fallbackCount = fallbacks + 1;
-  if (fallbacks < 2) {
+  if (fallbacks < 3) {
     speak(conv, Ans.firstFallback());
-  } else if (fallbacks < 4) {
+  } else if (fallbacks === 3) {
     speak(conv, Ans.secondFallback());
-    whatDoYouWantWithTips(conv);
+    help(conv);
   } else {
     conv.close(Ans.confusedExit());
   }
@@ -578,14 +579,14 @@ app.intent(
     const difficulty = conv.user.storage.options.difficulty;
     const playerSide = conv.user.storage.side;
     const chess = new Chess(fenstring, difficulty);
-    if (chess.whoseTurn !== playerSide) {
+    const board = new ChessBoard(chess.fenstring);
+    if (board.moveSide !== playerSide) {
       const msg = 'The player and server sides are messed.';
       console.log(`ERROR: ${msg}`);
       speak(conv, Ans.Error(msg));
       speak(conv, Ask.tryAgainOrLater());
       return;
     }
-    const board = new ChessBoard(chess.fenstring);
     const actualPiece = board.pos(from);
     let piecesMatch = true;
     if (!piece && !actualPiece) {

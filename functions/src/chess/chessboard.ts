@@ -121,38 +121,10 @@ export class ChessBoard {
 
   capturedPieces(): Captured {
     const allPieces = [
-      'r',
-      'n',
-      'b',
-      'q',
-      'k',
-      'b',
-      'n',
-      'r',
-      'p',
-      'p',
-      'p',
-      'p',
-      'p',
-      'p',
-      'p',
-      'p',
-      'R',
-      'N',
-      'B',
-      'Q',
-      'K',
-      'B',
-      'N',
-      'R',
-      'P',
-      'P',
-      'P',
-      'P',
-      'P',
-      'P',
-      'P',
-      'P',
+      'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
+      'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
+      'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R',
+      'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
     ];
     let i = 0;
     while (this.fen[i] !== ' ') {
@@ -375,5 +347,17 @@ export class ChessBoard {
       this.lazy = false;
     }
     return this.count;
+  }
+
+  get moveSide(): string {
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
+    }
+    if (this.side === 'w') {
+      return ChessSide.WHITE;
+    } else {
+      return ChessSide.BLACK;
+    }
   }
 }
