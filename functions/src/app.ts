@@ -3,18 +3,8 @@ import { dialogflow, DialogflowConversation } from 'actions-on-google';
 import { Answer as Ans } from './locales/answer';
 import { Ask } from './locales/ask';
 import { Vocabulary as Voc } from './locales/vocabulary';
-import {
-  Chess,
-  chessBoardSize,
-  ChessGameState,
-  maxDifficulty,
-} from './chess/chess';
-import {
-  ChessSide,
-  CastlingType,
-  getSide,
-  oppositeSide,
-} from './chess/chessUtils';
+import { Chess, chessBoardSize, ChessGameState, maxDifficulty } from './chess/chess';
+import { ChessSide, CastlingType, getSide, oppositeSide } from './chess/chessUtils';
 import { ChessBoard } from './chess/chessboard';
 import { pause, gaussianRandom, WhoseSide } from './support/helpers';
 import { HistoryFrame, historyOfMoves } from './support/history';
@@ -234,10 +224,7 @@ function giveSecondPartOfTheBoard(conv: VoiceChessConv): void {
 app.intent('Board', beginShowingTheBoard);
 app.intent('Board - next', giveSecondPartOfTheBoard);
 
-function rankHandler(
-  conv: VoiceChessConv,
-  { ord, num }: { ord?: number; num?: number }
-): void {
+function rankHandler(conv: VoiceChessConv, { ord, num }: { ord?: number; num?: number }): void {
   console.log('Single rank');
   const fenstring = conv.user.storage.fen;
   const rankNum = Number(num ? num : ord);
@@ -333,19 +320,9 @@ async function moveByPlayer(
   if (correctCtx) {
     const board = new ChessBoard(fenstring);
     const lastAIMove = hist.pop();
-    const lastPlayerMove = hist.pop();
-    board.extract(
-      lastAIMove.m.slice(1),
-      lastAIMove.b,
-      lastAIMove.e,
-      lastAIMove.c
-    );
-    board.extract(
-      lastPlayerMove.m.slice(1),
-      lastPlayerMove.b,
-      lastPlayerMove.e,
-      lastPlayerMove.c
-    );
+    const lastPlMove = hist.pop();
+    board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e, lastAIMove.c);
+    board.extract(lastPlMove.m.slice(1), lastPlMove.b, lastPlMove.e, lastPlMove.c);
     const cstFen = conv.user.storage.cstFen;
     board.loadCorrectCastlingFen(cstFen);
     fenstring = board.convertToFen();
@@ -366,12 +343,7 @@ async function moveByPlayer(
   const cast = board.isCastling(move, piece);
   let enPassPawn = null;
   if (cast) {
-    answer += Ans.castlingByPlayer(
-      from,
-      to,
-      cast.slice(0, 2),
-      cast.slice(2, 4)
-    );
+    answer += Ans.castlingByPlayer(from, to, cast.slice(0, 2), cast.slice(2, 4));
   } else if (isEnPassant) {
     enPassPawn = hist[hist.length - 1].m.slice(3, 5);
     answer += Ans.enPassantPlayer(from, to, enPassPawn);
@@ -441,12 +413,7 @@ async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
   const cast = boardBeforeMove.isCastling(chess.enemyMove, enemyPiece);
   let enPassPawn = null;
   if (cast) {
-    answer += Ans.castlingByOpponent(
-      enemyFrom,
-      enemyTo,
-      cast.slice(0, 2),
-      cast.slice(2, 4)
-    );
+    answer += Ans.castlingByOpponent(enemyFrom, enemyTo, cast.slice(0, 2), cast.slice(2, 4));
   } else if (isEnPassant) {
     enPassPawn = hist[hist.length - 1].m.slice(3, 5);
     answer += Ans.enPassantEnemy(enemyFrom, enemyTo, enPassPawn);
@@ -502,10 +469,7 @@ async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
   conv.user.storage.fen = chess.fenstring;
 }
 
-async function playerMoveByAI(
-  conv: VoiceChessConv,
-  chess?: Chess
-): Promise<void> {
+async function playerMoveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
   if (!chess) {
     const fenstring = conv.user.storage.fen;
     const difficulty = conv.user.storage.options.difficulty;
@@ -516,11 +480,7 @@ async function playerMoveByAI(
   await moveByPlayer(conv, move, chess, answer);
 }
 
-async function prepareToMove(
-  conv: VoiceChessConv,
-  move: string,
-  chess?: Chess
-): Promise<void> {
+async function prepareToMove(conv: VoiceChessConv, move: string, chess?: Chess): Promise<void> {
   if (!chess) {
     const fenstring = conv.user.storage.fen;
     const difficulty = conv.user.storage.options.difficulty;
@@ -559,19 +519,9 @@ app.intent(
       const hist = conv.user.storage.history;
       const board = new ChessBoard(fenstring);
       const lastAIMove = hist[hist.length - 1];
-      const lastPlayerMove = hist[hist.length - 2];
-      board.extract(
-        lastAIMove.m.slice(1),
-        lastAIMove.b,
-        lastAIMove.e,
-        lastAIMove.c
-      );
-      board.extract(
-        lastPlayerMove.m.slice(1),
-        lastPlayerMove.b,
-        lastPlayerMove.e,
-        lastPlayerMove.c
-      );
+      const lastPlMove = hist[hist.length - 2];
+      board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e, lastAIMove.c);
+      board.extract(lastPlMove.m.slice(1), lastPlMove.b, lastPlMove.e, lastPlMove.c);
       const cstFen = conv.user.storage.cstFen;
       board.loadCorrectCastlingFen(cstFen);
       fenstring = board.convertToFen();
@@ -648,10 +598,7 @@ async function acceptMove(conv: VoiceChessConv): Promise<void> {
 
 app.intent(
   'Promotion',
-  async (
-    conv: VoiceChessConv,
-    { piece2 }: { piece2: string }
-  ): Promise<void> => {
+  async (conv: VoiceChessConv, { piece2 }: { piece2: string }): Promise<void> => {
     console.log('Pawn promotion to the ' + piece2);
     const promContext = conv.contexts.get('ask-to-promotion');
     let move = promContext.parameters.move as string;
@@ -682,10 +629,7 @@ app.intent(
 
 app.intent(
   'Choose Side',
-  async (
-    conv: VoiceChessConv,
-    { side }: { side: ChessSide }
-  ): Promise<void> => {
+  async (conv: VoiceChessConv, { side }: { side: ChessSide }): Promise<void> => {
     console.log('Choose side: ' + side);
     conv.user.storage.side = side;
     if (side === ChessSide.WHITE) {
@@ -762,11 +706,7 @@ app.intent(
   'Choose Castling',
   async (
     conv: VoiceChessConv,
-    {
-      cast,
-      piece,
-      cell,
-    }: { cast?: CastlingType; piece?: string; cell?: string }
+    { cast, piece, cell }: { cast?: CastlingType; piece?: string; cell?: string }
   ) => {
     const fenstring = conv.user.storage.fen;
     const board = new ChessBoard(fenstring);
@@ -865,10 +805,7 @@ app.intent(
   }
 );
 
-async function listOfMoves(
-  conv: VoiceChessConv,
-  startNumber: number
-): Promise<void> {
+async function listOfMoves(conv: VoiceChessConv, startNumber: number): Promise<void> {
   console.log('legal moves');
   const fenstring = conv.user.storage.fen;
   const difficulty = conv.user.storage.options.difficulty;
@@ -1017,11 +954,7 @@ app.intent(
   'Piece',
   (
     conv: VoiceChessConv,
-    {
-      piece,
-      side,
-      whose,
-    }: { piece: string; side?: ChessSide; whose?: WhoseSide }
+    { piece, side, whose }: { piece: string; side?: ChessSide; whose?: WhoseSide }
   ): void => {
     const fenstring = conv.user.storage.fen;
     const playerSide = conv.user.storage.side;
@@ -1058,10 +991,7 @@ app.intent(
 
 app.intent(
   'All',
-  (
-    conv: VoiceChessConv,
-    { side, whose }: { side?: ChessSide; whose?: WhoseSide }
-  ): void => {
+  (conv: VoiceChessConv, { side, whose }: { side?: ChessSide; whose?: WhoseSide }): void => {
     if (!side && !whose) {
       fallbackHandler(conv);
       return;
@@ -1077,10 +1007,7 @@ app.intent(
     const fenstring = conv.user.storage.fen;
     const board = new ChessBoard(fenstring);
     const positions = board.allPiecesBySide(side);
-    speak(
-      conv,
-      allPiecesForSide(positions, side, playerSide) + ' \n' + Ans.itsAll()
-    );
+    speak(conv, allPiecesForSide(positions, side, playerSide) + ' \n' + Ans.itsAll());
     speak(conv, Ask.waitMove());
   }
 );
@@ -1127,10 +1054,7 @@ app.intent(
 
 app.intent(
   'Side',
-  (
-    conv: VoiceChessConv,
-    { side, who }: { side?: ChessSide; who?: WhoseSide }
-  ): void => {
+  (conv: VoiceChessConv, { side, who }: { side?: ChessSide; who?: WhoseSide }): void => {
     const playerSide = conv.user.storage.side;
     speak(conv, someonePlayForColor(who, side, playerSide));
     speak(conv, Ask.waitMove());
@@ -1157,9 +1081,7 @@ app.intent(
   async (conv: VoiceChessConv): Promise<void> => {
     let isFallback = false;
     if (conv.contexts.get('moves-next')) {
-      const fromPoint = Number(
-        conv.contexts.get('moves-next').parameters.start
-      );
+      const fromPoint = Number(conv.contexts.get('moves-next').parameters.start);
       await listOfMoves(conv, fromPoint);
     } else if (conv.contexts.get('board-next')) {
       giveSecondPartOfTheBoard(conv);

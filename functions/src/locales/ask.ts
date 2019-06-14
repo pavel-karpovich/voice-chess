@@ -1,6 +1,7 @@
 import { rand, LocalizationObject, char, upFirst } from '../support/helpers';
 import { Vocabulary as Voc } from './vocabulary';
 
+// prettier-ignore
 export class Ask {
   private static lang: string;
 
@@ -165,10 +166,7 @@ export class Ask {
   static askToMove(): string {
     return rand(
       ({
-        en: [
-          'Well, then you need to make a move.',
-          "Ok, then what's your move?",
-        ],
+        en: ['Well, then you need to make a move.', "Ok, then what's your move?"],
         ru: [
           'И как вы будете ходить?',
           'Ладно, и как вы походите?',
@@ -321,22 +319,13 @@ export class Ask {
           `But move is legal. Save it?`,
           `But move is legal. Confirm it with ${Voc.piece(actualPiece)}?`,
           `Did you want to say ${Voc.piece(actualPiece)}?`,
-          `Then, your move is ${Voc.piece(actualPiece)} from ${char(
-            from
-          )} to ${char(to)}?`,
+          `Then, your move is ${Voc.piece(actualPiece)} from ${char(from)} to ${char(to)}?`,
         ],
         ru: [
-          `Вы просто перепутали? Будете ходить ${Voc.piece(
-            actualPiece,
-            'tvr'
-          )}?`,
+          `Вы просто перепутали? Будете ходить ${Voc.piece(actualPiece, 'tvr')}?`,
           `Но сам ход корректный. Оставляем его?`,
-          `Вы хотели сказать ${Voc.piece(actualPiece)} с ${char(
-            from
-          )} на ${char(to)}?`,
-          `Будете ходить ${Voc.piece(actualPiece, 'rod')} с ${char(
-            from
-          )} на ${char(to)}?`,
+          `Вы хотели сказать ${Voc.piece(actualPiece)} с ${char(from)} на ${char(to)}?`,
+          `Будете ходить ${Voc.piece(actualPiece, 'rod')} с ${char(from)} на ${char(to)}?`,
           `Значит, ${Voc.piece(actualPiece)} ${char(from)} ${char(to)}?`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
@@ -364,71 +353,32 @@ export class Ask {
     return rand(
       ({
         en: [
-          `${upFirst(Voc.piece(pieceCode))} from ${char(from)} to ${char(
-            to
-          )}, yes?`,
-          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(
-            to
-          )}. That's right?`,
-          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(
-            to
-          )}. I understood correctly?`,
+          `${upFirst(Voc.piece(pieceCode))} from ${char(from)} to ${char(to)}, yes?`,
+          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(to)}. That's right?`,
+          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(to)}. I understood correctly?`,
         ],
         ru: [
-          `${upFirst(Voc.piece(pieceCode))} с ${char(from)} на ${char(
-            to
-          )}, да?`,
-          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(
-            to
-          )}. Всё верно?`,
-          `Вы хотите походить ${Voc.piece(pieceCode, 'rod')} ${char(
-            from
-          )} ${char(to)}. Верно?`,
+          `${upFirst(Voc.piece(pieceCode))} с ${char(from)} на ${char(to)}, да?`,
+          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(to)}. Всё верно?`,
+          `Вы хотите походить ${Voc.piece(pieceCode, 'rod')} ${char(from)} ${char(to)}. Верно?`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static askToConfirmCastling(
-    kFrom: string,
-    kTo: string,
-    rFrom: string,
-    rTo: string
-  ): string {
+  static askToConfirmCastling(kFrom: string, kTo: string, rFrom: string, rTo: string): string {
     return rand(
       ({
         en: [
-          `You are going to castling. The king will go from ${char(
-            kFrom
-          )} to ${char(kTo)}, you confirm?`,
-          `When castling, the king will make a double move from ${char(
-            kFrom
-          )} to ${char(kTo)}, and rock from ${char(rFrom)} will move to ${char(
-            rTo
-          )}. Does it suit you?`,
-          `When castling, the king will move to the square ${char(
-            kTo
-          )}, and rock will move to ${char(rTo)}. Do you confirm this move?`,
-          `Castling a king with a rock will cause the king to move to square ${char(
-            kTo
-          )}, and the rock from ${char(rFrom)} to ${char(rTo)}. Okay?`,
+          `You are going to castling. The king will go from ${char(kFrom)} to ${char(kTo)}, you confirm?`,
+          `When castling, the king will make a double move from ${char(kFrom)} to ${char(kTo)}, and rock from ${char(rFrom)} will move to ${char(rTo)}. Does it suit you?`,
+          `When castling, the king will move to the square ${char(kTo)}, and rock will move to ${char(rTo)}. Do you confirm this move?`,
+          `Castling a king with a rock will cause the king to move to square ${char(kTo)}, and the rock from ${char(rFrom)} to ${char(rTo)}. Okay?`,
         ],
         ru: [
-          `Вы собираетесь выполнить рокировку королём с ${char(
-            kFrom
-          )} на ${char(kTo)}, всё верно?`,
-          `При рокировке король переместится на две клетки, с ${char(
-            kFrom
-          )} на ${char(kTo)}, а ладья с ${char(
-            rFrom
-          )} встанет за королём на ${char(rTo)}. Вы подтвержаете ход?`,
-          `При рокировке король перейдёт на клетку ${char(
-            kTo
-          )}, а ладья с ${char(rFrom)} встанет на ${char(
-            rTo
-          )}. Вы подтверждаете рокировку?`,
-          `Рокировка короля с ладьёй приведёт к перемещению короля на клетку ${char(
-            kTo
-          )}, а ладью на клетку ${char(rTo)}. Вы согласны?`,
+          `Вы собираетесь выполнить рокировку королём с ${char(kFrom)} на ${char(kTo)}, всё верно?`,
+          `При рокировке король переместится на две клетки, с ${char(kFrom)} на ${char(kTo)}, а ладья с ${char(rFrom)} встанет за королём на ${char(rTo)}. Вы подтвержаете ход?`,
+          `При рокировке король перейдёт на клетку ${char(kTo)}, а ладья с ${char(rFrom)} встанет на ${char(rTo)}. Вы подтверждаете рокировку?`,
+          `Рокировка короля с ладьёй приведёт к перемещению короля на клетку ${char(kTo)}, а ладью на клетку ${char(rTo)}. Вы согласны?`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -474,24 +424,15 @@ export class Ask {
       ({
         en: [
           `How do you want to change the move ${char(from)} ${char(to)}?`,
-          `You want to change your last move ${char(from)} ${char(
-            to
-          )}? Ok. To what move?`,
-          `What move do you want re-play instead of ${Voc.piece(
-            pieceCode
-          )} ${char(from)} ${char(to)}?`,
+          `You want to change your last move ${char(from)} ${char(to)}? Ok. To what move?`,
+          `What move do you want re-play instead of ${Voc.piece(pieceCode)} ${char(from)} ${char(to)}?`,
           `And how do you want to move instead of ${char(from)} ${char(to)}?`,
-          `${Voc.piece(pieceCode)} ${char(from)} ${char(
-            to
-          )} is your last move. And what move will you play instead?`,
+          `${Voc.piece(pieceCode)} ${char(from)} ${char(to)} is your last move. And what move will you play instead?`,
         ],
         ru: [
           `Вы хотите изменить ход ${char(from)} ${char(to)}? На какой?`,
           `Какой ход вы хотите сделать вместо ${char(from)} ${char(to)}?`,
-          `Значит вы хотите поменять свой ход ${Voc.piece(
-            pieceCode,
-            'tvr'
-          )} ${char(from)} ${char(to)}? На что?`,
+          `Значит вы хотите поменять свой ход ${Voc.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}? На что?`,
           `И как вы хотите походить вместо ${char(from)} ${char(to)}?`,
           `И какой ход вы хотите на замену старому ${char(from)} ${char(to)}?`,
         ],

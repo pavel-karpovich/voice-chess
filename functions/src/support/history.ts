@@ -9,10 +9,7 @@ export interface HistoryFrame {
   c?: string; // rock move when castling
 }
 
-export function historyOfMoves(
-  moves: HistoryFrame[],
-  pSide: ChessSide
-): string {
+export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
   let result = '';
   let isPlayerMove = false;
   if (getSide(moves[0].m[0]) === pSide) {

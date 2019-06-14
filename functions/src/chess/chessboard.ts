@@ -120,6 +120,7 @@ export class ChessBoard {
   }
 
   capturedPieces(): Captured {
+    // prettier-ignore
     const allPieces = [
       'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
       'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',

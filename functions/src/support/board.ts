@@ -1,11 +1,7 @@
 import { ChessBoard, ChessSquareData, Captured } from '../chess/chessboard';
 import { upFirst, pause, WhoseSide } from './helpers';
 import { Vocabulary as Voc } from '../locales/vocabulary';
-import {
-  ChessSide,
-  totalPiecesNumber,
-  oppositeSide,
-} from '../chess/chessUtils';
+import { ChessSide, totalPiecesNumber, oppositeSide } from '../chess/chessUtils';
 
 function singleRank(rank: ChessSquareData[], rankNum: number): string {
   let resultString = '';
@@ -16,8 +12,7 @@ function singleRank(rank: ChessSquareData[], rankNum: number): string {
     resultString += upFirst(Voc.nRank(rankNum)) + ': ';
     for (const square of rank) {
       if (square.val !== null) {
-        resultString +=
-          Voc.coloredPieceOnPosition(square.val, square.pos) + ', ';
+        resultString += Voc.coloredPieceOnPosition(square.val, square.pos) + ', ';
       }
     }
     resultString = resultString.slice(0, -2) + '.\n';
@@ -32,11 +27,7 @@ export function oneRank(fen: string, rankNum: number): string {
   return result;
 }
 
-export function manyRanks(
-  fen: string,
-  fromRank: number,
-  toRank: number
-): string {
+export function manyRanks(fen: string, fromRank: number, toRank: number): string {
   const board = new ChessBoard(fen);
   let result = '<p>';
   for (let i = fromRank; i <= toRank; ++i) {
@@ -57,30 +48,12 @@ export function allPiecesForType(
   if (positions.length === 1) {
     const total = totalPiecesNumber(pieceCode);
     if (total === 1) {
-      result += Voc.someonesOnlyOnePieceIsHere(
-        pieceCode,
-        positions[0],
-        whose,
-        mixPerc
-      );
+      result += Voc.someonesOnlyOnePieceIsHere(pieceCode, positions[0], whose, mixPerc);
     } else {
-      result += Voc.someonesOneLeftPieceIsHere(
-        pieceCode,
-        positions[0],
-        whose,
-        playerSide,
-        mixPerc
-      );
+      result += Voc.someonesOneLeftPieceIsHere(pieceCode, positions[0], whose, playerSide, mixPerc);
     }
   } else {
-    result +=
-      Voc.someonesPieces(
-        pieceCode,
-        whose,
-        playerSide,
-        positions.length,
-        mixPerc
-      ) + ' ';
+    result += Voc.someonesPieces(pieceCode, whose, playerSide, positions.length, mixPerc) + ' ';
     for (let i = 0; i < positions.length; ++i) {
       if (i === positions.length - 1) {
         result += ' ' + Voc.and() + ' ';
@@ -105,8 +78,7 @@ export function allPiecesForSide(
   for (let i = 0; i < squares.length; ++i) {
     pos.push(squares[i].pos);
     if (i === squares.length - 1 || squares[i + 1].val !== squares[i].val) {
-      result +=
-        allPiecesForType(squares[i].val, pos, null, playerSide, 0) + ' ';
+      result += allPiecesForType(squares[i].val, pos, null, playerSide, 0) + ' ';
       pos.length = 0;
     }
   }
@@ -114,33 +86,19 @@ export function allPiecesForSide(
   return result;
 }
 
-export function listCapturedPieces(
-  captured: Captured,
-  playerSide: ChessSide
-): string {
+export function listCapturedPieces(captured: Captured, playerSide: ChessSide): string {
   let result = '<p>';
   let who = playerSide === ChessSide.WHITE ? WhoseSide.ENEMY : WhoseSide.PLAYER;
   let whose = who === WhoseSide.ENEMY ? WhoseSide.PLAYER : WhoseSide.ENEMY;
   if (captured.white.length === 0) {
-    result += `<s>${upFirst(
-      Voc.someoneDontCapture(who, whose, ChessSide.WHITE)
-    )}</s>`;
+    result += `<s>${upFirst(Voc.someoneDontCapture(who, whose, ChessSide.WHITE))}</s>`;
   } else {
     const firstPiece = captured.white[0].piece;
     const gen = Voc.pieceGender(firstPiece);
-    const totalAmount = captured.white.reduce(
-      (sum, el) => (sum += el.count),
-      0
-    );
+    const totalAmount = captured.white.reduce((sum, el) => (sum += el.count), 0);
     result += '<s>' + Voc.someoneCapture1(who, totalAmount, gen);
     result +=
-      ' ' +
-      Voc.nSomeonesColoredPieces(
-        captured.white[0].count,
-        whose,
-        ChessSide.WHITE,
-        firstPiece
-      );
+      ' ' + Voc.nSomeonesColoredPieces(captured.white[0].count, whose, ChessSide.WHITE, firstPiece);
     for (let i = 1; i < captured.white.length; ++i) {
       if (i === captured.white.length - 1) {
         result += ' ' + Voc.and() + ' ';
@@ -162,19 +120,10 @@ export function listCapturedPieces(
   } else {
     const firstPiece = captured.black[0].piece;
     const gen = Voc.pieceGender(firstPiece);
-    const totalAmount = captured.black.reduce(
-      (sum, el) => (sum += el.count),
-      0
-    );
+    const totalAmount = captured.black.reduce((sum, el) => (sum += el.count), 0);
     result += '<s>' + Voc.someoneCapture2(who, totalAmount, gen);
     result +=
-      ' ' +
-      Voc.nSomeonesColoredPieces(
-        captured.black[0].count,
-        whose,
-        ChessSide.BLACK,
-        firstPiece
-      );
+      ' ' + Voc.nSomeonesColoredPieces(captured.black[0].count, whose, ChessSide.BLACK, firstPiece);
     for (let i = 1; i < captured.black.length; ++i) {
       if (i === captured.black.length - 1) {
         result += ' ' + Voc.and() + ' ';
@@ -197,9 +146,7 @@ export function someonePlayForColor(
 ): string {
   let result = '';
   if (side && who) {
-    const actually =
-      side ===
-      (who === WhoseSide.PLAYER ? playerSide : oppositeSide(playerSide));
+    const actually = side === (who === WhoseSide.PLAYER ? playerSide : oppositeSide(playerSide));
     if (actually) {
       result += `${upFirst(Voc.yes())}, ${Voc.someonePlayForSide(who, side)}`;
     } else {

@@ -39,15 +39,9 @@ export function getBulkOfMoves(
       const beat2 = board.pos(move2.slice(2, 4));
       const cast1 = board.isCastling(move1, board.pos(move1.slice(0, 2)));
       const cast2 = board.isCastling(move2, board.pos(move2.slice(0, 2)));
-      if (
-        move1.slice(2, 4) !== board.enPassant &&
-        move2.slice(2, 4) === board.enPassant
-      ) {
+      if (move1.slice(2, 4) !== board.enPassant && move2.slice(2, 4) === board.enPassant) {
         return 1;
-      } else if (
-        move1.slice(2, 4) === board.enPassant &&
-        move2.slice(2, 4) !== board.enPassant
-      ) {
+      } else if (move1.slice(2, 4) === board.enPassant && move2.slice(2, 4) !== board.enPassant) {
         return -1;
       } else if (move1.length === 4 && move2.length === 5) return 1;
       else if (move1.length === 5 && move2.length === 4) return -1;
@@ -65,15 +59,9 @@ export function getBulkOfMoves(
       const beat2 = board.pos(move2.slice(2, 4));
       const cast1 = board.isCastling(move1, board.pos(from1));
       const cast2 = board.isCastling(move2, board.pos(from2));
-      if (
-        move1.slice(2, 4) !== board.enPassant &&
-        move2.slice(2, 4) === board.enPassant
-      ) {
+      if (move1.slice(2, 4) !== board.enPassant && move2.slice(2, 4) === board.enPassant) {
         return 1;
-      } else if (
-        move1.slice(2, 4) === board.enPassant &&
-        move2.slice(2, 4) !== board.enPassant
-      ) {
+      } else if (move1.slice(2, 4) === board.enPassant && move2.slice(2, 4) !== board.enPassant) {
         return -1;
       } else if (cast1 === null && cast2 !== null) return 1;
       else if (cast1 !== null && cast2 === null) return -1;
@@ -90,8 +78,7 @@ export function getBulkOfMoves(
   const standardSize = 10;
   const permissibleVariation = 5;
   const unnecessary =
-    allMoves.slice(n).reduce((sum, el) => (sum += Number(el.length === 5)), 0) *
-    0.75;
+    allMoves.slice(n).reduce((sum, el) => (sum += Number(el.length === 5)), 0) * 0.75;
   const maxN = n + standardSize + permissibleVariation + unnecessary;
   if (maxN >= allMoves.length) {
     ret.next = allMoves.length;

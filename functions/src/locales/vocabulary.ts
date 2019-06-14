@@ -2,6 +2,7 @@ import { ChessSide, getSide } from '../chess/chessUtils';
 import { WordForms, LocalizationObject, WhoseSide } from '../support/helpers';
 import { rand, char, upFirst, mix } from '../support/helpers';
 
+// prettier-ignore
 export class Vocabulary {
   private static lang: string;
 
@@ -93,22 +94,14 @@ export class Vocabulary {
     const gen = this.pieceGender(pieceCode);
     return this.your(`${gen}/${opt}`) + ' ' + this.coloredPiece(pieceCode, opt);
   }
-  static someonesColoredPiece(
-    pieceCode: string,
-    side: ChessSide,
-    opt = 'sin'
-  ): string {
+  static someonesColoredPiece(pieceCode: string, side: ChessSide, opt = 'sin'): string {
     if (getSide(pieceCode) === side) {
       return this.yourColoredPiece(pieceCode, opt);
     } else {
       return this.myColoredPiece(pieceCode, opt);
     }
   }
-  static someonesPiece(
-    pieceCode: string,
-    side: ChessSide,
-    opt = 'sin'
-  ): string {
+  static someonesPiece(pieceCode: string, side: ChessSide, opt = 'sin'): string {
     if (getSide(pieceCode) === side) {
       return this.yourPiece(pieceCode, opt);
     } else {
@@ -597,21 +590,13 @@ export class Vocabulary {
     return rand(
       ({
         en: [
-          `The enemy pawn has just made a double move to ${char(
-            pawn
-          )}, and can be captured in pass,`,
-          `You can capture the opponent's pawn 'En Passant' on ${char(
-            pawn
-          )} through square ${char(to)},`,
+          `The enemy pawn has just made a double move to ${char(pawn)}, and can be captured in pass,`,
+          `You can capture the opponent's pawn 'En Passant' on ${char(pawn)} through square ${char(to)},`,
           `An enemy pawn from ${char(pawn)} can be captured via 'En Passant',`,
         ],
         ru: [
-          `Вражеская пешка только что сделала двойной ход на ${char(
-            pawn
-          )}, и её можно перехватить на проходе,`,
-          `Можно взять вражескую пешку на проходе к ${char(
-            pawn
-          )} через клетку ${char(to)},`,
+          `Вражеская пешка только что сделала двойной ход на ${char(pawn)}, и её можно перехватить на проходе,`,
+          `Можно взять вражескую пешку на проходе к ${char(pawn)} через клетку ${char(to)},`,
           `Пешку на ${char(pawn)} можно взять 'Энпассан',`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
@@ -708,27 +693,15 @@ export class Vocabulary {
     return rand(
       ({
         en: [
-          `you moved ${this.piece(pieceCode)} from ${char(from)} to ${char(
-            to
-          )}`,
+          `you moved ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}`,
           `you played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
-          `you made a ${this.piece(pieceCode)} move from ${char(
-            from
-          )} to ${char(to)}`,
+          `you made a ${this.piece(pieceCode)} move from ${char(from)} to ${char(to)}`,
         ],
         ru: [
-          `вы походили ${this.piece(pieceCode, 'tvr')} с ${char(
-            from
-          )} на ${char(to)}`,
-          `вы сыграли ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(
-            to
-          )}`,
-          `вы перешли ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(
-            to
-          )}`,
-          `вы сделали ход ${this.piece(pieceCode, 'tvr')} с ${char(
-            from
-          )} на ${char(to)}`,
+          `вы походили ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
+          `вы сыграли ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}`,
+          `вы перешли ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
+          `вы сделали ход ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -739,21 +712,13 @@ export class Vocabulary {
         en: [
           `I moved ${this.piece(pieceCode)} from ${char(from)} to ${char(to)}`,
           `I played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
-          `I made a ${this.piece(pieceCode)} move from ${char(from)} to ${char(
-            to
-          )}`,
+          `I made a ${this.piece(pieceCode)} move from ${char(from)} to ${char(to)}`,
         ],
         ru: [
-          `я походил ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(
-            to
-          )}`,
+          `я походил ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
           `я сыграл ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}`,
-          `я перешёл ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(
-            to
-          )}`,
-          `я сделал ход ${this.piece(pieceCode, 'tvr')} с ${char(
-            from
-          )} на ${char(to)}`,
+          `я перешёл ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
+          `я сделал ход ${this.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -826,26 +791,14 @@ export class Vocabulary {
     return rand(
       ({
         en: [
-          `you moved pawn from ${char(from)} to ${char(
-            to
-          )} and made 'En Passant', capturing my pawn on ${char(pawn)}`,
-          `you made in passing capturing of my pawn on ${char(
-            pawn
-          )} by move from ${char(from)} to ${char(to)}`,
-          `you captured my pawn 'En Passant' by moving from ${char(
-            from
-          )} to ${char(to)}`,
+          `you moved pawn from ${char(from)} to ${char(to)} and made 'En Passant', capturing my pawn on ${char(pawn)}`,
+          `you made in passing capturing of my pawn on ${char(pawn)} by move from ${char(from)} to ${char(to)}`,
+          `you captured my pawn 'En Passant' by moving from ${char(from)} to ${char(to)}`,
         ],
         ru: [
-          `вы походили пешкой с ${char(from)} на ${char(
-            to
-          )} и сделали Энпассант, забрав мою пешку на ${char(pawn)}`,
-          `вы выполнили взятие на проходе моей пешки к ${char(
-            pawn
-          )} своим ходом с ${char(from)} на ${char(to)}`,
-          `вы взяли мою пешку 'Эн пассант', сделав ход с ${char(
-            from
-          )} на ${char(to)}`,
+          `вы походили пешкой с ${char(from)} на ${char(to)} и сделали Энпассант, забрав мою пешку на ${char(pawn)}`,
+          `вы выполнили взятие на проходе моей пешки к ${char(pawn)} своим ходом с ${char(from)} на ${char(to)}`,
+          `вы взяли мою пешку 'Эн пассант', сделав ход с ${char(from)} на ${char(to)}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -854,98 +807,46 @@ export class Vocabulary {
     return rand(
       ({
         en: [
-          `you moved pawn from ${char(from)} to ${char(
-            to
-          )} and made 'En Passant', capturing my pawn on ${char(pawn)}`,
-          `you made in passing capturing of my pawn on ${char(
-            pawn
-          )} by move from ${char(from)} to ${char(to)}`,
-          `you captured my pawn 'En Passant' by moving from ${char(
-            from
-          )} to ${char(to)}`,
+          `you moved pawn from ${char(from)} to ${char(to)} and made 'En Passant', capturing my pawn on ${char(pawn)}`,
+          `you made in passing capturing of my pawn on ${char(pawn)} by move from ${char(from)} to ${char(to)}`,
+          `you captured my pawn 'En Passant' by moving from ${char(from)} to ${char(to)}`,
         ],
         ru: [
-          `я походил пешкой с ${char(from)} на ${char(
-            to
-          )} и совершил Энпассант, забрав вашу пешку на ${char(pawn)}`,
-          `своим ходом с ${char(from)} на ${char(
-            to
-          )}, я выполнил взятие вашей пешки на проходе к ${char(pawn)}`,
-          `я взял вашу пешку 'Эн пассант', сделав ход с ${char(from)} на ${char(
-            to
-          )}`,
+          `я походил пешкой с ${char(from)} на ${char(to)} и совершил Энпассант, забрав вашу пешку на ${char(pawn)}`,
+          `своим ходом с ${char(from)} на ${char(to)}, я выполнил взятие вашей пешки на проходе к ${char(pawn)}`,
+          `я взял вашу пешку 'Эн пассант', сделав ход с ${char(from)} на ${char(to)}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static youDoCastling(
-    kFrom: string,
-    kTo: string,
-    rFrom: string,
-    rTo: string
-  ): string {
+  static youDoCastling(kFrom: string, kTo: string, rFrom: string, rTo: string): string {
     return rand(
       ({
         en: [
-          `you made castling by your king from ${char(kFrom)} to ${char(
-            kTo
-          )} and also moved your rock from ${char(rFrom)} to ${char(rTo)}`,
-          `you made castling and moved the king from ${char(kFrom)} to ${char(
-            kTo
-          )}, and the rock from ${char(rFrom)} to ${char(rTo)}`,
-          `you castling and moved your king through two squares from ${char(
-            kFrom
-          )} to ${char(kTo)}, and your rock from ${char(rFrom)} to ${char(
-            rTo
-          )}`,
+          `you made castling by your king from ${char(kFrom)} to ${char(kTo)} and also moved your rock from ${char(rFrom)} to ${char(rTo)}`,
+          `you made castling and moved the king from ${char(kFrom)} to ${char(kTo)}, and the rock from ${char(rFrom)} to ${char(rTo)}`,
+          `you castling and moved your king through two squares from ${char(kFrom)} to ${char(kTo)}, and your rock from ${char(rFrom)} to ${char(rTo)}`,
         ],
         ru: [
-          `вы произвели рокировку королём с ${char(kFrom)} на ${char(
-            kTo
-          )} и ладьёй с ${char(rFrom)} на ${char(rTo)}`,
-          `вы сделали рокировку, походив королём с ${char(kFrom)} на ${char(
-            kTo
-          )} и ладьёй с ${char(rFrom)} на ${char(rTo)}`,
-          `вы совершили рокировку и переместили своего короля на 2 клетки с ${char(
-            kFrom
-          )} на ${char(kTo)}, и, вместе с тем, передвинули ладью с ${char(
-            rFrom
-          )} на ${char(rTo)}`,
+          `вы произвели рокировку королём с ${char(kFrom)} на ${char(kTo)} и ладьёй с ${char(rFrom)} на ${char(rTo)}`,
+          `вы сделали рокировку, походив королём с ${char(kFrom)} на ${char(kTo)} и ладьёй с ${char(rFrom)} на ${char(rTo)}`,
+          `вы совершили рокировку и переместили своего короля на 2 клетки с ${char(kFrom)} на ${char(kTo)}, и, вместе с тем, передвинули ладью с ${char(rFrom)} на ${char(rTo)}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static iDoCastling(
-    kFrom: string,
-    kTo: string,
-    rFrom: string,
-    rTo: string
-  ): string {
+  static iDoCastling(kFrom: string, kTo: string, rFrom: string, rTo: string): string {
     return rand(
       ({
         en: [
-          `I made castling by the king from ${char(kFrom)} to ${char(
-            kTo
-          )} and also moved my rock from ${char(rFrom)} to ${char(rTo)}`,
-          `I made castling and moved the king from ${char(kFrom)} to ${char(
-            kTo
-          )}, and the rock from ${char(rFrom)} to ${char(rTo)}`,
-          `I castling and moved my king through two squares from ${char(
-            kFrom
-          )} to ${char(kTo)}, and my rock from ${char(rFrom)} to ${char(rTo)}`,
+          `I made castling by the king from ${char(kFrom)} to ${char(kTo)} and also moved my rock from ${char(rFrom)} to ${char(rTo)}`,
+          `I made castling and moved the king from ${char(kFrom)} to ${char(kTo)}, and the rock from ${char(rFrom)} to ${char(rTo)}`,
+          `I castling and moved my king through two squares from ${char(kFrom)} to ${char(kTo)}, and my rock from ${char(rFrom)} to ${char(rTo)}`,
         ],
         ru: [
-          `я сделал рокировку королём с ${char(kFrom)} на ${char(
-            kTo
-          )} и ладьёй с ${char(rFrom)} на ${char(rTo)}`,
-          `я выполнил рокировку, походив королём с ${char(kFrom)} на ${char(
-            kTo
-          )} и ладьёй с ${char(rFrom)} на ${char(rTo)}`,
-          `я совершил рокировку и переместил своего короля на 2 клетки с ${char(
-            kFrom
-          )} на ${char(kTo)}, а также передвинул ладью с ${char(
-            rFrom
-          )} на ${char(rTo)}`,
+          `я сделал рокировку королём с ${char(kFrom)} на ${char(kTo)} и ладьёй с ${char(rFrom)} на ${char(rTo)}`,
+          `я выполнил рокировку, походив королём с ${char(kFrom)} на ${char(kTo)} и ладьёй с ${char(rFrom)} на ${char(rTo)}`,
+          `я совершил рокировку и переместил своего короля на 2 клетки с ${char(kFrom)} на ${char(kTo)}, а также передвинул ладью с ${char(rFrom)} на ${char(rTo)}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -973,16 +874,10 @@ export class Vocabulary {
   static yourOrMy(pieceCode: string, whose: WhoseSide, pNum: string): string {
     const gen = this.pieceGender(pieceCode);
     const result =
-      whose === WhoseSide.ENEMY
-        ? this.my(`${gen}/${pNum}`)
-        : this.your(`${gen}/${pNum}`);
+      whose === WhoseSide.ENEMY ? this.my(`${gen}/${pNum}`) : this.your(`${gen}/${pNum}`);
     return result;
   }
-  static allYourOrMy(
-    pieceCode: string,
-    whose: WhoseSide,
-    pNum: string
-  ): string {
+  static allYourOrMy(pieceCode: string, whose: WhoseSide, pNum: string): string {
     const yourMy = this.yourOrMy(pieceCode, whose, pNum);
     const result = pNum === 'plr' ? `${this.all()} ${yourMy}` : yourMy;
     return result;
@@ -1005,10 +900,7 @@ export class Vocabulary {
     const gen = this.pieceGender(pieceCode);
     let piece;
     if (mix(!!whose, mixPerc)) {
-      piece =
-        upFirst(this.yourOrMy(pieceCode, whose, 'sin')) +
-        ' ' +
-        this.piece(pieceCode);
+      piece = upFirst(this.yourOrMy(pieceCode, whose, 'sin')) + ' ' + this.piece(pieceCode);
     } else {
       piece = 'The ' + this.coloredPiece(pieceCode);
     }
@@ -1077,45 +969,20 @@ export class Vocabulary {
   ): string {
     const gen = this.pieceGender(pieceCode);
     if (mix(!!whose, mixPerc)) {
-      whose =
-        whose ||
-        (playerSide === getSide(pieceCode)
-          ? WhoseSide.PLAYER
-          : WhoseSide.ENEMY);
+      whose = whose || (playerSide === getSide(pieceCode) ? WhoseSide.PLAYER : WhoseSide.ENEMY);
       return rand(
         ({
           en: [
-            `${upFirst(this.youOrMe(whose))} only have one ${this.piece(
-              pieceCode
-            )} is position ${char(pos)}.`,
-            `${upFirst(this.youOrMe(whose))} have only one ${this.piece(
-              pieceCode
-            )} left and ${this.heShe(gen)} is on the square ${char(pos)}.`,
-            `${upFirst(
-              this.yourOrMy(pieceCode, whose, 'sin')
-            )} last ${this.piece(pieceCode)} is located on ${char(pos)}.`,
-            `${upFirst(
-              this.yourOrMy(pieceCode, whose, 'sin')
-            )} last ${this.piece(pieceCode)} is on ${char(pos)}.`,
+            `${upFirst(this.youOrMe(whose))} only have one ${this.piece(pieceCode)} is position ${char(pos)}.`,
+            `${upFirst(this.youOrMe(whose))} have only one ${this.piece(pieceCode)} left and ${this.heShe(gen)} is on the square ${char(pos)}.`,
+            `${upFirst(this.yourOrMy(pieceCode, whose, 'sin'))} last ${this.piece(pieceCode)} is located on ${char(pos)}.`,
+            `${upFirst(this.yourOrMy(pieceCode, whose, 'sin'))} last ${this.piece(pieceCode)} is on ${char(pos)}.`,
           ],
           ru: [
-            `У ${this.youOrMe(whose)} ${this.left(gen)} только ${this.nPieces(
-              1,
-              pieceCode
-            )} ${this.piecesN(pieceCode, 1)} на ${char(pos)}.`,
-            `${upFirst(this.yourOrMy(pieceCode, whose, 'sin'))} ${this.nPieces(
-              1,
-              pieceCode
-            )} ${this.piecesN(pieceCode, 1)} находится на клетке ${char(pos)}.`,
-            `У ${this.youOrMe(whose)} ${this.left(gen)} всего ${this.nPieces(
-              1,
-              pieceCode
-            )} ${this.piecesN(pieceCode, 1)}, и она стоит на ${char(pos)}.`,
-            `${upFirst(this.yourOrMy(pieceCode, whose, 'sin'))} ${this.only(
-              gen
-            )} ${this.piece(pieceCode)} ${this.located(gen)} на позиции ${char(
-              pos
-            )}.`,
+            `У ${this.youOrMe(whose)} ${this.left(gen)} только ${this.nPieces(1, pieceCode)} ${this.piecesN(pieceCode, 1)} на ${char(pos)}.`,
+            `${upFirst(this.yourOrMy(pieceCode, whose, 'sin'))} ${this.nPieces(1, pieceCode)} ${this.piecesN(pieceCode, 1)} находится на клетке ${char(pos)}.`,
+            `У ${this.youOrMe(whose)} ${this.left(gen)} всего ${this.nPieces(1, pieceCode)} ${this.piecesN(pieceCode, 1)}, и она стоит на ${char(pos)}.`,
+            `${upFirst(this.yourOrMy(pieceCode, whose, 'sin'))} ${this.only(gen)} ${this.piece(pieceCode)} ${this.located(gen)} на позиции ${char(pos)}.`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -1123,36 +990,16 @@ export class Vocabulary {
       return rand(
         ({
           en: [
-            `Here is only one ${this.coloredPiece(pieceCode)}, and ${this.heShe(
-              gen
-            )} is on the square ${char(pos)}.`,
-            `${upFirst(this.black())} has only one ${this.piece(
-              pieceCode
-            )} left, on the position ${char(pos)}.`,
-            `${upFirst(this.black())} has only one ${this.piece(
-              pieceCode
-            )} left, and ${this.heShe(gen)} is on the position ${char(pos)}.`,
-            `The last ${this.coloredPiece(pieceCode)} is on the square ${char(
-              pos
-            )}.`,
+            `Here is only one ${this.coloredPiece(pieceCode)}, and ${this.heShe(gen)} is on the square ${char(pos)}.`,
+            `${upFirst(this.black())} has only one ${this.piece(pieceCode)} left, on the position ${char(pos)}.`,
+            `${upFirst(this.black())} has only one ${this.piece(pieceCode)} left, and ${this.heShe(gen)} is on the position ${char(pos)}.`,
+            `The last ${this.coloredPiece(pieceCode)} is on the square ${char(pos)}.`,
           ],
           ru: [
-            `${upFirst(this.coloredPiece(pieceCode))} ${this.left(
-              gen
-            )} только ${this.n(1, gen)}, и ${this.heShe(
-              gen
-            )} находится на ${char(pos)}.`,
-            `${upFirst(this.last(gen))} ${this.coloredPiece(
-              pieceCode
-            )} стоит на клетке ${char(pos)}.`,
-            `У ${this.black('plr/rod')} ${this.left(gen)} лишь ${this.nPieces(
-              1,
-              pieceCode
-            )} ${this.piecesN(pieceCode, 1)} - на позиции ${char(pos)}.`,
-            `${upFirst(this.last(gen))} ${this.coloredPiece(
-              pieceCode,
-              gen
-            )} находится на ${char(pos)}.`,
+            `${upFirst(this.coloredPiece(pieceCode))} ${this.left(gen)} только ${this.n(1, gen)}, и ${this.heShe(gen)} находится на ${char(pos)}.`,
+            `${upFirst(this.last(gen))} ${this.coloredPiece(pieceCode)} стоит на клетке ${char(pos)}.`,
+            `У ${this.black('plr/rod')} ${this.left(gen)} лишь ${this.nPieces(1, pieceCode)} ${this.piecesN(pieceCode, 1)} - на позиции ${char(pos)}.`,
+            `${upFirst(this.last(gen))} ${this.coloredPiece(pieceCode, gen)} находится на ${char(pos)}.`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -1186,29 +1033,18 @@ export class Vocabulary {
   ): string {
     const side = getSide(pieceCode);
     if (mix(!!whose, mixPerc)) {
-      whose =
-        whose || (playerSide === side ? WhoseSide.PLAYER : WhoseSide.ENEMY);
+      whose = whose || (playerSide === side ? WhoseSide.PLAYER : WhoseSide.ENEMY);
       return rand(
         ({
           en: [
             `${upFirst(this.myPiece(pieceCode, 'plr'))} are in positions`,
-            `${upFirst(this.youOrMe(whose))} have ${this.nPieces(
-              num,
-              pieceCode
-            )} ${this.piecesN(pieceCode, num)}, on positions`,
+            `${upFirst(this.youOrMe(whose))} have ${this.nPieces(num, pieceCode)} ${this.piecesN(pieceCode, num)}, on positions`,
             `${upFirst(this.youOrMe(whose))} have ${this.piece(pieceCode)} on`,
-            `${upFirst(
-              this.myPiece(pieceCode, 'plr')
-            )} are located in the squares`,
+            `${upFirst(this.myPiece(pieceCode, 'plr'))} are located in the squares`,
           ],
           ru: [
-            `${upFirst(
-              this.someonesPiece(pieceCode, side, 'plr')
-            )} расположены`,
-            `У ${this.youOrMe(whose)} есть ${this.nPieces(
-              num,
-              pieceCode
-            )} ${this.piecesN(pieceCode, num)}:`,
+            `${upFirst(this.someonesPiece(pieceCode, side, 'plr'))} расположены`,
+            `У ${this.youOrMe(whose)} есть ${this.nPieces(num, pieceCode)} ${this.piecesN(pieceCode, num)}:`,
             `У ${this.youOrMe(whose)} есть ${this.piece(pieceCode, 'plr')}`,
             `${upFirst(this.someonesPiece(pieceCode, side, 'plr'))} находятся`,
           ],
@@ -1220,29 +1056,14 @@ export class Vocabulary {
           en: [
             `${upFirst(this.coloredPiece(pieceCode, 'plr'))} are on`,
             `${upFirst(this.coloredPiece(pieceCode, 'plr'))} are placed on`,
-            `${upFirst(this.color(side))} has ${this.piece(
-              pieceCode,
-              'plr'
-            )} on`,
-            `${upFirst(this.color(side))} side has ${this.nPieces(
-              num,
-              pieceCode
-            )} ${this.piecesN(pieceCode, num)}, and they are located on`,
+            `${upFirst(this.color(side))} has ${this.piece(pieceCode, 'plr')} on`,
+            `${upFirst(this.color(side))} side has ${this.nPieces(num, pieceCode)} ${this.piecesN(pieceCode, num)}, and they are located on`,
           ],
           ru: [
             `${upFirst(this.coloredPiece(pieceCode, 'plr'))} занимают позиции`,
-            `${upFirst(this.piece(pieceCode, 'plr'))} ${this.color(
-              side,
-              'fem/rod'
-            )} стороны расположены`,
-            `У ${this.color(side, 'plr/rod')} есть ${this.nPieces(
-              num,
-              pieceCode
-            )} ${this.piecesN(pieceCode, num)}:`,
-            `У ${this.color(side, 'plr/rod')} ${this.nPieces(
-              num,
-              pieceCode
-            )} ${this.piecesN(pieceCode, num)}. Они находятся`,
+            `${upFirst(this.piece(pieceCode, 'plr'))} ${this.color(side, 'fem/rod')} стороны расположены`,
+            `У ${this.color(side, 'plr/rod')} есть ${this.nPieces(num, pieceCode)} ${this.piecesN(pieceCode, num)}:`,
+            `У ${this.color(side, 'plr/rod')} ${this.nPieces(num, pieceCode)} ${this.piecesN(pieceCode, num)}. Они находятся`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -1262,18 +1083,13 @@ export class Vocabulary {
         en: [
           `Here is the full list of ${this.color(side)} pieces:`,
           `And what we have on the ${this.color(side)} side.. Let's see:`,
-          `Here are all the ${this.color(
-            side
-          )} pieces that are currently in the game:`,
+          `Here are all the ${this.color(side)} pieces that are currently in the game:`,
           `${upFirst(this.color(side))}... Here it is:`,
         ],
         ru: [
           `Вот список всех фигур ${this.color(side, 'fem/rod')} стороны:`,
           `Итак, что у ${this.color(side, 'plr/rod')} есть на доске:`,
-          `Вот все ${this.color(
-            side,
-            'plr'
-          )} фигуры, присутствующие в данный момент в игре:`,
+          `Вот все ${this.color(side, 'plr')} фигуры, присутствующие в данный момент в игре:`,
           `Так, что мы имеем по ${this.color(side, 'mus/plr/tvr')}:`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
@@ -1300,49 +1116,20 @@ export class Vocabulary {
       } as WordForms)[whose],
     } as LocalizationObject<string>)[this.lang];
   }
-  static someoneDontCapture(
-    who: WhoseSide,
-    whose: WhoseSide,
-    capturedSide: ChessSide
-  ): string {
+  static someoneDontCapture(who: WhoseSide, whose: WhoseSide, capturedSide: ChessSide): string {
     return rand(
       ({
         en: [
-          `all ${this.yourOrMy('p', whose, 'plr')} ${this.color(
-            capturedSide,
-            'plr'
-          )} pieces are on the board.`,
-          `${this.youOrI(who)} have not captured any of ${this.yourOrMy(
-            'p',
-            whose,
-            'plr'
-          )} pieces yet.`,
-          `${this.youOrI(who)} have not yet captured any of ${this.yourOrMy(
-            'p',
-            whose,
-            'plr'
-          )} ${this.color(capturedSide)} pieces.`,
+          `all ${this.yourOrMy('p', whose, 'plr')} ${this.color(capturedSide, 'plr')} pieces are on the board.`,
+          `${this.youOrI(who)} have not captured any of ${this.yourOrMy('p', whose, 'plr')} pieces yet.`,
+          `${this.youOrI(who)} have not yet captured any of ${this.yourOrMy('p', whose, 'plr')} ${this.color(capturedSide)} pieces.`,
           `${this.youOrI(who)} have not captured anything in this game.`,
         ],
         ru: [
-          `все ${this.yourOrMy('p', whose, 'plr')} ${this.color(
-            capturedSide,
-            'plr'
-          )} фигуры ещё на доске.`,
-          `у ${this.youOrMe(who)} нет захваченных ${this.yourOrMy(
-            'p',
-            whose,
-            'plr/rod'
-          )} фигур.`,
-          `${this.youOrI(who)} не ${this.capture(
-            who
-          )} ещё ни одной ${this.yourOrMy('p', whose, 'rod')} ${this.color(
-            capturedSide,
-            'fem/sin/rod'
-          )} фигуры.`,
-          `${this.youOrI(who)} пока не ${this.capture(
-            who
-          )} ни одной из ${this.yourOrMy('p', whose, 'plr/rod')} фигур.`,
+          `все ${this.yourOrMy('p', whose, 'plr')} ${this.color(capturedSide, 'plr')} фигуры ещё на доске.`,
+          `у ${this.youOrMe(who)} нет захваченных ${this.yourOrMy('p', whose, 'plr/rod')} фигур.`,
+          `${this.youOrI(who)} не ${this.capture(who)} ещё ни одной ${this.yourOrMy('p', whose, 'rod')} ${this.color(capturedSide, 'fem/sin/rod')} фигуры.`,
+          `${this.youOrI(who)} пока не ${this.capture(who)} ни одной из ${this.yourOrMy('p', whose, 'plr/rod')} фигур.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -1387,9 +1174,7 @@ export class Vocabulary {
           `А ${this.youOrI(who)} на текущий момент ${this.capture(who)}`,
           `${upFirst(this.youOrI(who))} же ${this.capture(who)}`,
           `А ${this.youOrI(who)} в этой игре ${this.capture(who)}`,
-          `А ${this.youOrI(who)} за время этой игры ${this.managed(
-            who
-          )} захватить`,
+          `А ${this.youOrI(who)} за время этой игры ${this.managed(who)} захватить`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -1404,66 +1189,29 @@ export class Vocabulary {
     const gen = this.pieceGender(pieceCode);
     if (n > 1 || rnd > 0.6) {
       if (n === 1) {
-        return `${this.n(n, `${gen}/rod`)} ${this.yourOrMy(
-          pieceCode,
-          whose,
-          'sin/rod'
-        )} ${this.color(side, `${gen}/vin`)} ${this.piece(pieceCode, 'vin')}`;
+        return `${this.n(n, `${gen}/rod`)} ${this.yourOrMy(pieceCode, whose, 'sin/rod')} ${this.color(side, `${gen}/vin`)} ${this.piece(pieceCode, 'vin')}`;
       } else if (n > 1 && n < 5) {
-        return `${this.n(n, `${gen}/vin`)} ${this.yourOrMy(
-          pieceCode,
-          whose,
-          'plr/vin'
-        )} ${this.color(side, `${gen}/plr/vin`)} ${this.piece(
-          pieceCode,
-          'plr/vin'
-        )}`;
+        return `${this.n(n, `${gen}/vin`)} ${this.yourOrMy(pieceCode, whose, 'plr/vin')} ${this.color(side, `${gen}/plr/vin`)} ${this.piece(pieceCode, 'plr/vin')}`;
       } else {
-        return `${this.n(n)} ${this.yourOrMy(
-          pieceCode,
-          whose,
-          'plr/rod'
-        )} ${this.color(side, 'plr/rod')} ${this.piece(pieceCode, 'plr/rod')}`;
+        return `${this.n(n)} ${this.yourOrMy(pieceCode, whose, 'plr/rod')} ${this.color(side,'plr/rod')} ${this.piece(pieceCode, 'plr/rod')}`;
       }
     } else {
-      return `${this.yourOrMy(pieceCode, whose, 'sin/rod')} ${this.color(
-        side,
-        `${gen}/vin`
-      )} ${this.piece(pieceCode, 'vin')}`;
+      return `${this.yourOrMy(pieceCode, whose, 'sin/rod')} ${this.color(side, `${gen}/vin`)} ${this.piece(pieceCode, 'vin')}`;
     }
   }
-  static nSomeonesPieces(
-    n: number,
-    whose: WhoseSide,
-    pieceCode: string
-  ): string {
+  static nSomeonesPieces(n: number, whose: WhoseSide, pieceCode: string): string {
     const rnd = Math.random();
     const gen = this.pieceGender(pieceCode);
     if (n > 1 || rnd > 0.6) {
       if (n === 1) {
-        return `${this.n(n, `${gen}/rod`)} ${this.yourOrMy(
-          pieceCode,
-          whose,
-          'sin/rod'
-        )} ${this.piece(pieceCode, 'vin')}`;
+        return `${this.n(n, `${gen}/rod`)} ${this.yourOrMy(pieceCode, whose, 'sin/rod')} ${this.piece(pieceCode, 'vin')}`;
       } else if (n > 1 && n < 5) {
-        return `${this.n(n, `${gen}/vin`)} ${this.yourOrMy(
-          pieceCode,
-          whose,
-          'plr/vin'
-        )} ${this.piece(pieceCode, 'plr/vin')}`;
+        return `${this.n(n, `${gen}/vin`)} ${this.yourOrMy(pieceCode, whose, 'plr/vin')} ${this.piece(pieceCode, 'plr/vin')}`;
       } else {
-        return `${this.n(n)} ${this.yourOrMy(
-          pieceCode,
-          whose,
-          'plr/rod'
-        )} ${this.piece(pieceCode, 'plr/rod')}`;
+        return `${this.n(n)} ${this.yourOrMy(pieceCode, whose, 'plr/rod')} ${this.piece(pieceCode, 'plr/rod')}`;
       }
     } else {
-      return `${this.yourOrMy(pieceCode, whose, 'sin/rod')} ${this.piece(
-        pieceCode,
-        'vin'
-      )}`;
+      return `${this.yourOrMy(pieceCode, whose, 'sin/rod')} ${this.piece(pieceCode, 'vin')}`;
     }
   }
   static yes(): string {
@@ -1501,15 +1249,9 @@ export class Vocabulary {
           `this time ${this.youOrI(who)} play ${this.color(side, 'plr/rod')}.`,
         ],
         ru: [
-          `${this.youOrI(who)} ${this.play(who)} за ${this.color(
-            side,
-            'plr/rod'
-          )}.`,
+          `${this.youOrI(who)} ${this.play(who)} за ${this.color(side, 'plr/rod')}.`,
           `${this.youOrI(who)} за ${this.color(side, 'plr/rod')}.`,
-          `сейчас ${this.youOrI(who)} ${this.play(who)} за ${this.color(
-            side,
-            'plr/rod'
-          )}.`,
+          `сейчас ${this.youOrI(who)} ${this.play(who)} за ${this.color(side, 'plr/rod')}.`,
           `сейчас ${this.youOrI(who)} за ${this.color(side, 'plr/rod')}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
