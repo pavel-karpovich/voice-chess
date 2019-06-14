@@ -660,4 +660,24 @@ export class Ask {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static tryAgainOrLater(): string {
+    return rand(
+      ({
+        en: [
+          'Please try again.',
+          'Please try again later.',
+          'You can try again, or contact support.',
+          'If this problem persists, please contact support.',
+          'You can try again, or make another request.',
+        ],
+        ru: [
+          'Попробуйте ещё раз.',
+          'Вы можете попробовать ещё раз, или сделать это позже.',
+          'Вы можете попробовать ещё раз, или обратиться в поддержку.',
+          'Если данная проблема повторится, пожалуйста, обратитесь в поддержку.',
+          'Вы можете попробовать ещё раз, или сделать другой запрос.',
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }

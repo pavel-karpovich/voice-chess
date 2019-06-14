@@ -1249,4 +1249,24 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
+  static Error(msg: string): string {
+    return rand(
+      ({
+        en: [
+          `Error: ${msg}`,
+          `Sorry, but something went wrong: ${msg}`,
+          `Sorry, there was a problem: ${msg}`,
+          `The Problem occurred: ${msg}`,
+          `An error has occurred: ${msg}`,
+        ],
+        ru: [
+          `Ошибка: ${msg}`,
+          `Простите, что-то пошло не так. ${msg}`,
+          `Простите, у меня возникла проблема: ${msg}`,
+          `Упс, у нас неприятности: ${msg}`,
+          `Извините, произошла ошибка: ${msg}`,
+        ],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
 }

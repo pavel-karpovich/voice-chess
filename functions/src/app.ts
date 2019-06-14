@@ -579,10 +579,11 @@ app.intent(
     const playerSide = conv.user.storage.side;
     const chess = new Chess(fenstring, difficulty);
     if (chess.whoseTurn !== playerSide) {
-      // TODO: Throwing an error isn't a good way to inform Google Action about a failure
-      throw new Error(
-        'Something is wrong. The player and server sides are messed.'
-      );
+      const msg = 'The player and server sides are messed.';
+      console.log(`ERROR: ${msg}`);
+      speak(conv, Ans.Error(msg));
+      speak(conv, Ask.tryAgainOrLater());
+      return;
     }
     const board = new ChessBoard(chess.fenstring);
     const actualPiece = board.pos(from);
@@ -874,7 +875,11 @@ async function listOfMoves(
   await chess.updateGameState();
   const moves = chess.legalMoves;
   if (moves.length === 0) {
-    throw new Error("Checkmate/stalemate in this place can't be!");
+    const msg = "Checkmate/stalemate in this place can't be!";
+    console.log(`ERROR: ${msg}`);
+    speak(conv, Ans.Error(msg));
+    speak(conv, Ask.tryAgainOrLater());
+    return;
   }
   const bulkOfMoves = getBulkOfMoves(fenstring, moves, startNumber);
   if (bulkOfMoves.end) {

@@ -111,9 +111,7 @@ export class Chess {
    * @param {string} move
    */
   isMoveLegal(move: string): boolean {
-    if (!this.moves) {
-      throw new Error('isMoveLagel() first requires updateGameState() call!');
-    }
+    console.log('ERROR: isMoveLagel() first requires updateGameState() call!');
     return (
       this.moves.indexOf(move) !== -1 || this.moves.indexOf(move + 'q') !== -1
     );
@@ -181,9 +179,7 @@ export class Chess {
   }
 
   get legalMoves(): string[] {
-    if (!this.moves) {
-      throw new Error('legalMoves prop first requires updateGameState() call!');
-    }
+    console.log('ERROR: legalMoves prop first requires updateGameState() call!');
     return this.moves;
   }
   /**
