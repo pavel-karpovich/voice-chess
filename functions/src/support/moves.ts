@@ -310,7 +310,7 @@ function canDoSmth(targets: Move[]): string {
     if (targets[i].beat) {
       result += ' ' + Voc.piece(targets[i].beat, 'vin');
     }
-    result += ' ' + Voc.on() + ' ' + char(targets[i].to);
+    result += ' ' + Voc.on(char(targets[i].to));
     if (targets[i].promo) {
       result += ' ' + Voc.and() + ' ' + Voc.canPromote();
     }
@@ -322,7 +322,7 @@ function canDoSmth(targets: Move[]): string {
 }
 
 function onePosFromBulk(pos: PieceMoves): string {
-  let result = upFirst(Voc.pieceOnPosition(pos.type, pos.pos));
+  let result = upFirst(Voc.pieceFromPosition(pos.type, pos.pos));
   let startIndex = 0;
   let endIndex = 0;
   let end = false;

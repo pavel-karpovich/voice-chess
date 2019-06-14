@@ -533,7 +533,7 @@ app.intent(
     if (board.moveSide !== playerSide) {
       const msg = 'The player and server sides are messed.';
       console.log(`ERROR: ${msg}`);
-      speak(conv, Ans.Error(msg));
+      speak(conv, Ans.error(msg));
       speak(conv, Ask.tryAgainOrLater());
       return;
     }
@@ -815,7 +815,7 @@ async function listOfMoves(conv: VoiceChessConv, startNumber: number): Promise<v
   if (moves.length === 0) {
     const msg = "Checkmate/stalemate in this place can't be!";
     console.log(`ERROR: ${msg}`);
-    speak(conv, Ans.Error(msg));
+    speak(conv, Ans.error(msg));
     speak(conv, Ask.tryAgainOrLater());
     return;
   }

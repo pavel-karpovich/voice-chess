@@ -12,7 +12,7 @@ function singleRank(rank: ChessSquareData[], rankNum: number): string {
     resultString += upFirst(Voc.nRank(rankNum)) + ': ';
     for (const square of rank) {
       if (square.val !== null) {
-        resultString += Voc.coloredPieceOnPosition(square.val, square.pos) + ', ';
+        resultString += `${Voc.on(square.pos)} ${Voc.coloredPiece(square.val)}, `;
       }
     }
     resultString = resultString.slice(0, -2) + '.\n';
@@ -60,7 +60,7 @@ export function allPiecesForType(
       } else if (i !== 0) {
         result += ', ';
       }
-      result += Voc.onPosition(positions[i]);
+      result += Voc.simpleOn(positions[i]);
     }
     result += '.';
   }
@@ -94,9 +94,7 @@ export function listCapturedPieces(captured: Captured, playerSide: ChessSide): s
     result += `<s>${upFirst(Voc.someoneDontCapture(who, whose, ChessSide.WHITE))}</s>`;
   } else {
     const firstPiece = captured.white[0].piece;
-    const gen = Voc.pieceGender(firstPiece);
-    const totalAmount = captured.white.reduce((sum, el) => (sum += el.count), 0);
-    result += '<s>' + Voc.someoneCapture1(who, totalAmount, gen);
+    result += '<s>' + Voc.someoneCapture1(who);
     result +=
       ' ' + Voc.nSomeonesColoredPieces(captured.white[0].count, whose, ChessSide.WHITE, firstPiece);
     for (let i = 1; i < captured.white.length; ++i) {
@@ -119,9 +117,7 @@ export function listCapturedPieces(captured: Captured, playerSide: ChessSide): s
     result += Voc.someoneDontCapture(who, whose, ChessSide.BLACK) + '</s>';
   } else {
     const firstPiece = captured.black[0].piece;
-    const gen = Voc.pieceGender(firstPiece);
-    const totalAmount = captured.black.reduce((sum, el) => (sum += el.count), 0);
-    result += '<s>' + Voc.someoneCapture2(who, totalAmount, gen);
+    result += '<s>' + Voc.someoneCapture2(who);
     result +=
       ' ' + Voc.nSomeonesColoredPieces(captured.black[0].count, whose, ChessSide.BLACK, firstPiece);
     for (let i = 1; i < captured.black.length; ++i) {

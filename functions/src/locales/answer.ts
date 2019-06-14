@@ -195,7 +195,7 @@ export class Answer {
         ru: [
           'Вы не можете так походить!',
           'Вы не можете сделать такой ход!',
-          `Вы не можете ходить с ${char(from)} на ${char(to)}.`,
+          `Вы не можете ходить с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
           'Нельзя так ходить!',
           `${char(from)} ${char(to)}... Это некорректный ход.`,
         ],
@@ -206,12 +206,12 @@ export class Answer {
     return rand(
       ({
         en: [
-          `The move is made! You move ${Voc.piece(pieceCode)} from ${char(from)} to ${char(to)}.`,
-          `Okay, you move ${Voc.piece(pieceCode)} from ${char(from)} to ${char(to)}.`,
+          `The move is made! You move ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}.`,
+          `Okay, you move ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}.`,
         ],
         ru: [
-          `Ход сделан! Вы передвинули ${Voc.piece(pieceCode, 'vin')} с позиции ${char(from)} на ${char(to)}.`,
-          `Ладно, значит вы ходите ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
+          `Ход сделан! Вы передвинули ${Voc.piece(pieceCode, 'vin')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
+          `Ладно, значит вы ходите ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -235,19 +235,18 @@ export class Answer {
     );
   }
   static enemyMove(from: string, to: string, pieceCode: string): string {
-    const piece = Voc.piece(pieceCode);
     return rand(
       ({
         en: [
-          `I would move a ${piece} from ${char(from)} to ${char(to)}!`,
-          `My move is a ${piece} from ${char(from)} to ${char(to)}! And what do you say to that?`,
-          `I move my ${piece} from ${char(from)} to ${char(to)}.`,
+          `I would move a ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}!`,
+          `My move is a ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}! And what do you say to that?`,
+          `I move my ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}.`,
         ],
         ru: [
-          `Мой ход таков: ${piece} с ${char(from)} на ${char(to)}.`,
-          `Так. Пожалуй, я отвечу ${piece} ${char(from)} ${char(to)}.`,
-          `Я сделаю ход ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}!`,
-          `А я похожу ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
+          `Мой ход таков: ${Voc.piece(pieceCode)} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
+          `Так. Пожалуй, я отвечу ${Voc.piece(pieceCode)} ${Voc.square(from, 'rod')} ${Voc.square(to, 'vin')}.`,
+          `Я сделаю ход ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}!`,
+          `А я похожу ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -277,12 +276,12 @@ export class Answer {
     return rand(
       ({
         en: [
-          `En passant! You move your pawn from ${char(from)} to ${char(to)} and capture my pawn in passing to ${char(pawn)}!`,
-          `En passant! You capture my pawn in passing to ${char(pawn)}! You made a move by pawn from ${char(from)} to ${char(to)}.`,
+          `En passant! You move your pawn from ${Voc.square(from)} to ${Voc.square(to)} and capture my pawn in passing to ${Voc.square(pawn)}!`,
+          `En passant! You capture my pawn in passing to ${Voc.square(pawn)}! You made a move by pawn from ${Voc.square(from)} to ${Voc.square(to)}.`,
         ],
         ru: [
-          `Энпассант! Вы ходите пешкой с ${char(from)} на ${char(to)} и забираете мою пешку на проходе к ${char(pawn)}!`,
-          `Энпассант! Вы забираете мою пешку на проходе к ${char(pawn)} ходом ${char(from)} ${char(to)}!`,
+          `Энпассант! Вы ходите пешкой с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')} и забираете мою пешку на проходе к ${Voc.square(pawn, 'dat')}!`,
+          `Энпассант! Вы забираете мою пешку на проходе к ${Voc.square(pawn, 'dat')} ходом ${char(from)} ${char(to)}!`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -291,12 +290,12 @@ export class Answer {
     return rand(
       ({
         en: [
-          `En passant! I move my pawn from ${char(from)} to ${char(to)} and capture your pawn in passing to ${char(pawn)}!`,
-          `En passant! I will capture your pawn in passing to ${char(pawn)}! My move is pawn ${char(from)} ${char(to)}.`,
+          `En passant! I move my pawn from ${Voc.square(from)} to ${Voc.square(to)} and capture your pawn in passing to ${Voc.square(pawn)}!`,
+          `En passant! I will capture your pawn in passing to ${Voc.square(pawn)}! My move is pawn ${Voc.square(from)} ${Voc.square(to)}.`,
         ],
         ru: [
-          `Энпассант! Я хожу пешкой с ${char(from)} на ${char(to)} и забираю вашу пешку ${char(pawn)} на проходе!`,
-          `Энпассант! Я заберу вашу пешку на проходе к ${char(pawn)}! Мой ход - пешка ${char(from)} ${char(to)}.`,
+          `Энпассант! Я хожу пешкой с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')} и забираю вашу пешку ${char(pawn)} на проходе!`,
+          `Энпассант! Я заберу вашу пешку на проходе к ${Voc.square(pawn, 'dat')}! Мой ход - пешка ${char(from)} ${char(to)}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -305,14 +304,14 @@ export class Answer {
     return rand(
       ({
         en: [
-          `You made castling! The king moves from square ${char(kFrom)} to ${char(kTo)} and the rock moves from ${char(rFrom)} to ${char(rTo)}!`,
-          `This is castling! You move the king through two squares from ${char(kFrom)} to ${char(kTo)}, and place your rock from ${char(rFrom)} to the square ${char(rTo)} behind the king.`,
-          `This move you castling, moving your king from ${char(kFrom)} to ${char(kTo)} and the rock from ${char(rFrom)} to ${char(rTo)}.`,
+          `You made castling! The king moves from ${Voc.square(kFrom)} to ${Voc.square(kTo)} and the rock moves from ${Voc.square(rFrom)} to ${Voc.square(rTo)}!`,
+          `This is castling! You move the king through two squares from ${Voc.square(kFrom)} to ${Voc.square(kTo)}, and place your rock from ${Voc.square(rFrom)} to ${Voc.square(rTo)} behind the king.`,
+          `This move you castling, moving your king from ${Voc.square(kFrom)} to ${Voc.square(kTo)} and the rock from ${Voc.square(rFrom)} to ${Voc.square(rTo)}.`,
         ],
         ru: [
-          `Вы делаете рокировку! Король перемещается с позиции ${char(kFrom)} на ${char(kTo)}, а ладья с ${rFrom} двигается за короля на ${char(rTo)}.`,
-          `И это рокировка! Вы перемещаете короля на две клетки c ${char(kFrom)} на ${char(kTo)} и ставите ладью с ${char(rFrom)} за короля на ${char(rTo)}.`,
-          `Этим ходом вы совершаете рокировку, перемещая своего короля с ${char(kFrom)} на ${char(kTo)} и ладью с ${char(rFrom)} на ${char(rTo)}!`,
+          `Вы делаете рокировку! Король перемещается с ${Voc.square(kFrom, 'rod')} на ${Voc.square(kTo, 'vin')}, а ладья с ${Voc.square(rFrom, 'rod')} двигается за короля на ${Voc.square(rTo, 'vin')}.`,
+          `И это рокировка! Вы перемещаете короля на две клетки c ${char(kFrom)} на ${Voc.square(kTo, 'vin')} и ставите ладью с ${Voc.square(rFrom, 'rod')} за своего короля, на ${Voc.square(rTo, 'vin')}.`,
+          `Этим ходом вы совершаете рокировку, перемещая своего короля с ${Voc.square(kFrom, 'rod')} на ${Voc.square(kTo, 'vin')} и ладью с ${Voc.square(rFrom, 'rod')} на ${Voc.square(rTo, 'vin')}!`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -321,14 +320,14 @@ export class Answer {
     return rand(
       ({
         en: [
-          `I will do castling! My king from square ${char(kFrom)} moves to ${char(kTo)} and my rock from ${char(rFrom)} moves to ${char(rTo)}!`,
-          `And I make castling! I move the king from ${char(kFrom)} to ${char(kTo)}, and place the rock from ${char(rFrom)} on the square ${char(rTo)} behind the king.`,
-          `I will do castling in my turn. I move my king from ${char(kFrom)} to ${char(kTo)} and rock from ${char(rFrom)} to ${char(rTo)}.`,
+          `I will do castling! My king from ${Voc.square(kFrom)} moves to ${Voc.square(kTo)} and my rock from ${Voc.square(rFrom)} moves to ${Voc.square(rTo)}!`,
+          `And I make castling! I move the king from ${Voc.square(kFrom)} to ${Voc.square(kTo)}, and place the rock from ${Voc.square(rFrom)} on ${Voc.square(rTo)} behind the king.`,
+          `I will do castling in my turn. I move my king from ${Voc.square(kFrom)} to ${Voc.square(kTo)} and rock from ${Voc.square(rFrom)} to ${Voc.square(rTo)}.`,
         ],
         ru: [
-          `Я сделаю рокировку! Мой король перемещается с позиции ${char(kFrom)} на ${char(kTo)}, а ладья с ${rFrom} встаёт за короля на ${char(rTo)}.`,
-          `И это рокировка! Я перемещаю короля на две клетки c ${char(kFrom)} на ${char(kTo)} и ставлю ладью с ${char(rFrom)} за короля на ${char(rTo)}.`,
-          `Я совершу своим ходом рокировку, и перемещу короля с позиции ${char(kFrom)} на ${char(kTo)}, а ладью с ${char(rFrom)} на ${char(rTo)}!`,
+          `Я сделаю рокировку! Мой король перемещается с ${Voc.square(kFrom, 'rod')} на ${Voc.square(kTo, 'vin')}, а ладья с ${Voc.square(rFrom, 'rod')} встаёт за короля на ${Voc.square(rTo, 'vin')}.`,
+          `И это рокировка! Я перемещаю короля на две клетки c ${char(kFrom)} на ${Voc.square(kTo, 'vin')} и ставлю ладью с ${Voc.square(rFrom, 'rod')} за своего короля, на ${Voc.square(rTo, 'vin')}.`,
+          `Я совершу своим ходом рокировку, и перемещу короля с ${Voc.square(kFrom, 'rod')} на ${Voc.square(kTo, 'vin')}, а ладью с ${Voc.square(rFrom, 'rod')} на ${Voc.square(rTo, 'vin')}!`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -384,8 +383,13 @@ export class Answer {
   static whiteSide(): string {
     return rand(
       ({
-        en: ['Your side is White.\nAnd your turn is first!'],
-        ru: ['Ваша сторона - Белая.\nПервый ход за вами.', 'Вы за белых, ходите первыми.'],
+        en: [
+          'Your side is White.\nAnd your turn is first!',
+        ],
+        ru: [
+          'Ваша сторона - Белая.\nПервый ход за вами.', 
+          'Вы за белых, ходите первыми.',
+        ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -438,8 +442,13 @@ export class Answer {
   static difficultyTheSame(level: number): string {
     return rand(
       ({
-        en: [`The difficulty level is already ${level}!`],
-        ru: [`Уровень сложности уже равен ${level}!`, 'Сложность и так такая!'],
+        en: [
+          `The difficulty level is already ${level}!`,
+        ],
+        ru: [
+          `Уровень сложности уже равен ${level}!`,
+          'Сложность и так такая!',
+        ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -480,7 +489,9 @@ export class Answer {
   static youWin(): string {
     return rand(
       ({
-        en: ['Oh... You checkmate me! Very impressive! You won! Congratulations!.'],
+        en: [
+          'Oh... You checkmate me! Very impressive! You won! Congratulations!.',
+        ],
         ru: [
           'Погодите секундочку... Вы поставили мне шах и мат? Ничего себе, да вы победили! Поздравляю!',
         ],
@@ -527,7 +538,11 @@ export class Answer {
           'Stalemate! I have nothing to move.',
           'You gave me a stalemate!',
         ],
-        ru: ['Патовая ситуация!', 'Пат! Мне нечем ходить.', 'Вы поставили мне пат!'],
+        ru: [
+          'Патовая ситуация!',
+          'Пат! Мне нечем ходить.',
+          'Вы поставили мне пат!',
+        ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -539,7 +554,11 @@ export class Answer {
           "Stalemate! You don't have any piece to legal move.",
           'I put you a stalemate!',
         ],
-        ru: ['Вам пат!', 'Пат! У вас нет легальных ходов.', 'Похоже, я поставил вам пат!'],
+        ru: [
+          'Вам пат!',
+          'Пат! У вас нет легальных ходов.',
+          'Похоже, я поставил вам пат!',
+        ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -562,14 +581,14 @@ export class Answer {
       return rand(
         ({
           en: [
-            `There is no ${Voc.piece(pieceCode)} on the square ${char(square)}! It's empty.`,
-            `${upFirst(Voc.piece(pieceCode))} from ${char(square)}? Are you sure? ${char(square)} is empty!`,
-            `You confused something. In the square ${char(square)} no chess pieces.`,
+            `There is no ${Voc.piece(pieceCode)} on ${Voc.square(square)}! It's empty.`,
+            `${upFirst(Voc.piece(pieceCode))} from ${Voc.square(square)}? Are you sure? ${upFirst(Voc.square(square))} is empty!`,
+            `You confused something. There is no chess pieces on ${Voc.square(square)}.`,
           ],
           ru: [
             `Но клетка ${char(square)} пустая. На ней нет ${Voc.piece(pieceCode, 'rod')}!`,
-            `${upFirst(Voc.piece(pieceCode))} на ${char(square)}? Но на клетке ${char(square)} ничего нет.`,
-            `На клетке ${char(square)} нет ${Voc.piece(pieceCode, 'rod')}. На ней вообще нет фигур - это свободная клетка.`,
+            `${upFirst(Voc.piece(pieceCode))} ${Voc.on(square)}? Но ${Voc.on(square)} ничего нет.`,
+            `${upFirst(Voc.on(square))} нет ${Voc.piece(pieceCode, 'rod')}. На ней вообще нет фигур - это свободная клетка.`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -577,14 +596,14 @@ export class Answer {
       return rand(
         ({
           en: [
-            `But the square ${char(square)} is empty. There are no pieces!`,
-            `Sorry, but there are no pieces on the square ${char(square)}.`,
-            `The position is incorrect. The square ${char(square)} is empty!`,
+            `But ${Voc.square(square)} is empty. There are no pieces!`,
+            `Sorry, but there are no pieces on ${Voc.square(square)}.`,
+            `The position is incorrect. ${upFirst(Voc.square(square))} is empty!`,
           ],
           ru: [
             `Но клетка ${char(square)} пустая. На ней нет фигур.`,
-            `На клетке ${char(square)} нет фигур.`,
-            `Это некорректная позиция. На клетке ${char(square)} ничего нет.`,
+            `${upFirst(Voc.on(square))} нет фигур.`,
+            `Это некорректная позиция. ${upFirst(Voc.on(square))} ничего нет.`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -594,14 +613,14 @@ export class Answer {
     return rand(
       ({
         en: [
-          `But on the square ${char(square)} is not a ${Voc.piece(playerPiece)}, but a ${Voc.piece(actualPiece)}.`,
-          `On the square ${char(square)} is a ${Voc.piece(actualPiece)}, not a ${Voc.piece(playerPiece)}.`,
-          `On ${char(square)} is not a ${Voc.piece(playerPiece)}, but a ${Voc.piece(actualPiece)}.`,
+          `But ${Voc.on(square)} is not a ${Voc.piece(playerPiece)}, but a ${Voc.piece(actualPiece)}.`,
+          `${upFirst(Voc.on(square))} is a ${Voc.piece(actualPiece)}, not a ${Voc.piece(playerPiece)}.`,
+          `${upFirst(Voc.on(square))} is not a ${Voc.piece(playerPiece)}, but a ${Voc.piece(actualPiece)}.`,
         ],
         ru: [
-          `Но на клетке ${char(square)} стоит не ${Voc.piece(playerPiece)}, a ${Voc.piece(actualPiece)}.`,
-          `Только на клетке ${char(square)} находится ${Voc.piece(actualPiece)}, а не ${Voc.piece(playerPiece)}.`,
-          `На ${char(square)} не ${Voc.piece(playerPiece)}, а ${Voc.piece(actualPiece)}.`,
+          `Но ${Voc.on(square)} стоит не ${Voc.piece(playerPiece)}, a ${Voc.piece(actualPiece)}.`,
+          `Только ${Voc.on(square)} находится ${Voc.piece(actualPiece)}, а не ${Voc.piece(playerPiece)}.`,
+          `${upFirst(Voc.on(square))} не ${Voc.piece(playerPiece)}, а ${Voc.piece(actualPiece)}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -611,13 +630,13 @@ export class Answer {
       ({
         en: [
           `Your pawn reaches the last rank! Now you need to use promotion!`,
-          `When your pawn moves from ${char(from)} to ${char(to)}, there will be a promotion!`,
+          `When your pawn moves from ${Voc.square(from)} to ${Voc.square(to)}, there will be a promotion!`,
           `It is time to Pawn promotion!`,
           `Pawn promotion!`,
         ],
         ru: [
           `Ваша Пешка дошла до последнего ряда. Теперь её можно превратить в другую фигуру!`,
-          `При переходе Пешки с ${char(from)} на ${char(to)} происходит превращение!`,
+          `При переходе Пешки с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')} происходит превращение!`,
           `Время превращения пешки!`,
           `Повышение пешки!`,
         ],
@@ -643,8 +662,16 @@ export class Answer {
   static itsAll(): string {
     return rand(
       ({
-        en: ["It's all.", 'And it is the end.', 'And that was the last item.'],
-        ru: ['И это всё.', 'Все, это конец.', 'Это всё, что есть.'],
+        en: [
+          "It's all.",
+          'And it is the end.',
+          'And that was the last item.',
+        ],
+        ru: [
+          'И это всё.',
+          'Все, это конец.',
+          'Это всё, что есть.',
+        ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -667,8 +694,14 @@ export class Answer {
   static invalidMovesNumber(invNum: number): string {
     return rand(
       ({
-        en: ['This value is invalid!', `The number of moves can't be equal to ${invNum}.`],
-        ru: ['Вы назвали некорректное число.', `Количество ходов не может быть равно ${invNum}!`],
+        en: [
+          'This value is invalid!',
+          `The number of moves can't be equal to ${invNum}.`,
+        ],
+        ru: [
+          'Вы назвали некорректное число.',
+          `Количество ходов не может быть равно ${invNum}!`,
+        ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
@@ -683,7 +716,7 @@ export class Answer {
           `We have not played ${invNum} moves throughout the game. I can tell you only ${num} moves:`,
         ],
         ru: [
-          `У нас нету стольки ходов. Только ${num}:`,
+          `Но мы не сделали столько ходов. Лишь ${num}:`,
           `У нас всего ${num} ходов в истории:`,
           `${invNum} ходов я физически не могу назвать, но вот ${num} - пожалуйста.`,
           'Это больше чем было за всю игру. Я перечислю вам всё, что есть.',
@@ -697,15 +730,15 @@ export class Answer {
     return rand(
       ({
         en: [
-          `You play ${Voc.color(playerSide, 'plr')}, but on the square ${char(from)} is ${Voc.coloredPiece(pieceCode)}!`,
+          `You play ${Voc.color(playerSide, 'plr')}, but ${Voc.on(from)} is ${Voc.myColoredPiece(pieceCode)}!`,
           `You cannot play ${Voc.coloredPiece(pieceCode)}, because it's mine!`,
-          `You are for ${Voc.color(playerSide, 'plr')}, I am for ${Voc.color(enemySide, 'plr')}. The ${Voc.piece(pieceCode)} on ${char(from)} is ${Voc.color(enemySide)}, thus mine.`,
+          `You are for ${Voc.color(playerSide, 'plr')}, I am for ${Voc.color(enemySide, 'plr')}. The ${Voc.piece(pieceCode)} ${Voc.on(from)} is ${Voc.color(enemySide)}, thus mine.`,
         ],
         ru: [
-          `Вы играете за ${Voc.color(playerSide, 'plr/rod')}, а на клетке ${char(from)} стоит ${Voc.myPiece(pieceCode)}!`,
-          `Вы не можете играть за ${Voc.piece(pieceCode, 'rod')} на ${char(from)}, она моя.`,
+          `Вы играете за ${Voc.color(playerSide, 'plr/rod')}, а ${Voc.on(from)} стоит ${Voc.myPiece(pieceCode)}!`,
+          `Вы не можете играть за ${Voc.piece(pieceCode, 'rod')} ${Voc.on(from)}, она моя.`,
           `Вообще то за ${Voc.color(enemySide, 'plr/rod')} играю я. Вы не можете ходить моими фигурами.`,
-          `Вы за ${Voc.color(playerSide, 'plr/rod')}, я за ${Voc.color(enemySide, 'plr/rod')}. Следите за фигурами. На ${char(from)} ${Voc.myColoredPiece(pieceCode)}.`,
+          `Вы за ${Voc.color(playerSide, 'plr/rod')}, я за ${Voc.color(enemySide, 'plr/rod')}. Следите за фигурами. ${upFirst(Voc.on(from))} ${Voc.myColoredPiece(pieceCode)}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -759,16 +792,16 @@ export class Answer {
     return rand(
       ({
         en: [
-          `I can advise you to make a ${Voc.piece(pieceCode)} move from ${char(from)} to ${char(to)}.`,
-          `If I were you, I would move a ${Voc.piece(pieceCode)} from ${char(from)} to ${char(to)}.`,
-          `The ${Voc.piece(pieceCode)} move from ${char(from)} to ${char(to)} seems pretty good!`,
-          `What about ${Voc.piece(pieceCode)} from ${char(from)} to ${char(to)}?`,
+          `I can advise you to make a ${Voc.piece(pieceCode)} move from ${Voc.square(from)} to ${Voc.square(to)}.`,
+          `If I were you, I would move a ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}.`,
+          `The ${Voc.piece(pieceCode)} move from ${Voc.square(from)} to ${Voc.square(to)} seems pretty good!`,
+          `What about ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}?`,
         ],
         ru: [
-          `Могу посоветовать вам походить ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
-          `Я бы на вашем месте походил ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
+          `Могу посоветовать вам походить ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
+          `Я бы на вашем месте походил ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
           `Вы можете сыграть ${Voc.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}.`,
-          `Что насчёт хода ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}?`,
+          `Что насчёт хода ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}?`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -840,16 +873,16 @@ export class Answer {
     return rand(
       ({
         en: [
-          `${char(pos)} is free.`,
-          `Square ${char(pos)} is empty!`,
-          `There is no piece on the square ${char(pos)}.`,
-          `Square ${char(pos)} is not occupied by anyone.`,
+          `${upFirst(Voc.square(pos))} is free.`,
+          `${upFirst(Voc.square(pos))} is empty!`,
+          `There is no piece ${Voc.on(pos)}.`,
+          `${upFirst(Voc.square(pos))} is not occupied by anyone.`,
         ],
         ru: [
-          `Клетка ${char(pos)} свободна.`,
-          `Клетка ${char(pos)} никем не занята.`,
-          `На клетке ${char(pos)} ничего нет.`,
-          `Клетка ${char(pos)} пустая.`,
+          `${upFirst(Voc.square(pos))} свободна.`,
+          `${upFirst(Voc.square(pos))} никем не занята.`,
+          `${upFirst(Voc.on(pos))} ничего нет.`,
+          `${upFirst(Voc.square(pos))} пустая.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -858,38 +891,38 @@ export class Answer {
     return rand(
       ({
         en: [
-          `On ${char(pos)} is ${Voc.someonesColoredPiece(pieceCode, side)}.`,
-          `On the square ${char(pos)} is the ${Voc.someonesPiece(pieceCode, side)}.`,
-          `Position ${char(pos)} is occupied by ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+          `${upFirst(Voc.on(pos))} is ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+          `${upFirst(Voc.on(pos))} is the ${Voc.someonesPiece(pieceCode, side)}.`,
+          `${upFirst(Voc.square(pos))} is occupied by ${Voc.someonesColoredPiece(pieceCode, side)}.`,
           `Here is ${Voc.someonesColoredPiece(pieceCode, side)}.`,
-          `On the square ${char(pos)} stands ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+          `${upFirst(Voc.square(pos))} stands ${Voc.someonesColoredPiece(pieceCode, side)}.`,
         ],
         ru: [
-          `На ${char(pos)} ${Voc.someonesColoredPiece(pieceCode, side)}.`,
-          `На клетке ${char(pos)} стоит ${Voc.someonesColoredPiece(pieceCode, side)}.`,
-          `Позиция ${char(pos)} занята ${Voc.someonesPiece(pieceCode, side, 'rod')}.`,
+          `${upFirst(Voc.on(pos))} ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+          `${upFirst(Voc.on(pos))} стоит ${Voc.someonesColoredPiece(pieceCode, side)}.`,
+          `${upFirst(Voc.square(pos))} занята ${Voc.someonesPiece(pieceCode, side, 'rod')}.`,
           `Здесь находится ${Voc.someonesPiece(pieceCode, side)}.`,
-          `На квадрате ${char(pos)} находится ${Voc.someonesPiece(pieceCode, side)}.`,
+          `${upFirst(Voc.on(pos))} находится ${Voc.someonesPiece(pieceCode, side)}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static noSuchPieces(pieceCode: string, whose?: WhoseSide): string {
-    const pNum = Voc.pieceNumber(pieceCode);
-    if (!!whose) {
+  static noSuchPieces(pieceCode: string, who?: WhoseSide): string {
+    const pNum = Voc.pieceMaxNumber(pieceCode);
+    if (!!who) {
       return rand(
         ({
           en: [
-            `${upFirst(Voc.youOrMe(whose))} have no more ${Voc.piece(pieceCode, pNum)} left.`,
-            `${upFirst(Voc.yourOrMy(pieceCode, whose, pNum))} ${Voc.piece(pieceCode, pNum)} are no longer on the board.`,
-            `${upFirst(Voc.youOrMe(whose))} no longer have ${Voc.piece(pieceCode, pNum)}.`,
-            `${upFirst(Voc.allYourOrMy(pieceCode, whose, pNum))} ${Voc.piece(pieceCode, pNum)} are already captured.`,
+            `${upFirst(Voc.youOrMe(who))} have no more ${Voc.piece(pieceCode, pNum)} left.`,
+            `${upFirst(Voc.yourOrMy(pieceCode, who, pNum))} ${Voc.piece(pieceCode, pNum)} are no longer on the board.`,
+            `${upFirst(Voc.youOrMe(who))} no longer have ${Voc.piece(pieceCode, pNum)}.`,
+            `${upFirst(Voc.allYourOrMy(pieceCode, who, pNum))} ${Voc.piece(pieceCode, pNum)} are already captured.`,
           ],
           ru: [
-            `У ${Voc.youOrMe(whose)} не осталось ${Voc.piece(pieceCode, `${pNum}/rod`)}.`,
-            `${upFirst(Voc.whosePiece(pieceCode, whose, `${pNum}/rod`))} больше нет на поле.`,
-            `У ${Voc.youOrMe(whose)} больше нет ${Voc.piece(pieceCode, `${pNum}/rod`)}.`,
-            `${upFirst(Voc.allYourOrMy(pieceCode, whose, pNum))} ${Voc.piece(pieceCode, `${pNum}/rod`)} уже захвачены.`,
+            `У ${Voc.youOrMe(who)} не осталось ${Voc.piece(pieceCode, `${pNum}/rod`)}.`,
+            `${upFirst(Voc.whosePiece(pieceCode, who, `${pNum}/rod`))} больше нет на поле.`,
+            `У ${Voc.youOrMe(who)} больше нет ${Voc.piece(pieceCode, `${pNum}/rod`)}.`,
+            `${upFirst(Voc.allYourOrMy(pieceCode, who, pNum))} ${Voc.piece(pieceCode, `${pNum}/rod`)} уже захвачены.`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
@@ -991,7 +1024,7 @@ export class Answer {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static Error(msg: string): string {
+  static error(msg: string): string {
     return rand(
       ({
         en: [

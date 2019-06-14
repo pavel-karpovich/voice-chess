@@ -32,8 +32,11 @@ export interface WordForms {
   fem?: string;
   sin?: string;
   plr?: string;
-  na?: string;
+  imn?: string;
+  rod?: string;
+  dat?: string;
   vin?: string;
+  prd?: string;
   'mus/sin'?: string;
   'fem/sin'?: string;
   'mus/plr'?: string;
