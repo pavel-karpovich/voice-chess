@@ -1,7 +1,6 @@
 const loadEngine = require('stockfish');
 import * as path from 'path';
-const stockfishPath = '../../node_modules/stockfish/src/stockfish.wasm';
-
+const stockfishPath = path.join(__dirname, '../../node_modules/stockfish/src/stockfish.wasm');
 export const chessBoardSize = 8;
 export const maxDifficulty = 20;
 
@@ -33,8 +32,7 @@ export class Chess {
    * Callback is needed only when creating new game without fenstring
    */
   constructor(fenstring: string, difficulty: number) {
-    const stockfishWasm = stockfishPath;
-    this.stockfish = loadEngine(path.join(__dirname, stockfishWasm));
+    this.stockfish = loadEngine(stockfishPath);
     this.fen = fenstring || Chess.initialFen;
     this.stateChangeHandler = null;
     this.bestMoveHandler = null;
@@ -110,14 +108,17 @@ export class Chess {
    * @param {string} move
    */
   isMoveLegal(move: string): boolean {
-    console.log('ERROR: isMoveLagel() first requires updateGameState() call!');
+    if (!this.moves) {
+      console.log('ERROR: isMoveLagel() first requires updateGameState() call!');
+      return null;
+    }
     return this.moves.indexOf(move) !== -1 || this.moves.indexOf(move + 'q') !== -1;
   }
 
   async bestMove(): Promise<string> {
     return new Promise((resolve: (bm: string) => void) => {
-      this.stockfish.postMessage(`go depth ${this.depth} movetime 1000`);
       this.onBestMove = resolve;
+      this.stockfish.postMessage(`go depth ${this.depth} movetime 1000`);
     });
   }
 
@@ -139,12 +140,16 @@ export class Chess {
       this.enemy = await this.bestMove();
       const command = `position fen ${this.fen} moves ${this.enemy}`;
       this.stockfish.postMessage(command);
-      this.stockfish.postMessage('d');
       this.onChangeGameState = resolve;
+      this.stockfish.postMessage('d');
     });
   }
 
   get currentGameState(): ChessGameState {
+    if (!this.moves) {
+      console.log('ERROR: currentGameState() first requires updateGameState() call!');
+      return null;
+    }
     if (this.memorizedState) {
       return this.memorizedState;
     }
@@ -162,13 +167,13 @@ export class Chess {
     return this.memorizedState;
   }
 
-  set onChangeGameState(handler: () => void) {
+  private set onChangeGameState(handler: () => void) {
     this.stateChangeHandler = () => {
       this.stateChangeHandler = null;
       handler();
     };
   }
-  set onBestMove(handler: (bm: string) => void) {
+  private set onBestMove(handler: (bm: string) => void) {
     this.bestMoveHandler = (bm: string) => {
       this.bestMoveHandler = null;
       handler(bm);
@@ -176,7 +181,10 @@ export class Chess {
   }
 
   get legalMoves(): string[] {
-    console.log('ERROR: legalMoves prop first requires updateGameState() call!');
+    if (!this.moves) {
+      console.log('ERROR: legalMoves prop first requires updateGameState() call!');
+      return null;
+    }
     return this.moves;
   }
   /**

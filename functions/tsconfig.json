@@ -9,10 +9,11 @@
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
-    "target": "es6",
+    "target": "es2015",
     "plugins": [
       { "name": "typescript-tslint-plugin" }
-    ]
+    ],
+    "lib": [ "es2015", "es2018.regexp" ]
   },
   "include": [
     "src"

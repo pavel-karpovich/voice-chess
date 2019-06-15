@@ -7,6 +7,23 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Jest",
+            "program": "${workspaceFolder}/functions/node_modules/.bin/jest",
+            "args": [
+              "${fileBasenameNoExtension}",
+              "--config",
+              "./functions/jest.config.js"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "windows": {
+              "program": "${workspaceFolder}/functions/node_modules/jest/bin/jest",
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Test",
             "program": "${workspaceFolder}\\test.js",
             "sourceMaps": true
