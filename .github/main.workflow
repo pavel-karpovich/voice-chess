@@ -3,7 +3,7 @@ workflow "Build and Deploy" {
   resolves = ["Deploy on Firebase"]
 }
 
-action "Install Dependencies" {
+action "Install dependencies" {
   uses = "Tgjmjgj/npm@specify-workspace-directory"
   args = "install"
   env = {
@@ -13,7 +13,7 @@ action "Install Dependencies" {
 
 action "Build project" {
   uses = "Tgjmjgj/npm@specify-workspace-directory"
-  needs = ["Install Dependencies"]
+  needs = ["Install dependencies"]
   args = "run build"
   env = {
     DIR = "./functions"
@@ -22,7 +22,7 @@ action "Build project" {
 
 action "Run tests" {
   uses = "Tgjmjgj/npm@specify-workspace-directory"
-  needs = ["Build Project"]
+  needs = ["Build project"]
   args = "t"
   env = {
     DIR = "./functions"
@@ -31,7 +31,7 @@ action "Run tests" {
 
 action "Collect coverage" {
   uses = "Tgjmjgj/npm@specify-workspace-directory"
-  needs = ["Build Project"]
+  needs = ["Build project"]
   args = "run coverage"
   secrets = ["CODECOV_TOKEN"]
   env = {
