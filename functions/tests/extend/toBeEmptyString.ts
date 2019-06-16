@@ -10,7 +10,12 @@ declare global {
 
 extend({
   toBeEmptyString(this: MatcherState, received: string) {
-    const pass = received === '';
+    let pass;
+    if (typeof received !== 'string') {
+      pass = (this.isNot ? true : false);
+    } else {
+      pass = received === '';
+    }
     return {
       message: () => `Received string is ${this.isNot ? '' : 'not '}empty`,
       pass,
