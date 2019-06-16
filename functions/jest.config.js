@@ -6,5 +6,6 @@ module.exports = {
     '^.+\\.ts$': 'ts-jest',
   },
   testRegex: '/.*test\\.ts$',
-  setupFiles: ['<rootDir>/extend/jest.matchers.ts']
+  setupFiles: ['<rootDir>/extend/jest.matchers.ts'],
+  coverageDirectory: './coverage/',
 }
