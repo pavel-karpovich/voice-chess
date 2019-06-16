@@ -17,7 +17,7 @@
     "pretest": "npm run compile",
     "posttest": "npm run check",
     "test": "jest",
-    "coverage": "jest --coverage && codecov",
+    "coverage": "jest --coverage",
     "tunnel": "ngrok http 3129",
     "dev": "nodemon --inspect lib/server.js"
   },
