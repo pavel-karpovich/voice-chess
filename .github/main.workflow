@@ -33,15 +33,20 @@ action "Collect coverage" {
   uses = "Tgjmjgj/npm@specify-workspace-directory"
   needs = ["Build project"]
   args = "run coverage"
-  secrets = ["CODECOV_TOKEN"]
   env = {
     DIR = "./functions"
   }
 }
 
+action "Send coverage to codecov" {
+  uses = "Atrox/codecov-action@v0.1.2"
+  needs = ["Collect coverage"]
+  secrets = ["CODECOV_TOKEN"]
+}
+
 action "Filter master" {
   uses = "actions/bin/filter@master"
-  needs = ["Run tests", "Collect coverage"]
+  needs = ["Run tests", "Send coverage to codecov"]
   args = "branch master"
 }
 
