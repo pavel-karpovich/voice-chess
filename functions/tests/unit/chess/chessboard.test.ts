@@ -1,6 +1,8 @@
+import '../../extend/toUnorderedEqual';
+import '../../extend/toBeArray';
+
 import { ChessBoard, ChessSquareData } from '../../../src/chess/chessboard';
 import { ChessSide } from '../../../src/chess/chessUtils';
-
 
 describe('Tests of Chess Board class', () => {
 

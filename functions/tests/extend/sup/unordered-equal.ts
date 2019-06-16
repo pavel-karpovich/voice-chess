@@ -52,6 +52,7 @@ export function unorderedEqual(a: any, b: any) {
           }
         }
         if (!eq) return false;
+        eq = false;
       }
       return true;
     }
