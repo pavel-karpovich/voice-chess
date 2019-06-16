@@ -76,11 +76,6 @@ export function gaussianRandom(iter = 4): number {
   return sum / iter;
 }
 
-export const enum WhoseSide {
-  PLAYER = '1',
-  ENEMY = '2',
-}
-
 export function mix(cond: boolean, perc = 0.2): boolean {
   const mix = Math.random();
   return (cond && mix < 1 - perc) || mix < perc;

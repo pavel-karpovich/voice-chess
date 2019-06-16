@@ -4,9 +4,9 @@ import { Answer as Ans } from './locales/answer';
 import { Ask } from './locales/ask';
 import { Vocabulary as Voc } from './locales/vocabulary';
 import { Chess, chessBoardSize, ChessGameState, maxDifficulty } from './chess/chess';
-import { ChessSide, CastlingType, getSide, oppositeSide } from './chess/chessUtils';
+import { ChessSide, WhoseSide, CastlingType, getSide, oppositeSide } from './chess/chessUtils';
 import { ChessBoard } from './chess/chessboard';
-import { pause, gaussianRandom, WhoseSide } from './support/helpers';
+import { pause, gaussianRandom } from './support/helpers';
 import { HistoryFrame, historyOfMoves } from './support/history';
 import {
   oneRank,

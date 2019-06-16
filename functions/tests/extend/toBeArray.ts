@@ -1,5 +1,6 @@
 import { extend, MatcherState } from 'expect';
 import { unorderedEqual } from './sup/unordered-equal';
+import { inspect } from 'util';
 
 declare global {
   namespace jest {
@@ -13,8 +14,12 @@ extend({
   toBeArray(this: MatcherState, received: any[], expected: any[]) {
     const pass = unorderedEqual(received, expected);
     return {
-      message: () =>
-        `Array [${received}] and array [${expected}] ${this.isNot ? '' : 'do not '}contain the same elements`,
+      message: () => {
+        const a1 = inspect(received, { colors: true });
+        const a2 = inspect(expected, { colors: true });
+        const pr = (this.isNot ? '' : 'do not ');
+        return `Recieved array \n${a1}\n and expected array \n${a2}\n ${pr}contain the same elements`;
+      },
       pass,
     };
   },

@@ -1,5 +1,5 @@
-import { ChessSide, getSide } from '../chess/chessUtils';
-import { WordForms, LocalizationObject, WhoseSide } from '../support/helpers';
+import { ChessSide, WhoseSide, getSide } from '../chess/chessUtils';
+import { WordForms, LocalizationObject } from '../support/helpers';
 import { rand, char, upFirst, mix } from '../support/helpers';
 
 // prettier-ignore

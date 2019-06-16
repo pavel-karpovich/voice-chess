@@ -1,12 +1,18 @@
 import '../../extend/toBeEmptyString';
 
-import { oneRank, manyRanks, allPiecesForType, allPiecesForSide, listCapturedPieces, someonePlayForColor } from '../../../src/support/board';
+import { 
+  oneRank,
+  manyRanks,
+  allPiecesForType,
+  allPiecesForSide,
+  listCapturedPieces,
+  someonePlayForColor
+} from '../../../src/support/board';
 import { Vocabulary } from '../../../src/locales/vocabulary';
-import { ChessSide } from '../../../src/chess/chessUtils';
-import { WhoseSide } from '../../../src/support/helpers';
+import { ChessSide, WhoseSide } from '../../../src/chess/chessUtils';
 import { ChessSquareData, Captured } from '../../../src/chess/chessboard';
 
-const log = true;
+const log = false;
 
 describe('Tests for board support functions', () => {
 
@@ -17,9 +23,14 @@ describe('Tests for board support functions', () => {
 
     beforeAll(() => {
       Vocabulary.setLanguage(locale);
-      if (!log) {
-        console.log = jest.fn().mockImplementation(str => void 0);
+      let newLog: (str: string) => void;
+      if (log) {
+        const consoleLog = console.log;
+        newLog = str =>  consoleLog('\n' + str);
+      } else {
+        newLog = str => void 0;
       }
+      console.log = jest.fn().mockImplementation(newLog);
     });
 
     test.each([

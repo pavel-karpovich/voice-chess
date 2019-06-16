@@ -1,5 +1,5 @@
-import { rand, LocalizationObject, char, upFirst, WhoseSide } from '../support/helpers';
-import { ChessSide, oppositeSide } from '../chess/chessUtils';
+import { rand, LocalizationObject, char, upFirst } from '../support/helpers';
+import { ChessSide, WhoseSide, oppositeSide } from '../chess/chessUtils';
 import { Vocabulary as Voc } from './vocabulary';
 
 // prettier-ignore

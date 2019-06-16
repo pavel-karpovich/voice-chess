@@ -3,6 +3,11 @@ export const enum ChessSide {
   BLACK = '2',
 }
 
+export const enum WhoseSide {
+  PLAYER = '1',
+  ENEMY = '2',
+}
+
 export const enum CastlingType {
   KINGSIDE = '1',
   QUEENSIDE = '2',

@@ -42,7 +42,7 @@ describe('Tests of Chess Board class', () => {
     });
     
     test.each([
-      ['P', ['c2', 'g2', 'b4', 'f3', 'a4', 'e4']],
+      ['P', ['c2', 'g2', 'b3', 'f3', 'a4', 'e4']],
       ['b', ['f8', 'a6']],
       ['K', ['e1']],
     ])('Getting all pieces by given type', (type, pieces) => {
@@ -60,8 +60,8 @@ describe('Tests of Chess Board class', () => {
       ]],
       [ChessSide.BLACK, [ 
         { pos: 'a8', val: 'r' }, { pos: 'b8', val: 'n' }, { pos: 'e8', val: 'k' },
-        { pos: 'd8', val: 'b' }, { pos: 'a7', val: 'p' }, { pos: 'c7', val: 'p' },
-        { pos: 'h7', val: 'p' }, { pos: 'a6', val: 'p' }, { pos: 'd6', val: 'p' }, 
+        { pos: 'f8', val: 'b' }, { pos: 'a7', val: 'p' }, { pos: 'c7', val: 'p' },
+        { pos: 'h7', val: 'p' }, { pos: 'a6', val: 'b' }, { pos: 'd6', val: 'p' }, 
         { pos: 'g6', val: 'p' }, { pos: 'e5', val: 'p' }, { pos: 'h4', val: 'q' },
         { pos: 'd3', val: 'n' },
       ]],

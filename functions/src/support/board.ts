@@ -1,7 +1,7 @@
 import { ChessBoard, ChessSquareData, Captured } from '../chess/chessboard';
-import { upFirst, pause, WhoseSide } from './helpers';
+import { upFirst, pause } from './helpers';
 import { Vocabulary as Voc } from '../locales/vocabulary';
-import { ChessSide, totalPiecesNumber, oppositeSide } from '../chess/chessUtils';
+import { ChessSide, WhoseSide, totalPiecesNumber, oppositeSide } from '../chess/chessUtils';
 
 function singleRank(rank: ChessSquareData[], rankNum: number): string {
   let resultString = '';
