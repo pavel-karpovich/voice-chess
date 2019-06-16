@@ -340,10 +340,14 @@ async function moveByPlayer(
     answer += prologue + pause(1) + '\n';
   }
   const isEnPassant = board.enPassant === to;
-  const cast = board.isCastling(move, piece);
+  const cast = board.isMoveCastling(move);
+  let rookMove = null;
   let enPassPawn = null;
   if (cast) {
-    answer += Ans.castlingByPlayer(from, to, cast.slice(0, 2), cast.slice(2, 4));
+    rookMove = board.rookMoveForCastlingMove(move);
+    const rFrom = rookMove.slice(0, 2);
+    const rTo = rookMove.slice(2, 4);
+    answer += Ans.castlingByPlayer(from, to, rFrom, rTo);
   } else if (isEnPassant) {
     enPassPawn = hist[hist.length - 1].m.slice(3, 5);
     answer += Ans.enPassantPlayer(from, to, enPassPawn);
@@ -359,7 +363,7 @@ async function moveByPlayer(
     historyItem = { m: piece + move, b: beatedPiece };
     answer += Ans.playerEat(beatedPiece);
   } else if (cast) {
-    historyItem = { m: piece + move, c: cast };
+    historyItem = { m: piece + move, c: rookMove };
   } else if (isEnPassant) {
     historyItem = { m: piece + move, e: enPassPawn };
   } else {
@@ -410,10 +414,14 @@ async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
   const enemyPiece = boardAfterMove.pos(enemyTo);
   let answer = '';
   const isEnPassant = boardBeforeMove.enPassant === enemyTo;
-  const cast = boardBeforeMove.isCastling(chess.enemyMove, enemyPiece);
+  const cast = boardBeforeMove.isMoveCastling(chess.enemyMove);
+  let rookMove = null;
   let enPassPawn = null;
   if (cast) {
-    answer += Ans.castlingByOpponent(enemyFrom, enemyTo, cast.slice(0, 2), cast.slice(2, 4));
+    rookMove = boardBeforeMove.rookMoveForCastlingMove(chess.enemyMove);
+    const rFrom = rookMove.slice(0, 2);
+    const rTo = rookMove.slice(2, 4);
+    answer += Ans.castlingByOpponent(enemyFrom, enemyTo, rFrom, rTo);
   } else if (isEnPassant) {
     enPassPawn = hist[hist.length - 1].m.slice(3, 5);
     answer += Ans.enPassantEnemy(enemyFrom, enemyTo, enPassPawn);
@@ -430,7 +438,7 @@ async function moveByAI(conv: VoiceChessConv, chess?: Chess): Promise<void> {
     historyItem = { m: enemyPiece + chess.enemyMove, b: beatedPiece };
     answer += Ans.enemyEat(beatedPiece);
   } else if (cast) {
-    historyItem = { m: enemyPiece + chess.enemyMove, c: cast };
+    historyItem = { m: enemyPiece + chess.enemyMove, c: rookMove };
   } else if (isEnPassant) {
     historyItem = { m: enemyPiece + chess.enemyMove, e: enPassPawn };
   } else {
@@ -689,8 +697,7 @@ app.intent(
     }
     const needConfirm = conv.user.storage.options.confirm;
     if (needConfirm) {
-      const king = playerSide === ChessSide.WHITE ? 'K' : 'k';
-      const rockMove = board.isCastling(castlings[0], king);
+      const rockMove = board.rookMoveForCastlingMove(castlings[0]);
       const rFrom = rockMove.slice(0, 2);
       const rTo = rockMove.slice(2, 4);
       speak(conv, Ask.askToConfirmCastling(kingPos, to1, rFrom, rTo));
@@ -714,11 +721,10 @@ app.intent(
     const castlings = board.getAvailableCastlingMoves(playerSide);
     const to1 = castlings[0].slice(2, 4);
     const to2 = castlings[1].slice(2, 4);
-    const kingPiece = playerSide === ChessSide.WHITE ? 'K' : 'k';
-    const rockMove1 = board.isCastling(castlings[0], kingPiece);
+    const rockMove1 = board.rookMoveForCastlingMove(castlings[0]);
     const rockFrom1 = rockMove1.slice(0, 2);
     const rockTo1 = rockMove1.slice(2, 4);
-    const rockMove2 = board.isCastling(castlings[1], kingPiece);
+    const rockMove2 = board.rookMoveForCastlingMove(castlings[1]);
     const rockFrom2 = rockMove2.slice(0, 2);
     const rockTo2 = rockMove2.slice(2, 4);
     let playerMove;

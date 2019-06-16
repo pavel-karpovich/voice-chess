@@ -37,8 +37,8 @@ export function getBulkOfMoves(
     allMoves.sort((move1, move2) => {
       const beat1 = board.pos(move1.slice(2, 4));
       const beat2 = board.pos(move2.slice(2, 4));
-      const cast1 = board.isCastling(move1, board.pos(move1.slice(0, 2)));
-      const cast2 = board.isCastling(move2, board.pos(move2.slice(0, 2)));
+      const cast1 = board.isMoveCastling(move1);
+      const cast2 = board.isMoveCastling(move2);
       if (move1.slice(2, 4) !== board.enPassant && move2.slice(2, 4) === board.enPassant) {
         return 1;
       } else if (move1.slice(2, 4) === board.enPassant && move2.slice(2, 4) !== board.enPassant) {
@@ -47,8 +47,8 @@ export function getBulkOfMoves(
       else if (move1.length === 5 && move2.length === 4) return -1;
       else if (beat1 === null && beat2 !== null) return 1;
       else if (beat1 !== null && beat2 === null) return -1;
-      else if (cast1 === null && cast2 !== null) return 1;
-      else if (cast1 !== null && cast2 === null) return -1;
+      else if (!cast1 && cast2) return 1;
+      else if (cast1 && !cast2) return -1;
       else return move1.localeCompare(move2);
     });
   } else {
@@ -57,14 +57,14 @@ export function getBulkOfMoves(
       const from2 = move2.slice(0, 2);
       const beat1 = board.pos(move1.slice(2, 4));
       const beat2 = board.pos(move2.slice(2, 4));
-      const cast1 = board.isCastling(move1, board.pos(from1));
-      const cast2 = board.isCastling(move2, board.pos(from2));
+      const cast1 = board.isMoveCastling(move1);
+      const cast2 = board.isMoveCastling(move2);
       if (move1.slice(2, 4) !== board.enPassant && move2.slice(2, 4) === board.enPassant) {
         return 1;
       } else if (move1.slice(2, 4) === board.enPassant && move2.slice(2, 4) !== board.enPassant) {
         return -1;
-      } else if (cast1 === null && cast2 !== null) return 1;
-      else if (cast1 !== null && cast2 === null) return -1;
+      } else if (!cast1 && cast2) return 1;
+      else if (cast1 && !cast2) return -1;
       else if (from1.localeCompare(from2) === 1) return 1;
       else if (from1.localeCompare(from2) === -1) return -1;
       else if (beat1 === null && beat2 !== null) return 1;
@@ -85,17 +85,17 @@ export function getBulkOfMoves(
     let lastPos = allMoves[n].slice(0, 2);
     let posTo = allMoves[n].slice(2, 4);
     let pieceType = board.pos(lastPos);
-    let prevCastling = board.isCastling(allMoves[n], pieceType);
-    let prevEnPassant = posTo === board.enPassant;
+    let isCastlPrev = board.isMoveCastling(allMoves[n]);
+    let isEnPsntPrev = posTo === board.enPassant;
     let piece;
-    if (prevCastling) {
+    if (isCastlPrev) {
       piece = {
         pos: lastPos,
         type: pieceType,
         moves: [] as Move[],
         castling: true,
       };
-    } else if (prevEnPassant) {
+    } else if (isEnPsntPrev) {
       piece = {
         pos: enPawnPos(board.enPassant),
         type: pieceType,
@@ -115,11 +115,11 @@ export function getBulkOfMoves(
       pieceType = board.pos(currentPos);
       const promo = allMoves[i].length === 5;
       let mv = null;
-      const isCastling = board.isCastling(allMoves[i], pieceType);
-      const isEnPassant = posTo === board.enPassant;
-      if (isEnPassant) {
+      const isCastl = board.isMoveCastling(allMoves[i]);
+      const isEnPsnt = posTo === board.enPassant;
+      if (isEnPsnt) {
         mv = { to: posTo, from: currentPos };
-      } else if (isCastling) {
+      } else if (isCastl) {
         mv = { to: posTo };
       } else {
         if (promo) {
@@ -141,25 +141,25 @@ export function getBulkOfMoves(
       }
       if (
         (currentPos === lastPos &&
-          isEnPassant === false &&
-          prevEnPassant === false &&
-          isCastling === null &&
-          prevCastling === null) ||
-        (isEnPassant === true && prevEnPassant === true) ||
-        (isCastling !== null && prevCastling !== null)
+          isEnPsnt === false &&
+          isEnPsntPrev === false &&
+          isCastl === null &&
+          isCastlPrev === null) ||
+        (isEnPsnt === true && isEnPsntPrev === true) ||
+        (isCastl !== null && isCastlPrev !== null)
       ) {
         piece.moves.push(mv);
       } else {
         ret.pieces.push(piece);
         lastPos = currentPos;
-        if (isEnPassant) {
+        if (isEnPsnt) {
           piece = {
             pos: enPawnPos(board.enPassant),
             type: pieceType,
             moves: [] as Move[],
             enPassant: true,
           };
-        } else if (isCastling) {
+        } else if (isCastl) {
           piece = {
             pos: lastPos,
             type: pieceType,
@@ -174,8 +174,8 @@ export function getBulkOfMoves(
           };
         }
       }
-      prevEnPassant = isEnPassant;
-      prevCastling = isCastling;
+      isEnPsntPrev = isEnPsnt;
+      isCastlPrev = isCastl;
     }
     ret.pieces.push(piece);
   } else {
@@ -186,17 +186,17 @@ export function getBulkOfMoves(
     let lastPos = allMoves[n].slice(0, 2);
     let posTo = allMoves[n].slice(2, 4);
     let pieceType = board.pos(lastPos);
-    let prevCastling = board.isCastling(allMoves[n], pieceType);
-    let prevEnPassant = posTo === board.enPassant;
+    let isCastlPrev = board.isMoveCastling(allMoves[n]);
+    let isEnPsntPrev = posTo === board.enPassant;
     let piece;
-    if (prevEnPassant) {
+    if (isEnPsntPrev) {
       piece = {
         pos: enPawnPos(board.enPassant),
         type: board.pos(lastPos),
         moves: [] as Move[],
         enPassant: true,
       };
-    } else if (prevCastling) {
+    } else if (isCastlPrev) {
       piece = {
         pos: lastPos,
         type: pieceType,
@@ -217,11 +217,11 @@ export function getBulkOfMoves(
       posTo = allMoves[i].slice(2, 4);
       const promo = allMoves[i].length === 5;
       let mv = null;
-      const isCastling = board.isCastling(allMoves[i], pieceType);
-      const isEnPassant = posTo === board.enPassant;
-      if (isEnPassant) {
+      const isCastl = board.isMoveCastling(allMoves[i]);
+      const isEnPsnt = posTo === board.enPassant;
+      if (isEnPsnt) {
         mv = { to: posTo, from: currentPos };
-      } else if (isCastling) {
+      } else if (isCastl) {
         mv = { to: posTo };
       } else {
         if (promo) {
@@ -243,12 +243,12 @@ export function getBulkOfMoves(
       }
       if (
         (currentPos === lastPos &&
-          isEnPassant === false &&
-          prevEnPassant === false &&
-          isCastling === null &&
-          prevCastling === null) ||
-        (isEnPassant === true && prevEnPassant === true) ||
-        (isCastling !== null && prevCastling !== null)
+          isEnPsnt === false &&
+          isEnPsntPrev === false &&
+          isCastl === null &&
+          isCastlPrev === null) ||
+        (isEnPsnt === true && isEnPsntPrev === true) ||
+        (isCastl !== null && isCastlPrev !== null)
       ) {
         if (i === maxN) {
           if (totalLength(ret) <= standardSize - permissibleVariation) {
@@ -265,14 +265,14 @@ export function getBulkOfMoves(
           break;
         }
         lastPos = currentPos;
-        if (isEnPassant) {
+        if (isEnPsnt) {
           piece = {
             pos: enPawnPos(board.enPassant),
             type: pieceType,
             moves: [] as Move[],
             enPassant: true,
           };
-        } else if (isCastling) {
+        } else if (isCastl) {
           piece = {
             pos: lastPos,
             type: pieceType,
@@ -287,8 +287,8 @@ export function getBulkOfMoves(
           };
         }
       }
-      prevEnPassant = isEnPassant;
-      prevCastling = isCastling;
+      isEnPsntPrev = isEnPsnt;
+      isCastlPrev = isCastl;
     }
     ret.next = i;
   }

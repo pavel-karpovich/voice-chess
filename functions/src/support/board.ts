@@ -11,9 +11,7 @@ function singleRank(rank: ChessSquareData[], rankNum: number): string {
   } else {
     resultString += upFirst(Voc.nRank(rankNum)) + ': ';
     for (const square of rank) {
-      if (square.val !== null) {
-        resultString += `${Voc.on(square.pos)} ${Voc.coloredPiece(square.val)}, `;
-      }
+      resultString += `${Voc.on(square.pos)} ${Voc.coloredPiece(square.val)}, `;
     }
     resultString = resultString.slice(0, -2) + '.\n';
   }

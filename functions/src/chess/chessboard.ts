@@ -1,5 +1,5 @@
 import { chessBoardSize } from './chess';
-import { ChessSide, getSide } from './chessUtils';
+import { ChessSide, getSide, oppositeSide } from './chessUtils';
 
 export interface ChessSquareData {
   pos: string;
@@ -19,8 +19,7 @@ export interface Captured {
 const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const piecesPriority = 'kqrbnp';
 
-const wCastling = new Map([['e1g1', 'h1f1'], ['e1c1', 'a1d1']]);
-const bCastling = new Map([['e8g8', 'h8f8'], ['e8c8', 'a8d8']]);
+const castlings = new Map([['e1g1', 'h1f1'], ['e1c1', 'a1d1'], ['e8g8', 'h8f8'], ['e8c8', 'a8d8']]);
 
 export class ChessBoard {
   private board: Map<string, string>;
@@ -64,6 +63,34 @@ export class ChessBoard {
     this.enpsnt = fenParts[chessBoardSize + 2];
     this.clock = Number(fenParts[chessBoardSize + 3]);
     this.count = Number(fenParts[chessBoardSize + 4]);
+  }
+
+  pos(pos: string): string {
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
+    }
+    if (!this.board.has(pos)) {
+      return null;
+    } else {
+      return this.board.get(pos);
+    }
+  }
+
+  rank(i: number): ChessSquareData[] {
+    if (i < 1 || i > chessBoardSize) {
+      return null;
+    }
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
+    }
+    return files
+      .map<ChessSquareData>(file => ({
+        pos: file + i,
+        val: this.board.get(file + i),
+      }))
+      .filter(sqr => sqr.val !== null);
   }
 
   allPiecesByType(piece: string): string[] {
@@ -156,42 +183,6 @@ export class ChessBoard {
     return ret;
   }
 
-  rank(i: number): ChessSquareData[] {
-    if (i < 1 || i > chessBoardSize) {
-      return null;
-    }
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
-    return files.map<ChessSquareData>(file => ({
-      pos: file + i,
-      val: this.board.get(file + i),
-    }));
-  }
-
-  pos(pos: string): string {
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
-    if (!this.board.has(pos)) {
-      return null;
-    } else {
-      return this.board.get(pos);
-    }
-  }
-
-  isCastling(move: string, piece: string): string {
-    if (piece === 'K' && wCastling.has(move)) {
-      return wCastling.get(move);
-    } else if (piece === 'k' && bCastling.has(move)) {
-      return bCastling.get(move);
-    } else {
-      return null;
-    }
-  }
-
   getAvailableCastlingMoves(side: ChessSide): string[] {
     if (this.lazy) {
       this.parseFen();
@@ -226,6 +217,26 @@ export class ChessBoard {
     return availableCastling;
   }
 
+  isMoveCastling(move: string): boolean {
+    const cstlWhite = this.getAvailableCastlingMoves(ChessSide.WHITE);
+    if (cstlWhite.indexOf(move) !== -1) {
+      return true;
+    }
+    const cstlBlack = this.getAvailableCastlingMoves(ChessSide.BLACK);
+    if (cstlBlack.indexOf(move) !== -1) {
+      return true;
+    }
+    return false;
+  }
+
+  rookMoveForCastlingMove(move: string): string {
+    if (castlings.has(move)) {
+      return castlings.get(move);
+    } else {
+      return null;
+    }
+  }
+
   extract(
     move: string,
     captured?: string,
@@ -239,10 +250,15 @@ export class ChessBoard {
     let isReverseMoveValid = true;
     const from = move.slice(0, 2);
     const to = move.slice(2, 4);
-    if (this.board.get(from)) {
+    const movedPiece = this.board.get(to);
+    if (
+      this.board.get(from) ||
+      !movedPiece ||
+      getSide(movedPiece) !== oppositeSide(this.moveSide)
+    ) {
       isReverseMoveValid = false;
     }
-    // TODO: Adequate move validation check
+    // TODO: Adequate correct moves validation for every type of piece
     if (isReverseMoveValid) {
       let piece;
       if (move.length === 5) {
@@ -251,7 +267,7 @@ export class ChessBoard {
         piece = this.board.get(to);
       }
       this.board.set(from, piece);
-      if (captured) {
+      if (captured && !enPassantPawnPos) {
         this.board.set(to, captured);
       } else {
         this.board.set(to, null);
@@ -260,7 +276,10 @@ export class ChessBoard {
         const enemyPawn = this.side === 'w' ? 'P' : 'p';
         this.board.set(enPassantPawnPos, enemyPawn);
         this.enpsnt = to;
-      } else if (castlingRockMove) {
+      } else {
+        this.enpsnt = '-';
+      }
+      if (castlingRockMove) {
         const rockFrom = castlingRockMove.slice(0, 2);
         const rockTo = castlingRockMove.slice(2, 4);
         const rock = this.board.get(rockTo);
@@ -350,7 +369,7 @@ export class ChessBoard {
     return this.count;
   }
 
-  get moveSide(): string {
+  get moveSide(): ChessSide {
     if (this.lazy) {
       this.parseFen();
       this.lazy = false;
