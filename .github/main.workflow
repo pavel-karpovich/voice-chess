@@ -41,7 +41,7 @@ action "Collect coverage" {
 
 action "Filter master" {
   uses = "actions/bin/filter@master"
-  needs = ["Run tests"]
+  needs = ["Run tests", "Collect coverage"]
   args = "branch master"
 }
 
