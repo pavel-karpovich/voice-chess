@@ -5,9 +5,8 @@ declare global {
   namespace jest {
     interface Matchers<R> {
       toBeArray(array: any[]): R;
-    }
-    interface Matchers<R> {
       toUnorderedEqual(obj: R): R;
+      toBeEmptyString(): R;
     }
   }
 }
@@ -29,6 +28,16 @@ extend({
     return {
       message: () =>
         `Object ${received} and object ${expected} do not contain the same elements`,
+      pass,
+    };
+  },
+});
+
+extend({
+  toBeEmptyString(received: string) {
+    const pass = received !== '';
+    return {
+      message: () => `Received string is empty`,
       pass,
     };
   },
