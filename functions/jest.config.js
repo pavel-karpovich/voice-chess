@@ -1,11 +1,12 @@
 module.exports = {
-  rootDir: './tests/',
+  rootDir: './',
   preset: 'ts-jest',
   testEnvironment: 'node',
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
-  testRegex: '/.*test\\.ts$',
-  setupFiles: ['<rootDir>/extend/jest.matchers.ts'],
+  testRegex: '/tests/.*test\\.ts$',
+  setupFiles: ['<rootDir>/tests/extend/jest.matchers.ts'],
   coverageDirectory: './coverage/',
+  collectCoverageFrom: ['src/**/*.ts', '!src/locales/*.ts']
 }
