@@ -1,4 +1,4 @@
-import { ChessSide, WhoseSide, getSide } from '../chess/chessUtils';
+import { ChessSide, WhoseSide, getSide, oppositeWho } from '../chess/chessUtils';
 import { WordForms, LocalizationObject } from '../support/helpers';
 import { rand, char, upFirst, mix } from '../support/helpers';
 
@@ -751,41 +751,43 @@ export class Vocabulary {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static youMoved(pieceCode: string, from: string, to: string): string {
+  static byHis(gen: string): string {
+    return ({
+        en: '',
+        ru: ({
+          mus: 'своим',
+          fem: 'своей',
+        } as WordForms)[gen],
+      } as LocalizationObject<string>)[this.lang];
+
+  }
+  static someoneMoved(who: WhoseSide, pieceCode: string, from: string, to: string): string {
     return rand(
       ({
         en: [
-          `you moved ${this.piece(pieceCode)} from ${this.square(from)} to ${this.square(to)}`,
-          `you played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
-          `you made a ${this.piece(pieceCode)} move from ${this.square(from)} to ${this.square(to)}`,
+          `${this.youOrI(who)} moved ${this.yourOrMy(pieceCode, who)} ${this.piece(pieceCode)} from ${this.square(from)} to ${this.square(to)}`,
+          `${this.youOrI(who)} played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
+          `${this.youOrI(who)} made a ${this.piece(pieceCode)} move from ${this.square(from)} to ${this.square(to)}`,
         ],
         ru: [
-          `вы походили ${this.piece(pieceCode, 'tvr')} с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
-          `вы сыграли ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}`,
-          `вы перешли ${this.piece(pieceCode, 'tvr')} с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
-          `вы сделали ход ${this.piece(pieceCode, 'tvr')} с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
+          `${this.youOrI(who)} ${this.moved(who)} ${this.piece(pieceCode, 'tvr')} с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
+          `${this.youOrI(who)} ${this.moved(who)} ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}`,
+          `${this.youOrI(who)} ${this.moved2(who)} ${this.piece(pieceCode, 'tvr')} с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
+          `${this.youOrI(who)} ${this.moved(who)} ${this.byHis(this.pieceGender(pieceCode))} ${this.piece(pieceCode, 'tvr')} с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static iMoved(pieceCode: string, from: string, to: string): string {
-    return rand(
-      ({
-        en: [
-          `I moved ${this.piece(pieceCode)} from ${this.square(from)} to ${this.square(to)}`,
-          `I played ${this.piece(pieceCode)} ${char(from)} ${char(to)}`,
-          `I made a ${this.piece(pieceCode)} move from ${this.square(from)} to ${this.square(to)}`,
-        ],
-        ru: [
-          `я походил ${this.piece(pieceCode, 'tvr')} с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
-          `я сыграл ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}`,
-          `я перешёл ${this.piece(pieceCode, 'tvr')} с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
-          `я сделал ход ${this.piece(pieceCode, 'tvr')} с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
-        ],
-      } as LocalizationObject<string[]>)[this.lang]
-    );
+  static deprived(who: WhoseSide): string {
+    return ({
+      en: 'deprived',
+      ru: ({
+        [WhoseSide.ENEMY]: 'лишил',
+        [WhoseSide.PLAYER]: 'лишили',
+      })[who],
+    } as LocalizationObject<string>)[this.lang];
   }
-  static youAteMyPiece(pieceCode: string): string {
+  static someoneAtePiece(who: WhoseSide, pieceCode: string): string {
     return rand(
       ({
         en: [
@@ -795,120 +797,112 @@ export class Vocabulary {
           `captured ${this.myPiece(pieceCode)}`,
         ],
         ru: [
-          `забрали ${this.myPiece(pieceCode, 'vin')}`,
-          `съели ${this.myPiece(pieceCode, 'vin')}`,
-          `захватили ${this.myPiece(pieceCode, 'vin')}`,
-          `лишили меня ${this.piece(pieceCode, 'rod')}`,
+          `${this.capture(who)} ${this.myPiece(pieceCode, 'vin')}`,
+          `${this.capture(who)} ${this.myPiece(pieceCode, 'vin')}`,
+          `${this.capture(who)} ${this.myPiece(pieceCode, 'vin')}`,
+          `${this.deprived(who)} ${this.youOrMe(oppositeWho(who))} ${this.piece(pieceCode, 'rod')}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static iAteYourPiece(pieceCode: string): string {
+  static transform(who: WhoseSide): string {
+    return rand(
+      ({
+        en: ['transformed'],
+        ru: ({
+          [WhoseSide.ENEMY]: ['превратил', 'трансформировал', 'обратил'],
+          [WhoseSide.PLAYER]: ['превратили', 'трансформировали', 'обратили'],
+        })[who],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static someonePromoted(who: WhoseSide, pieceCode: string): string {
     return rand(
       ({
         en: [
-          `ate ${this.yourPiece(pieceCode)}`,
-          `took ${this.yourPiece(pieceCode)}`,
-          `left you without ${this.yourPiece(pieceCode)}`,
-          `captured ${this.yourPiece(pieceCode)}`,
+          `${this.youOrI(who)} had promoted ${this.yourOrMy('p', who)} pawn to the ${this.piece(pieceCode)}`,
+          `${this.youOrI(who)} turned ${this.yourOrMy('p', who)} pawn into the ${this.yourPiece(pieceCode)}`,
         ],
         ru: [
-          `забрал ${this.yourPiece(pieceCode, 'vin')}`,
-          `съел ${this.yourPiece(pieceCode, 'vin')}`,
-          `захватил ${this.yourPiece(pieceCode, 'vin')}`,
-          `лишил вас ${this.piece(pieceCode, 'rod')}`,
+          `${this.transform(who)} свою пешку в ${this.piece(pieceCode, 'vin')}`,
+          `${this.transform(who)} свою пешку в ${this.piece(pieceCode, 'vin')}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static youPromoted(pieceCode: string): string {
+  static someoneDoEnPassant(who: WhoseSide, from: string, to: string, pawn: string): string {
     return rand(
       ({
         en: [
-          `has promoted your pawn to the ${this.piece(pieceCode)}`,
-          `turned your pawn into the ${this.yourPiece(pieceCode)}`,
+          `${this.youOrI(who)} moved pawn from ${this.square(from)} to ${this.square(to)} and made 'En Passant', capturing ${this.yourOrMy('p', oppositeWho(who))} pawn on ${this.square(pawn)}`,
+          `${this.youOrI(who)} made in passing capturing of ${this.yourOrMy('p', oppositeWho(who))} pawn on ${this.square(pawn)} by move from ${this.square(from)} to ${this.square(to)}`,
+          `${this.youOrI(who)} captured ${this.yourOrMy('p', oppositeWho(who))} pawn 'En Passant' by moving from ${this.square(from)} to ${this.square(to)}`,
         ],
         ru: [
-          `превратили свою пешку в ${this.piece(pieceCode, 'vin')}`,
-          `трансформировали свою пешку в ${this.piece(pieceCode, 'vin')}`,
+          `${this.youOrI(who)} ${this.moved(who)} пешкой с ${this.square(from, 'rod')} на ${this.square(to, 'vin')} и ${this.made(who)} Энпассант, забрав ${this.yourOrMy('p', oppositeWho(who), 'vin')} пешку на ${this.square(pawn, 'prd')}`,
+          `${this.youOrI(who)} ${this.made(who)} взятие ${this.yourOrMy('p', oppositeWho(who), 'rod')} пешки на проходе к ${this.square(pawn, 'dat')} своим ходом с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
+          `своим ходом с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}, ${this.youOrI(who)} ${this.made(who)} взятие ${this.yourOrMy('p', oppositeWho(who), 'rod')} пешки на проходе к ${this.square(pawn, 'dat')}`,
+          `${this.youOrI(who)} ${this.capture(who)} ${this.yourOrMy('p', oppositeWho(who), 'vin')} пешку 'Эн пассант', сделав ход с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static iPromoted(pieceCode: string): string {
+  static moved(who: WhoseSide): string {
     return rand(
       ({
-        en: [
-          `I promoted my pawn to the ${this.piece(pieceCode)}`,
-          `I turned my pawn to the ${this.yourPiece(pieceCode)}`,
-        ],
-        ru: [
-          `превратил свою пешку в ${this.piece(pieceCode, 'vin')}`,
-          `трансформировал свою пешку в ${this.piece(pieceCode, 'vin')}`,
-        ],
+        en: ['move'],
+        ru: ({
+          [WhoseSide.ENEMY]: ['походил', 'сделал ход', 'сыграл'],
+          [WhoseSide.PLAYER]: ['походили', 'сделали ход', 'сыграли'],
+        })[who],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static youDoEnPassant(from: string, to: string, pawn: string): string {
+  static moved2(who: WhoseSide): string {
     return rand(
       ({
-        en: [
-          `you moved pawn from ${this.square(from)} to ${this.square(to)} and made 'En Passant', capturing my pawn on ${this.square(pawn)}`,
-          `you made in passing capturing of my pawn on ${this.square(pawn)} by move from ${this.square(from)} to ${this.square(to)}`,
-          `you captured my pawn 'En Passant' by moving from ${this.square(from)} to ${this.square(to)}`,
-        ],
-        ru: [
-          `вы походили пешкой с ${this.square(from, 'rod')} на ${this.square(to, 'vin')} и сделали Энпассант, забрав мою пешку на ${this.square(pawn, 'prd')}`,
-          `вы выполнили взятие моей пешки на проходе к ${this.square(pawn, 'dat')} своим ходом с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
-          `вы взяли мою пешку 'Эн пассант', сделав ход с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
-        ],
+        en: ['move'],
+        ru: ({
+          [WhoseSide.ENEMY]: ['перешёл'],
+          [WhoseSide.PLAYER]: ['перешли'],
+        })[who],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static iDoEnPassant(from: string, to: string, pawn: string): string {
+  static made(who: WhoseSide): string {
     return rand(
       ({
-        en: [
-          `you moved pawn from ${this.square(from)} to ${this.square(to)} and made 'En Passant', capturing my pawn on ${this.square(pawn)}`,
-          `you made in passing capturing of my pawn on ${this.square(pawn)} by move from ${this.square(from)} to ${this.square(to)}`,
-          `you captured my pawn 'En Passant' by moving from ${this.square(from)} to ${this.square(to)}`,
-        ],
-        ru: [
-          `я походил пешкой с ${this.square(from, 'rod')} на ${this.square(to, 'vin')} и совершил Энпассант, забрав вашу пешку на ${this.square(pawn, 'prd')}`,
-          `своим ходом с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}, я выполнил взятие вашей пешки на проходе к ${this.square(pawn, 'dat')}`,
-          `я взял вашу пешку 'Эн пассант', сделав ход с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
-        ],
+        en: ['made'],
+        ru: ({
+          [WhoseSide.ENEMY]: ['сделал', 'совершил', 'выполнил'],
+          [WhoseSide.PLAYER]: ['сделали', 'совершили', 'выполнили'],
+        })[who],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static youDoCastling(kFrom: string, kTo: string, rFrom: string, rTo: string): string {
+  static shift(who: WhoseSide): string {
     return rand(
       ({
-        en: [
-          `you made castling by your king from ${this.square(kFrom)} to ${this.square(kTo)} and also moved your rock from ${this.square(rFrom)} to ${this.square(rTo)}`,
-          `you made castling and moved the king from ${this.square(kFrom)} to ${this.square(kTo)}, and the rock from ${this.square(rFrom)} to ${this.square(rTo)}`,
-          `you castling and moved your king through two squares from ${this.square(kFrom)} to ${this.square(kTo)}, and your rock from ${this.square(rFrom)} to ${this.square(rTo)}`,
-        ],
-        ru: [
-          `вы произвели рокировку королём с ${this.square(kFrom, 'rod')} на ${this.square(kTo, 'vin')} и ладьёй с ${this.square(rFrom, 'rod')} на ${this.square(rTo, 'vin')}`,
-          `вы сделали рокировку, походив королём с ${this.square(kFrom, 'rod')} на ${this.square(kTo, 'vin')} и ладьёй с ${this.square(rFrom, 'rod')} на ${this.square(rTo, 'vin')}`,
-          `вы совершили рокировку и переместили своего короля на 2 клетки с ${this.square(kFrom, 'rod')} на ${this.square(kTo, 'vin')}, и, вместе с тем, передвинули ладью с ${this.square(rFrom, 'rod')} на ${this.square(rTo, 'vin')}`,
-        ],
+        en: ['move'],
+        ru: ({
+          [WhoseSide.ENEMY]: ['перместил', 'передвинул'],
+          [WhoseSide.PLAYER]: ['переместили', 'передвинули'],
+        })[who],
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static iDoCastling(kFrom: string, kTo: string, rFrom: string, rTo: string): string {
+  static someoneDoCastling(who: WhoseSide, kFrom: string, kTo: string, rFrom: string, rTo: string): string {
     return rand(
       ({
         en: [
-          `I made castling by the king from ${this.square(kFrom)} to ${this.square(kTo)} and also moved my rock from ${this.square(rFrom)} to ${this.square(rTo)}`,
-          `I made castling and moved the king from ${this.square(kFrom)} to ${this.square(kTo)}, and the rock from ${this.square(rFrom)} to ${this.square(rTo)}`,
-          `I castling and moved my king through two squares from ${this.square(kFrom)} to ${this.square(kTo)}, and my rock from ${this.square(rFrom)} to ${this.square(rTo)}`,
+          `${this.youOrI(who)} made castling by ${this.yourOrMy('k', who)} king from ${this.square(kFrom)} to ${this.square(kTo)} and also moved ${this.yourOrMy('r', who)} rock from ${this.square(rFrom)} to ${this.square(rTo)}`,
+          `${this.youOrI(who)} made castling and moved the king from ${this.square(kFrom)} to ${this.square(kTo)}, and the rock from ${this.square(rFrom)} to ${this.square(rTo)}`,
+          `${this.youOrI(who)} castling and moved ${this.yourOrMy('k', who)} king through two squares from ${this.square(kFrom)} to ${this.square(kTo)}, and ${this.yourOrMy('r', who)} rock from ${this.square(rFrom)} to ${this.square(rTo)}`,
         ],
         ru: [
-          `я сделал рокировку королём с ${this.square(kFrom, 'rod')} на ${this.square(kTo, 'vin')} и ладьёй с ${this.square(rFrom, 'rod')} на ${this.square(rTo, 'vin')}`,
-          `я выполнил рокировку, походив королём с ${this.square(kFrom, 'rod')} на ${this.square(kTo, 'vin')} и ладьёй с ${this.square(rFrom, 'rod')} на ${this.square(rTo, 'vin')}`,
-          `я совершил рокировку и переместил своего короля на 2 клетки с ${this.square(kFrom, 'rod')} на ${this.square(kTo, 'vin')}, а также передвинул ладью с ${this.square(rFrom, 'rod')} на ${this.square(rTo, 'vin')}`,
+          `${this.youOrI(who)} ${this.made(who)} рокировку королём с ${this.square(kFrom, 'rod')} на ${this.square(kTo, 'vin')} и ладьёй с ${this.square(rFrom, 'rod')} на ${this.square(rTo, 'vin')}`,
+          `${this.youOrI(who)} ${this.made(who)} рокировку, походив королём с ${this.square(kFrom, 'rod')} на ${this.square(kTo, 'vin')} и ладьёй с ${this.square(rFrom, 'rod')} на ${this.square(rTo, 'vin')}`,
+          `${this.youOrI(who)} ${this.made(who)} рокировку и ${this.shift(who)} своего короля на 2 клетки с ${this.square(kFrom, 'rod')} на ${this.square(kTo, 'vin')}, а также ${this.shift(who)} ладью с ${this.square(rFrom, 'rod')} на ${this.square(rTo, 'vin')}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -933,7 +927,7 @@ export class Vocabulary {
       ru: 'все',
     } as LocalizationObject<string>)[this.lang];
   }
-  static yourOrMy(pieceCode: string, whose: WhoseSide, pNum: string): string {
+  static yourOrMy(pieceCode: string, whose: WhoseSide, pNum = 'sin'): string {
     const gen = this.pieceGender(pieceCode);
     if (whose === WhoseSide.ENEMY) {
       return this.my(`${gen}/${pNum}`);
@@ -1141,24 +1135,26 @@ export class Vocabulary {
     );
   }
   static capture(whose: WhoseSide): string {
-    return ({
-      en: 'capture',
-      ru: ({
-        [WhoseSide.ENEMY]: 'захватил',
-        [WhoseSide.PLAYER]: 'захватили',
-      } as WordForms)[whose],
-    } as LocalizationObject<string>)[this.lang];
+    return rand(
+      ({
+        en: ['capture'],
+        ru: ({
+          [WhoseSide.ENEMY]: ['захватил', 'взял', 'съел', 'забрал'],
+          [WhoseSide.PLAYER]: ['захватили', 'взяли', 'съели', 'забрали'],
+        })[whose],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
   }
   static youOrI(whose: WhoseSide): string {
     return ({
       en: ({
         [WhoseSide.ENEMY]: 'I',
         [WhoseSide.PLAYER]: 'you',
-      } as WordForms)[whose],
+      })[whose],
       ru: ({
         [WhoseSide.ENEMY]: 'я',
         [WhoseSide.PLAYER]: 'вы',
-      } as WordForms)[whose],
+      })[whose],
     } as LocalizationObject<string>)[this.lang];
   }
   static someoneDontCapture(who: WhoseSide, whose: WhoseSide, capturedSide: ChessSide): string {
@@ -1185,7 +1181,7 @@ export class Vocabulary {
       ru: ({
         [WhoseSide.ENEMY]: 'успел',
         [WhoseSide.PLAYER]: 'успели',
-      } as WordForms)[who],
+      })[who],
     } as LocalizationObject<string>)[this.lang];
   }
   static someoneCapture1(who: WhoseSide): string {
@@ -1276,7 +1272,7 @@ export class Vocabulary {
       ru: ({
         [WhoseSide.ENEMY]: 'играю',
         [WhoseSide.PLAYER]: 'играете',
-      } as WordForms)[who],
+      })[who],
     } as LocalizationObject<string>)[this.lang];
   }
   static someonePlayForSide(who: WhoseSide, side: ChessSide): string {

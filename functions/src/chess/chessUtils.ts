@@ -25,6 +25,10 @@ export function oppositeSide(side: ChessSide): ChessSide {
   return side === ChessSide.WHITE ? ChessSide.BLACK : ChessSide.WHITE;
 }
 
+export function oppositeWho(who: WhoseSide): WhoseSide {
+  return who === WhoseSide.ENEMY ? WhoseSide.PLAYER : WhoseSide.ENEMY;
+}
+
 export function enPawnPos(enPassant: string): string {
   const rank = Number(enPassant[1]);
   if (rank === 3) {

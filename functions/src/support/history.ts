@@ -1,4 +1,4 @@
-import { ChessSide, getSide } from '../chess/chessUtils';
+import { ChessSide, getSide, WhoseSide, oppositeWho } from '../chess/chessUtils';
 import { Vocabulary as Voc } from '../locales/vocabulary';
 import { upFirst, pause } from './helpers';
 
@@ -11,9 +11,9 @@ export interface HistoryFrame {
 
 export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
   let result = '';
-  let isPlayerMove = false;
+  let whoseMove = WhoseSide.ENEMY;
   if (getSide(moves[0].m[0]) === pSide) {
-    isPlayerMove = true;
+    whoseMove = WhoseSide.PLAYER;
   }
   let intro = false;
   let rnd = Math.random();
@@ -42,71 +42,38 @@ export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string 
     }
     const enPassant = move.e;
     const castling = move.c;
-    if (isPlayerMove) {
-      if (castling) {
-        const rockFrom = castling.slice(0, 2);
-        const rockTo = castling.slice(2, 4);
-        let castlingPhrase = Voc.youDoCastling(from, to, rockFrom, rockTo);
-        if (!intro) {
-          castlingPhrase = upFirst(castlingPhrase);
-        }
-        result += castlingPhrase;
-      } else if (enPassant) {
-        let enPassPhrase = Voc.youDoEnPassant(from, to, enPassant);
-        if (!intro) {
-          enPassPhrase = upFirst(enPassPhrase);
-        }
-        result += enPassPhrase;
-      } else {
-        let firstPhrase = Voc.youMoved(piece, from, to);
-        if (!intro) {
-          firstPhrase = upFirst(firstPhrase);
-        }
-        result += firstPhrase;
-        if (move.b) {
-          addSeparator();
-          result += Voc.youAteMyPiece(move.b);
-        }
-        if (move.m.length === 6) {
-          addSeparator();
-          const promoteTo = move.m[5];
-          result += Voc.youPromoted(promoteTo);
-        }
+    if (castling) {
+      const rockFrom = castling.slice(0, 2);
+      const rockTo = castling.slice(2, 4);
+      let castlingPhrase = Voc.someoneDoCastling(whoseMove, from, to, rockFrom, rockTo);
+      if (!intro) {
+        castlingPhrase = upFirst(castlingPhrase);
       }
+      result += castlingPhrase;
+    } else if (enPassant) {
+      let enPassPhrase = Voc.someoneDoEnPassant(whoseMove, from, to, enPassant);
+      if (!intro) {
+        enPassPhrase = upFirst(enPassPhrase);
+      }
+      result += enPassPhrase;
     } else {
-      if (castling) {
-        const rockFrom = castling.slice(0, 2);
-        const rockTo = castling.slice(2, 4);
-        let castlingPhrase = Voc.iDoCastling(from, to, rockFrom, rockTo);
-        if (!intro) {
-          castlingPhrase = upFirst(castlingPhrase);
-        }
-        result += castlingPhrase;
-      } else if (enPassant) {
-        let enPassPhrase = Voc.iDoEnPassant(from, to, enPassant);
-        if (!intro) {
-          enPassPhrase = upFirst(enPassPhrase);
-        }
-        result += enPassPhrase;
-      } else {
-        let firstPhrase = Voc.iMoved(piece, from, to);
-        if (!intro) {
-          firstPhrase = upFirst(firstPhrase);
-        }
-        result += firstPhrase;
-        if (move.b) {
-          addSeparator();
-          result += Voc.iAteYourPiece(move.b);
-        }
-        if (move.m.length === 6) {
-          addSeparator();
-          const promoteTo = move.m[5];
-          result += Voc.iPromoted(promoteTo);
-        }
+      let firstPhrase = Voc.someoneMoved(whoseMove, piece, from, to);
+      if (!intro) {
+        firstPhrase = upFirst(firstPhrase);
+      }
+      result += firstPhrase;
+      if (move.b) {
+        addSeparator();
+        result += Voc.someoneAtePiece(whoseMove, move.b);
+      }
+      if (move.m.length === 6) {
+        addSeparator();
+        const promoteTo = move.m[5];
+        result += Voc.someonePromoted(whoseMove, promoteTo);
       }
     }
     result += '.' + pause(1) + '\n';
-    isPlayerMove = !isPlayerMove;
+    whoseMove = oppositeWho(whoseMove);
     intro = false;
   }
   return result;

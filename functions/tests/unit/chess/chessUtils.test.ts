@@ -1,4 +1,4 @@
-import { getSide, ChessSide, oppositeSide, enPawnPos, totalPiecesNumber } from '../../../src/chess/chessUtils';
+import { getSide, ChessSide, oppositeSide, enPawnPos, totalPiecesNumber, WhoseSide, oppositeWho } from '../../../src/chess/chessUtils';
 
 describe('Tests for the chess utils', () => {
   
@@ -16,6 +16,14 @@ describe('Tests for the chess utils', () => {
   ])('Getting the color of opposite side', (color, opposite) => {
     const side = oppositeSide(color);
     expect(side).toBe(opposite);
+  });
+
+  test.each([
+    [WhoseSide.ENEMY, WhoseSide.PLAYER],
+    [WhoseSide.PLAYER, WhoseSide.ENEMY],
+  ])('Getting the opposite side', (who, opponent) => {
+    const opp = oppositeWho(who);
+    expect(opp).toBe(opponent);
   });
 
   test.each([
