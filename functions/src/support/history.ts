@@ -4,8 +4,8 @@ import { upFirst, pause } from './helpers';
 
 export interface HistoryFrame {
   m: string; // pieceCode + move: "pg2g4", "Pe7e8Q"
-  b?: string; // beated piece code
-  e?: string; // beated 'en passant' piece code
+  b?: string; // captured piece code
+  e?: string; // captured 'en passant' pawn position
   c?: string; // rock move when castling
 }
 
@@ -25,18 +25,18 @@ export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string 
     const piece = move.m[0];
     const from = move.m.slice(1, 3);
     const to = move.m.slice(3, 5);
-    const optTotal = Number('beat' in move) + Number('promo' in move);
+    const optTotal = Number('b' in move) + Number(move.m.length === 6);
     let optCount = 0;
     const addSeparator = () => {
       optCount++;
       if (optCount === optTotal) {
-        result += Voc.and() + ' ';
+        result += ' ' + Voc.and() + ' ';
       } else {
         result += ', ';
       }
     };
     rnd = Math.random();
-    if (rnd < 0.3 && !intro && move !== moves[0]) {
+    if (rnd < 0.35 && !intro && move !== moves[0]) {
       result += Voc.nextMoveInHistoryIntro() + ' ';
       intro = true;
     }

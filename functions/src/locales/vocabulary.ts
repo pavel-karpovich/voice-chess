@@ -101,8 +101,8 @@ export class Vocabulary {
       return this.myColoredPiece(pieceCode, opt);
     }
   }
-  static someonesPiece(pieceCode: string, side: ChessSide, opt = 'sin'): string {
-    if (getSide(pieceCode) === side) {
+  static someonesPiece(who: WhoseSide, pieceCode: string, opt = 'sin'): string {
+    if (who === WhoseSide.PLAYER) {
       return this.yourPiece(pieceCode, opt);
     } else {
       return this.myPiece(pieceCode, opt);
@@ -771,7 +771,7 @@ export class Vocabulary {
         ],
         ru: [
           `${this.youOrI(who)} ${this.moved(who)} ${this.piece(pieceCode, 'tvr')} с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
-          `${this.youOrI(who)} ${this.moved(who)} ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}`,
+          `${this.youOrI(who)} ${this.played(who)} ${this.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}`,
           `${this.youOrI(who)} ${this.moved2(who)} ${this.piece(pieceCode, 'tvr')} с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
           `${this.youOrI(who)} ${this.moved(who)} ${this.byHis(this.pieceGender(pieceCode))} ${this.piece(pieceCode, 'tvr')} с ${this.square(from, 'rod')} на ${this.square(to, 'vin')}`,
         ],
@@ -791,16 +791,16 @@ export class Vocabulary {
     return rand(
       ({
         en: [
-          `ate ${this.myPiece(pieceCode)}`,
-          `took ${this.myPiece(pieceCode)}`,
-          `left me without ${this.myPiece(pieceCode)}`,
-          `captured ${this.myPiece(pieceCode)}`,
+          `ate ${this.someonesPiece(oppositeWho(who), pieceCode)}`,
+          `took ${this.someonesPiece(oppositeWho(who), pieceCode)}`,
+          `left me without ${this.someonesPiece(oppositeWho(who), pieceCode)}`,
+          `captured ${this.someonesPiece(oppositeWho(who), pieceCode)}`,
         ],
         ru: [
-          `${this.capture(who)} ${this.myPiece(pieceCode, 'vin')}`,
-          `${this.capture(who)} ${this.myPiece(pieceCode, 'vin')}`,
-          `${this.capture(who)} ${this.myPiece(pieceCode, 'vin')}`,
-          `${this.deprived(who)} ${this.youOrMe(oppositeWho(who))} ${this.piece(pieceCode, 'rod')}`,
+          `${this.capture(who)} ${this.someonesPiece(oppositeWho(who), pieceCode, 'vin')}`,
+          `${this.capture(who)} ${this.someonesPiece(oppositeWho(who), pieceCode, 'vin')}`,
+          `${this.capture(who)} ${this.someonesPiece(oppositeWho(who), pieceCode, 'vin')}`,
+          `${this.deprived(who)} ${this.someonesPiece(oppositeWho(who), pieceCode, 'rod')}`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -852,8 +852,19 @@ export class Vocabulary {
       ({
         en: ['move'],
         ru: ({
-          [WhoseSide.ENEMY]: ['походил', 'сделал ход', 'сыграл'],
-          [WhoseSide.PLAYER]: ['походили', 'сделали ход', 'сыграли'],
+          [WhoseSide.ENEMY]: ['походил', 'сделал ход'],
+          [WhoseSide.PLAYER]: ['походили', 'сделали ход'],
+        })[who],
+      } as LocalizationObject<string[]>)[this.lang]
+    );
+  }
+  static played(who: WhoseSide): string {
+    return rand(
+      ({
+        en: ['played'],
+        ru: ({
+          [WhoseSide.ENEMY]: ['сыграл'],
+          [WhoseSide.PLAYER]: ['сыграли'],
         })[who],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -885,7 +896,7 @@ export class Vocabulary {
       ({
         en: ['move'],
         ru: ({
-          [WhoseSide.ENEMY]: ['перместил', 'передвинул'],
+          [WhoseSide.ENEMY]: ['переместил', 'передвинул'],
           [WhoseSide.PLAYER]: ['переместили', 'передвинули'],
         })[who],
       } as LocalizationObject<string[]>)[this.lang]
@@ -1084,16 +1095,16 @@ export class Vocabulary {
       return rand(
         ({
           en: [
-            `${upFirst(this.myPiece(pieceCode, 'plr'))} are in positions`,
+            `${upFirst(this.someonesPiece(whose, pieceCode, 'plr'))} are in positions`,
             `${upFirst(this.youOrMe(whose))} have ${this.nPieces(num, pieceCode)} ${this.piecesN(pieceCode, num)}, on positions`,
             `${upFirst(this.youOrMe(whose))} have ${this.piece(pieceCode)} on`,
-            `${upFirst(this.myPiece(pieceCode, 'plr'))} are located in the squares`,
+            `${upFirst(this.someonesPiece(whose, pieceCode, 'plr'))} are located in the squares`,
           ],
           ru: [
-            `${upFirst(this.someonesPiece(pieceCode, side, 'plr'))} расположены`,
+            `${upFirst(this.someonesPiece(whose, pieceCode, 'plr'))} расположены`,
             `У ${this.youOrMe(whose)} есть ${this.nPieces(num, pieceCode)} ${this.piecesN(pieceCode, num)}:`,
             `У ${this.youOrMe(whose)} есть ${this.piece(pieceCode, 'plr')}`,
-            `${upFirst(this.someonesPiece(pieceCode, side, 'plr'))} находятся`,
+            `${upFirst(this.someonesPiece(whose, pieceCode, 'plr'))} находятся`,
           ],
         } as LocalizationObject<string[]>)[this.lang]
       );
