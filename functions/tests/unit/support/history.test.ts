@@ -4,14 +4,13 @@ import { historyOfMoves, HistoryFrame } from '../../../src/support/history';
 import { ChessSide } from '../../../src/chess/chessUtils';
 import { Vocabulary } from '../../../src/locales/vocabulary';
 
-const log = true;
+const log = false;
 
 describe('Testing moves history functionality', () => {
 
   describe.each([
-    'en',
-    'ru',
-  ])('With different locales', (locale) => {
+    'en', 'ru',
+  ])('For locale %s', (locale) => {
 
     beforeAll(() => {
       Vocabulary.setLanguage(locale);

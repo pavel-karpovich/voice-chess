@@ -1,5 +1,5 @@
 import { rand, LocalizationObject, char, upFirst } from '../support/helpers';
-import { ChessSide, WhoseSide, oppositeSide } from '../chess/chessUtils';
+import { ChessSide, WhoseSide, oppositeSide, getSide } from '../chess/chessUtils';
 import { Vocabulary as Voc } from './vocabulary';
 
 // prettier-ignore
@@ -888,11 +888,12 @@ export class Answer {
     );
   }
   static hereIsPieceOnPosition(pos: string, pieceCode: string, side: ChessSide): string {
+    const whose = getSide(pieceCode) === side ? WhoseSide.PLAYER : WhoseSide.ENEMY;
     return rand(
       ({
         en: [
           `${upFirst(Voc.on(pos))} is ${Voc.someonesColoredPiece(pieceCode, side)}.`,
-          `${upFirst(Voc.on(pos))} is the ${Voc.someonesPiece(pieceCode, side)}.`,
+          `${upFirst(Voc.on(pos))} is the ${Voc.someonesPiece(whose, pieceCode)}.`,
           `${upFirst(Voc.square(pos))} is occupied by ${Voc.someonesColoredPiece(pieceCode, side)}.`,
           `Here is ${Voc.someonesColoredPiece(pieceCode, side)}.`,
           `${upFirst(Voc.square(pos))} stands ${Voc.someonesColoredPiece(pieceCode, side)}.`,
@@ -900,9 +901,9 @@ export class Answer {
         ru: [
           `${upFirst(Voc.on(pos))} ${Voc.someonesColoredPiece(pieceCode, side)}.`,
           `${upFirst(Voc.on(pos))} стоит ${Voc.someonesColoredPiece(pieceCode, side)}.`,
-          `${upFirst(Voc.square(pos))} занята ${Voc.someonesPiece(pieceCode, side, 'rod')}.`,
-          `Здесь находится ${Voc.someonesPiece(pieceCode, side)}.`,
-          `${upFirst(Voc.on(pos))} находится ${Voc.someonesPiece(pieceCode, side)}.`,
+          `${upFirst(Voc.square(pos))} занята ${Voc.someonesPiece(whose, pieceCode, 'rod')}.`,
+          `Здесь находится ${Voc.someonesPiece(whose, pieceCode)}.`,
+          `${upFirst(Voc.on(pos))} находится ${Voc.someonesPiece(whose, pieceCode)}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );

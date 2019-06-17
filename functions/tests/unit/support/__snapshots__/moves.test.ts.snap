@@ -1,0 +1,1708 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`List of moves All bulks with sorting Bulk from %n 1`] = `
+Object {
+  "end": false,
+  "next": 22,
+  "pieces": Array [
+    Object {
+      "enPassant": true,
+      "moves": Array [
+        Object {
+          "from": "b5",
+          "to": "a6",
+        },
+      ],
+      "pos": "a5",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "promo": true,
+          "to": "g8",
+        },
+      ],
+      "pos": "f7",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "promo": true,
+          "to": "g8",
+        },
+      ],
+      "pos": "h7",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "promo": true,
+          "to": "f8",
+        },
+      ],
+      "pos": "f7",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "promo": true,
+          "to": "h8",
+        },
+      ],
+      "pos": "h7",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "a5",
+        },
+      ],
+      "pos": "d2",
+      "type": "B",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "n",
+          "to": "e5",
+        },
+      ],
+      "pos": "d4",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "to": "d6",
+        },
+      ],
+      "pos": "e4",
+      "type": "N",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "n",
+          "to": "e5",
+        },
+        Object {
+          "beat": "b",
+          "to": "g8",
+        },
+      ],
+      "pos": "g3",
+      "type": "Q",
+    },
+  ],
+}
+`;
+
+exports[`List of moves All bulks with sorting Bulk from %n 2`] = `
+Object {
+  "end": false,
+  "next": 36,
+  "pieces": Array [
+    Object {
+      "castling": true,
+      "moves": Array [
+        Object {
+          "to": "g1",
+        },
+      ],
+      "pos": "e1",
+      "type": "K",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a2",
+        },
+        Object {
+          "to": "b1",
+        },
+        Object {
+          "to": "b3",
+        },
+        Object {
+          "to": "b4",
+        },
+        Object {
+          "to": "c2",
+        },
+      ],
+      "pos": "b2",
+      "type": "R",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "b6",
+        },
+      ],
+      "pos": "b5",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "b4",
+        },
+        Object {
+          "to": "c1",
+        },
+        Object {
+          "to": "c3",
+        },
+        Object {
+          "to": "e3",
+        },
+        Object {
+          "to": "f4",
+        },
+        Object {
+          "to": "g5",
+        },
+        Object {
+          "to": "h6",
+        },
+      ],
+      "pos": "d2",
+      "type": "B",
+    },
+  ],
+}
+`;
+
+exports[`List of moves All bulks with sorting Bulk from %n 3`] = `
+Object {
+  "end": false,
+  "next": 45,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "to": "d1",
+        },
+        Object {
+          "to": "e2",
+        },
+        Object {
+          "to": "f1",
+        },
+      ],
+      "pos": "e1",
+      "type": "K",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "c3",
+        },
+        Object {
+          "to": "c5",
+        },
+        Object {
+          "to": "f6",
+        },
+        Object {
+          "to": "g5",
+        },
+      ],
+      "pos": "e4",
+      "type": "N",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "f3",
+        },
+        Object {
+          "to": "f4",
+        },
+      ],
+      "pos": "f2",
+      "type": "P",
+    },
+  ],
+}
+`;
+
+exports[`List of moves All bulks with sorting Bulk from %n 4`] = `
+Object {
+  "end": false,
+  "next": 60,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a3",
+        },
+        Object {
+          "to": "b3",
+        },
+        Object {
+          "to": "c3",
+        },
+        Object {
+          "to": "d3",
+        },
+        Object {
+          "to": "e3",
+        },
+        Object {
+          "to": "f3",
+        },
+        Object {
+          "to": "f4",
+        },
+        Object {
+          "to": "g1",
+        },
+        Object {
+          "to": "g2",
+        },
+        Object {
+          "to": "g4",
+        },
+        Object {
+          "to": "g5",
+        },
+        Object {
+          "to": "g6",
+        },
+        Object {
+          "to": "g7",
+        },
+        Object {
+          "to": "h2",
+        },
+        Object {
+          "to": "h3",
+        },
+      ],
+      "pos": "g3",
+      "type": "Q",
+    },
+  ],
+}
+`;
+
+exports[`List of moves All bulks with sorting Bulk from %n 5`] = `
+Object {
+  "end": true,
+  "next": 68,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "to": "h4",
+        },
+      ],
+      "pos": "g3",
+      "type": "Q",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "f1",
+        },
+        Object {
+          "to": "g1",
+        },
+        Object {
+          "to": "h2",
+        },
+        Object {
+          "to": "h3",
+        },
+        Object {
+          "to": "h4",
+        },
+        Object {
+          "to": "h5",
+        },
+        Object {
+          "to": "h6",
+        },
+      ],
+      "pos": "h1",
+      "type": "R",
+    },
+  ],
+}
+`;
+
+exports[`List of moves All bulks without sorting Bulk from %n 1`] = `
+Object {
+  "end": false,
+  "next": 16,
+  "pieces": Array [
+    Object {
+      "enPassant": true,
+      "moves": Array [
+        Object {
+          "from": "b5",
+          "to": "a6",
+        },
+      ],
+      "pos": "a5",
+      "type": "P",
+    },
+    Object {
+      "castling": true,
+      "moves": Array [
+        Object {
+          "to": "g1",
+        },
+      ],
+      "pos": "e1",
+      "type": "K",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "b4",
+        },
+        Object {
+          "to": "b3",
+        },
+        Object {
+          "to": "c2",
+        },
+        Object {
+          "to": "a2",
+        },
+        Object {
+          "to": "b1",
+        },
+      ],
+      "pos": "b2",
+      "type": "R",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "b6",
+        },
+      ],
+      "pos": "b5",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "a5",
+        },
+        Object {
+          "to": "c3",
+        },
+        Object {
+          "to": "b4",
+        },
+        Object {
+          "to": "f4",
+        },
+        Object {
+          "to": "h6",
+        },
+        Object {
+          "to": "g5",
+        },
+        Object {
+          "to": "c1",
+        },
+        Object {
+          "to": "e3",
+        },
+      ],
+      "pos": "d2",
+      "type": "B",
+    },
+  ],
+}
+`;
+
+exports[`List of moves All bulks without sorting Bulk from %n 2`] = `
+Object {
+  "end": false,
+  "next": 30,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "n",
+          "to": "e5",
+        },
+      ],
+      "pos": "d4",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "e2",
+        },
+        Object {
+          "to": "f1",
+        },
+        Object {
+          "to": "d1",
+        },
+      ],
+      "pos": "e1",
+      "type": "K",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "to": "d6",
+        },
+        Object {
+          "to": "f6",
+        },
+        Object {
+          "to": "c5",
+        },
+        Object {
+          "to": "g5",
+        },
+        Object {
+          "to": "c3",
+        },
+      ],
+      "pos": "e4",
+      "type": "N",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "f4",
+        },
+        Object {
+          "to": "f3",
+        },
+      ],
+      "pos": "f2",
+      "type": "P",
+    },
+  ],
+}
+`;
+
+exports[`List of moves All bulks without sorting Bulk from %n 3`] = `
+Object {
+  "end": false,
+  "next": 53,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "promo": true,
+          "to": "g8",
+        },
+        Object {
+          "promo": true,
+          "to": "f8",
+        },
+      ],
+      "pos": "f7",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a3",
+        },
+        Object {
+          "to": "g7",
+        },
+        Object {
+          "to": "g6",
+        },
+        Object {
+          "to": "g5",
+        },
+        Object {
+          "to": "g1",
+        },
+        Object {
+          "to": "g2",
+        },
+        Object {
+          "to": "h2",
+        },
+        Object {
+          "to": "h4",
+        },
+        Object {
+          "to": "b3",
+        },
+        Object {
+          "to": "c3",
+        },
+        Object {
+          "to": "g4",
+        },
+        Object {
+          "to": "e3",
+        },
+        Object {
+          "to": "f3",
+        },
+        Object {
+          "to": "h3",
+        },
+        Object {
+          "to": "f4",
+        },
+      ],
+      "pos": "g3",
+      "type": "Q",
+    },
+  ],
+}
+`;
+
+exports[`List of moves All bulks without sorting Bulk from %n 4`] = `
+Object {
+  "end": true,
+  "next": 68,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "to": "h3",
+        },
+        Object {
+          "to": "g1",
+        },
+        Object {
+          "to": "f1",
+        },
+        Object {
+          "to": "h6",
+        },
+        Object {
+          "to": "h5",
+        },
+        Object {
+          "to": "h4",
+        },
+        Object {
+          "to": "h2",
+        },
+      ],
+      "pos": "h1",
+      "type": "R",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "promo": true,
+          "to": "g8",
+        },
+        Object {
+          "promo": true,
+          "to": "h8",
+        },
+      ],
+      "pos": "h7",
+      "type": "P",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = false Bulk from a big number of moves 1`] = `
+Object {
+  "end": false,
+  "next": 14,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "N",
+          "to": "c4",
+        },
+        Object {
+          "to": "b5",
+        },
+        Object {
+          "to": "c2",
+        },
+        Object {
+          "to": "b1",
+        },
+      ],
+      "pos": "a3",
+      "type": "n",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "b5",
+        },
+        Object {
+          "to": "b7",
+        },
+      ],
+      "pos": "a6",
+      "type": "k",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "b3",
+        },
+      ],
+      "pos": "b4",
+      "type": "p",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "P",
+          "to": "e4",
+        },
+        Object {
+          "to": "e6",
+        },
+        Object {
+          "to": "d7",
+        },
+        Object {
+          "to": "a4",
+        },
+        Object {
+          "to": "d3",
+        },
+        Object {
+          "to": "b3",
+        },
+        Object {
+          "to": "b7",
+        },
+      ],
+      "pos": "c5",
+      "type": "n",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = false Bulk with All 1`] = `
+Object {
+  "end": false,
+  "next": 16,
+  "pieces": Array [
+    Object {
+      "enPassant": true,
+      "moves": Array [
+        Object {
+          "from": "b5",
+          "to": "a6",
+        },
+      ],
+      "pos": "a5",
+      "type": "P",
+    },
+    Object {
+      "castling": true,
+      "moves": Array [
+        Object {
+          "to": "g1",
+        },
+      ],
+      "pos": "e1",
+      "type": "K",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "b4",
+        },
+        Object {
+          "to": "b3",
+        },
+        Object {
+          "to": "c2",
+        },
+        Object {
+          "to": "a2",
+        },
+        Object {
+          "to": "b1",
+        },
+      ],
+      "pos": "b2",
+      "type": "R",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "b6",
+        },
+      ],
+      "pos": "b5",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "a5",
+        },
+        Object {
+          "to": "c3",
+        },
+        Object {
+          "to": "b4",
+        },
+        Object {
+          "to": "f4",
+        },
+        Object {
+          "to": "h6",
+        },
+        Object {
+          "to": "g5",
+        },
+        Object {
+          "to": "c1",
+        },
+        Object {
+          "to": "e3",
+        },
+      ],
+      "pos": "d2",
+      "type": "B",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = false Bulk with Castling moves 1`] = `
+Object {
+  "end": false,
+  "next": 12,
+  "pieces": Array [
+    Object {
+      "castling": true,
+      "moves": Array [
+        Object {
+          "to": "c8",
+        },
+        Object {
+          "to": "g8",
+        },
+      ],
+      "pos": "e8",
+      "type": "k",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a4",
+        },
+      ],
+      "pos": "a5",
+      "type": "p",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "c8",
+        },
+        Object {
+          "to": "a7",
+        },
+        Object {
+          "to": "d8",
+        },
+        Object {
+          "to": "a6",
+        },
+        Object {
+          "to": "b8",
+        },
+      ],
+      "pos": "a8",
+      "type": "r",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "c4",
+        },
+        Object {
+          "to": "c8",
+        },
+        Object {
+          "to": "d7",
+        },
+        Object {
+          "to": "a4",
+        },
+      ],
+      "pos": "b6",
+      "type": "n",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = false Bulk with En Passant move 1`] = `
+Object {
+  "end": false,
+  "next": 10,
+  "pieces": Array [
+    Object {
+      "enPassant": true,
+      "moves": Array [
+        Object {
+          "from": "c5",
+          "to": "d6",
+        },
+      ],
+      "pos": "d5",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "b3",
+        },
+        Object {
+          "to": "a3",
+        },
+        Object {
+          "to": "a4",
+        },
+      ],
+      "pos": "a2",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a3",
+        },
+        Object {
+          "to": "d2",
+        },
+      ],
+      "pos": "b1",
+      "type": "N",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "to": "a5",
+        },
+        Object {
+          "to": "b4",
+        },
+        Object {
+          "to": "d2",
+        },
+      ],
+      "pos": "c3",
+      "type": "B",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "c6",
+        },
+      ],
+      "pos": "c5",
+      "type": "P",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = false Bulk with Promotion moves 1`] = `
+Object {
+  "end": true,
+  "next": 23,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "to": "c4",
+        },
+        Object {
+          "to": "b5",
+        },
+        Object {
+          "to": "b1",
+        },
+        Object {
+          "to": "c2",
+        },
+      ],
+      "pos": "a3",
+      "type": "N",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "c1",
+        },
+        Object {
+          "to": "b3",
+        },
+        Object {
+          "to": "a1",
+        },
+        Object {
+          "to": "c3",
+        },
+        Object {
+          "to": "c2",
+        },
+        Object {
+          "to": "a2",
+        },
+        Object {
+          "to": "b1",
+        },
+      ],
+      "pos": "b2",
+      "type": "K",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "r",
+          "promo": true,
+          "to": "c8",
+        },
+        Object {
+          "promo": true,
+          "to": "b8",
+        },
+      ],
+      "pos": "b7",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "promo": true,
+          "to": "e8",
+        },
+      ],
+      "pos": "e7",
+      "type": "P",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = false Bulk with capturing moves 1`] = `
+Object {
+  "end": false,
+  "next": 12,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "b3",
+        },
+        Object {
+          "to": "a3",
+        },
+        Object {
+          "to": "a4",
+        },
+      ],
+      "pos": "a2",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "d2",
+        },
+        Object {
+          "to": "a3",
+        },
+      ],
+      "pos": "b1",
+      "type": "N",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "b3",
+        },
+      ],
+      "pos": "c2",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "to": "a5",
+        },
+        Object {
+          "to": "d2",
+        },
+        Object {
+          "to": "b4",
+        },
+      ],
+      "pos": "c3",
+      "type": "B",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "c1",
+        },
+        Object {
+          "to": "d3",
+        },
+        Object {
+          "to": "d2",
+        },
+      ],
+      "pos": "d1",
+      "type": "Q",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = false Creating bulk from a small number of simple moves 1`] = `
+Object {
+  "end": true,
+  "next": 5,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "to": "f4",
+        },
+      ],
+      "pos": "f3",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "g1",
+        },
+        Object {
+          "to": "g2",
+        },
+        Object {
+          "to": "h2",
+        },
+      ],
+      "pos": "h1",
+      "type": "K",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "h4",
+        },
+      ],
+      "pos": "h3",
+      "type": "P",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = true Bulk from a big number of moves 1`] = `
+Object {
+  "end": false,
+  "next": 14,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "N",
+          "to": "c4",
+        },
+      ],
+      "pos": "a3",
+      "type": "n",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "P",
+          "to": "e4",
+        },
+      ],
+      "pos": "c5",
+      "type": "n",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "b1",
+        },
+        Object {
+          "to": "b5",
+        },
+        Object {
+          "to": "c2",
+        },
+      ],
+      "pos": "a3",
+      "type": "n",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "b5",
+        },
+        Object {
+          "to": "b7",
+        },
+      ],
+      "pos": "a6",
+      "type": "k",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "b3",
+        },
+      ],
+      "pos": "b4",
+      "type": "p",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a4",
+        },
+        Object {
+          "to": "b3",
+        },
+        Object {
+          "to": "b7",
+        },
+        Object {
+          "to": "d3",
+        },
+        Object {
+          "to": "d7",
+        },
+        Object {
+          "to": "e6",
+        },
+      ],
+      "pos": "c5",
+      "type": "n",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = true Bulk with All 1`] = `
+Object {
+  "end": false,
+  "next": 22,
+  "pieces": Array [
+    Object {
+      "enPassant": true,
+      "moves": Array [
+        Object {
+          "from": "b5",
+          "to": "a6",
+        },
+      ],
+      "pos": "a5",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "promo": true,
+          "to": "g8",
+        },
+      ],
+      "pos": "f7",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "promo": true,
+          "to": "g8",
+        },
+      ],
+      "pos": "h7",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "promo": true,
+          "to": "f8",
+        },
+      ],
+      "pos": "f7",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "promo": true,
+          "to": "h8",
+        },
+      ],
+      "pos": "h7",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "a5",
+        },
+      ],
+      "pos": "d2",
+      "type": "B",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "n",
+          "to": "e5",
+        },
+      ],
+      "pos": "d4",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "to": "d6",
+        },
+      ],
+      "pos": "e4",
+      "type": "N",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "n",
+          "to": "e5",
+        },
+        Object {
+          "beat": "b",
+          "to": "g8",
+        },
+      ],
+      "pos": "g3",
+      "type": "Q",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = true Bulk with Castling moves 1`] = `
+Object {
+  "end": false,
+  "next": 11,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "P",
+          "to": "a2",
+        },
+        Object {
+          "beat": "P",
+          "to": "c5",
+        },
+        Object {
+          "beat": "P",
+          "to": "d4",
+        },
+      ],
+      "pos": "d5",
+      "type": "q",
+    },
+    Object {
+      "castling": true,
+      "moves": Array [
+        Object {
+          "to": "c8",
+        },
+        Object {
+          "to": "g8",
+        },
+      ],
+      "pos": "e8",
+      "type": "k",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a4",
+        },
+      ],
+      "pos": "a5",
+      "type": "p",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a6",
+        },
+        Object {
+          "to": "a7",
+        },
+        Object {
+          "to": "b8",
+        },
+        Object {
+          "to": "c8",
+        },
+        Object {
+          "to": "d8",
+        },
+      ],
+      "pos": "a8",
+      "type": "r",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = true Bulk with En Passant move 1`] = `
+Object {
+  "end": false,
+  "next": 11,
+  "pieces": Array [
+    Object {
+      "enPassant": true,
+      "moves": Array [
+        Object {
+          "from": "c5",
+          "to": "d6",
+        },
+      ],
+      "pos": "d5",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "b3",
+        },
+      ],
+      "pos": "a2",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "to": "a5",
+        },
+      ],
+      "pos": "c3",
+      "type": "B",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "b3",
+        },
+      ],
+      "pos": "d1",
+      "type": "Q",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "e5",
+        },
+      ],
+      "pos": "d4",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "e5",
+        },
+        Object {
+          "beat": "p",
+          "to": "f6",
+        },
+      ],
+      "pos": "g4",
+      "type": "N",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a3",
+        },
+        Object {
+          "to": "a4",
+        },
+      ],
+      "pos": "a2",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a3",
+        },
+        Object {
+          "to": "d2",
+        },
+      ],
+      "pos": "b1",
+      "type": "N",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = true Bulk with Promotion moves 1`] = `
+Object {
+  "end": true,
+  "next": 23,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "r",
+          "promo": true,
+          "to": "c8",
+        },
+        Object {
+          "promo": true,
+          "to": "b8",
+        },
+      ],
+      "pos": "b7",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "promo": true,
+          "to": "e8",
+        },
+      ],
+      "pos": "e7",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "b1",
+        },
+        Object {
+          "to": "b5",
+        },
+        Object {
+          "to": "c2",
+        },
+        Object {
+          "to": "c4",
+        },
+      ],
+      "pos": "a3",
+      "type": "N",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a1",
+        },
+        Object {
+          "to": "a2",
+        },
+        Object {
+          "to": "b1",
+        },
+        Object {
+          "to": "b3",
+        },
+        Object {
+          "to": "c1",
+        },
+        Object {
+          "to": "c2",
+        },
+        Object {
+          "to": "c3",
+        },
+      ],
+      "pos": "b2",
+      "type": "K",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = true Bulk with capturing moves 1`] = `
+Object {
+  "end": false,
+  "next": 10,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "b3",
+        },
+      ],
+      "pos": "a2",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "b3",
+        },
+      ],
+      "pos": "c2",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "b",
+          "to": "a5",
+        },
+      ],
+      "pos": "c3",
+      "type": "B",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "e5",
+        },
+      ],
+      "pos": "d4",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "beat": "p",
+          "to": "e5",
+        },
+        Object {
+          "beat": "p",
+          "to": "f6",
+        },
+      ],
+      "pos": "g4",
+      "type": "N",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a3",
+        },
+        Object {
+          "to": "a4",
+        },
+      ],
+      "pos": "a2",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "a3",
+        },
+        Object {
+          "to": "d2",
+        },
+      ],
+      "pos": "b1",
+      "type": "N",
+    },
+  ],
+}
+`;
+
+exports[`List of moves Getting the first bulk when sorting = true Creating bulk from a small number of simple moves 1`] = `
+Object {
+  "end": true,
+  "next": 5,
+  "pieces": Array [
+    Object {
+      "moves": Array [
+        Object {
+          "to": "f4",
+        },
+      ],
+      "pos": "f3",
+      "type": "P",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "g1",
+        },
+        Object {
+          "to": "g2",
+        },
+        Object {
+          "to": "h2",
+        },
+      ],
+      "pos": "h1",
+      "type": "K",
+    },
+    Object {
+      "moves": Array [
+        Object {
+          "to": "h4",
+        },
+      ],
+      "pos": "h3",
+      "type": "P",
+    },
+  ],
+}
+`;

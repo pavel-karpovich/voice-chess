@@ -1,7 +1,7 @@
 import { ChessBoard } from '../chess/chessboard';
 import { enPawnPos } from '../chess/chessUtils';
 import { Vocabulary as Voc } from '../locales/vocabulary';
-import { char, upFirst, pause } from './helpers';
+import { upFirst, pause } from './helpers';
 
 interface Move {
   to: string;
@@ -28,10 +28,10 @@ export function getBulkOfMoves(
   n: number,
   beatsSorted = true
 ): MovesBulk {
-  const ret = { end: true, next: n, pieces: [] as PieceMoves[] };
-  if (n >= allMoves.length) {
-    return ret;
+  if (n >= allMoves.length || n < 0) {
+    return null;
   }
+  const ret = { end: true, next: n, pieces: [] as PieceMoves[] };
   const board = new ChessBoard(fen);
   if (beatsSorted) {
     allMoves.sort((move1, move2) => {
@@ -74,7 +74,6 @@ export function getBulkOfMoves(
       else return 0;
     });
   }
-  console.log(allMoves.join(', '));
   const standardSize = 10;
   const permissibleVariation = 5;
   const unnecessary =
@@ -141,12 +140,12 @@ export function getBulkOfMoves(
       }
       if (
         (currentPos === lastPos &&
-          isEnPsnt === false &&
-          isEnPsntPrev === false &&
-          isCastl === null &&
-          isCastlPrev === null) ||
-        (isEnPsnt === true && isEnPsntPrev === true) ||
-        (isCastl !== null && isCastlPrev !== null)
+          !isEnPsnt &&
+          !isEnPsntPrev &&
+          !isCastl &&
+          !isCastlPrev) ||
+        (isEnPsnt && isEnPsntPrev) ||
+        (isCastl && isCastlPrev)
       ) {
         piece.moves.push(mv);
       } else {
@@ -243,12 +242,12 @@ export function getBulkOfMoves(
       }
       if (
         (currentPos === lastPos &&
-          isEnPsnt === false &&
-          isEnPsntPrev === false &&
-          isCastl === null &&
-          isCastlPrev === null) ||
-        (isEnPsnt === true && isEnPsntPrev === true) ||
-        (isCastl !== null && isCastlPrev !== null)
+          !isEnPsnt &&
+          !isEnPsntPrev &&
+          !isCastl &&
+          !isCastlPrev) ||
+        (isEnPsnt && isEnPsntPrev) ||
+        (isCastl && isCastlPrev)
       ) {
         if (i === maxN) {
           if (totalLength(ret) <= standardSize - permissibleVariation) {
@@ -309,8 +308,10 @@ function canDoSmth(targets: Move[]): string {
     }
     if (targets[i].beat) {
       result += ' ' + Voc.piece(targets[i].beat, 'vin');
+      result += ' ' + Voc.on(targets[i].to);
+    } else {
+      result += ' ' + Voc.on(targets[i].to, 'vin');
     }
-    result += ' ' + Voc.on(char(targets[i].to));
     if (targets[i].promo) {
       result += ' ' + Voc.and() + ' ' + Voc.canPromote();
     }

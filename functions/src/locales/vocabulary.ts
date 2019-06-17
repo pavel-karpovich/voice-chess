@@ -545,17 +545,17 @@ export class Vocabulary {
       } as LocalizationObject<string[]>)[this.lang]
     );
   }
-  static on(pos: string): string {
+  static on(pos: string, opt = 'prd'): string {
     return ({
         en: `on ${this.square(pos)}`,
-        ru: `на ${this.square(pos, 'prd')}`,
+        ru: `на ${this.square(pos, opt)}`,
     } as LocalizationObject<string>)[this.lang];
   }
   static pieceFromPosition(code: string, pos: string): string {
     return rand([
-      `${this.piece(code)} ${this.on(pos)}`,
-      `${this.piece(code)} ${this.on(pos)}`,
-      `${this.piece(code)} ${this.from()} ${this.square(pos)}`,
+      `${this.piece(code)} ${this.from()} ${this.square(pos, 'rod')}`,
+      `${this.piece(code)} ${this.from()} ${this.square(pos, 'rod')}`,
+      `${this.piece(code)} ${this.from()} ${this.square(pos, 'rod')}`,
       `${this.piece(code)} ${char(pos)}`,
     ]);
   }
