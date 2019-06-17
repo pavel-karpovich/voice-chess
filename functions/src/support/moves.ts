@@ -139,11 +139,7 @@ export function getBulkOfMoves(
         }
       }
       if (
-        (currentPos === lastPos &&
-          !isEnPsnt &&
-          !isEnPsntPrev &&
-          !isCastl &&
-          !isCastlPrev) ||
+        (currentPos === lastPos && !isEnPsnt && !isEnPsntPrev && !isCastl && !isCastlPrev) ||
         (isEnPsnt && isEnPsntPrev) ||
         (isCastl && isCastlPrev)
       ) {
@@ -241,11 +237,7 @@ export function getBulkOfMoves(
         }
       }
       if (
-        (currentPos === lastPos &&
-          !isEnPsnt &&
-          !isEnPsntPrev &&
-          !isCastl &&
-          !isCastlPrev) ||
+        (currentPos === lastPos && !isEnPsnt && !isEnPsntPrev && !isCastl && !isCastlPrev) ||
         (isEnPsnt && isEnPsntPrev) ||
         (isCastl && isCastlPrev)
       ) {

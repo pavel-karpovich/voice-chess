@@ -1,8 +1,8 @@
 import { dialogflow, DialogflowConversation } from 'actions-on-google';
 
+import { initLanguage } from './locales/initLang';
 import { Answer as Ans } from './locales/answer';
 import { Ask } from './locales/ask';
-import { Vocabulary as Voc } from './locales/vocabulary';
 import { Chess, chessBoardSize, ChessGameState, maxDifficulty } from './chess/chess';
 import { ChessSide, WhoseSide, CastlingType, getSide, oppositeSide } from './chess/chessUtils';
 import { ChessBoard } from './chess/chessboard';
@@ -67,13 +67,9 @@ app.middleware(
   (conv: VoiceChessConv): void => {
     if (conv.user.locale) {
       const lang = conv.user.locale.slice(0, 2);
-      Voc.setLanguage(lang);
-      Ans.setLanguage(lang);
-      Ask.setLanguage(lang);
+      initLanguage(lang);
     } else {
-      Voc.setLanguage();
-      Ans.setLanguage();
-      Ask.setLanguage();
+      initLanguage();
     }
   }
 );
