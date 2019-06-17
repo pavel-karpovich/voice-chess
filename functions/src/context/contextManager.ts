@@ -1,6 +1,5 @@
-
 export interface ContextParams {
-// tslint:disable-next-line: ban-types
+  // tslint:disable-next-line: ban-types
   [param: string]: string | Object | undefined;
 }
 
@@ -11,10 +10,8 @@ export interface Context {
 }
 
 export abstract class ContextManager {
-
   abstract get(name: string): Context;
-  abstract set(name: string, lifespan: number, params: ContextParams): void;
+  abstract set(name: string, lifespan: number, params?: ContextParams): void;
   abstract drop(name: string): void;
   abstract it(name: string): boolean;
-
 }
