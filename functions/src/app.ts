@@ -4,8 +4,8 @@ import { initLanguage } from './locales/initLang';
 import { ChessSide, WhoseSide, CastlingType } from './chess/chessUtils';
 import { ConversationData } from './storage/conversationData';
 import { LongStorageData } from './storage/longStorageData';
-import { Handlers } from './handlers';
-import { GoogleContextManager } from './context/googleContextManager';
+import { GoogleContextManager } from './handlers/struct/context/googleContextManager';
+import { Handlers } from './handlers/public';
 
 type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
 
