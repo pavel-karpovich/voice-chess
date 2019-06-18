@@ -134,6 +134,11 @@ describe('Testing Stockfish Chess class', () => {
   });
   
   describe('Test different statuses', () => {
+
+    afterEach(() => {
+      Mockfish.resetMockedData();
+    });
+
     test("Can't get game status without updating game state", () => {
       const chess = new Chess(null, 7);
       const status = chess.currentGameState;

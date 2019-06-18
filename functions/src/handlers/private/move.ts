@@ -1,14 +1,26 @@
-import { Chess, ChessGameState } from "../../chess/chess";
-import { HandlerBase } from "../struct/handlerBase";
+import { Chess, ChessGameState } from '../../chess/chess';
+import { HandlerBase } from '../struct/handlerBase';
 import { Answer as Ans } from '../../locales/answer';
-import { Ask } from "../../locales/ask";
-import { ChessBoard } from "../../chess/chessboard";
-import { pause, gaussianRandom } from "../../support/helpers";
-import { ChessSide, getSide, CastlingType } from "../../chess/chessUtils";
-import { Handlers } from "../public";
+import { Ask } from '../../locales/ask';
+import { ChessBoard } from '../../chess/chessboard';
+import { pause } from '../../support/helpers';
+import { getSide } from '../../chess/chessUtils';
 
 export class MoveHandlers extends HandlerBase {
-
+  static askOrRemind(): void {
+    const correctCtx = this.contexts.get('correct-last-move');
+    if (correctCtx) {
+      this.speak(Ask.correctFails());
+      return;
+    }
+    const fiftyFifty = Math.random();
+    if (fiftyFifty < 0.65) {
+      this.speak(Ask.askToMoveAgain());
+    } else {
+      this.speak(Ask.askToRemindBoard());
+      this.contexts.set('turn-showboard', 1);
+    }
+  }
   static async prepareToMove(move: string, chess?: Chess): Promise<void> {
     if (!chess) {
       const fenstring = this.long.fen;
@@ -38,7 +50,7 @@ export class MoveHandlers extends HandlerBase {
     this.contexts.drop('game');
   }
 
-  private static async moveByPlayer(move: string, chess?: Chess, prologue?: string): Promise<void> {
+  static async moveByPlayer(move: string, chess?: Chess, prologue?: string): Promise<void> {
     let fenstring = this.long.fen;
     const difficulty = this.long.options.difficulty;
     if (!chess) {
@@ -119,12 +131,13 @@ export class MoveHandlers extends HandlerBase {
       case ChessGameState.CHECK:
         answer += '\n' + Ans.checkToEnemy();
         break;
-      default: break;
+      default:
+        break;
     }
     this.speak(answer);
   }
 
-  private static async moveByAI(chess?: Chess): Promise<void> {
+  static async moveByAI(chess?: Chess): Promise<void> {
     if (!chess) {
       const fenstring = this.long.fen;
       const difficulty = this.long.options.difficulty;
@@ -193,14 +206,32 @@ export class MoveHandlers extends HandlerBase {
       case ChessGameState.CHECK:
         answer += '\n' + Ans.checkToPlayer() + pause(1);
         break;
-      default: break;
+      default:
+        break;
     }
     const askYouStr = Ask.nowYouNeedToMove();
     this.speak(`${pause(2)}${answer}\n${askYouStr}`);
     this.long.fen = chess.fenstring;
   }
 
-  private static async playerMoveByAI(chess?: Chess): Promise<void> {
+  static async simpleMoveByAI(): Promise<void> {
+    const fenstring = this.long.fen;
+    const difficulty = this.long.options.difficulty;
+    const chess = new Chess(fenstring, difficulty);
+    await chess.moveAuto();
+    this.long.fen = chess.fenstring;
+    const enemyFrom = chess.enemyMove.slice(0, 2);
+    const enemyTo = chess.enemyMove.slice(2, 4);
+    const board = new ChessBoard(chess.fenstring);
+    const enemyPiece = board.pos(enemyTo);
+    const historyItem = { m: enemyPiece + chess.enemyMove };
+    this.long.history.push(historyItem);
+    const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
+    const askYouStr = Ask.nowYouNeedToMove();
+    this.speak(enemyStr + '\n' + askYouStr);
+  }
+
+  static async playerMoveByAI(chess?: Chess): Promise<void> {
     if (!chess) {
       const fenstring = this.long.fen;
       const difficulty = this.long.options.difficulty;
@@ -209,26 +240,6 @@ export class MoveHandlers extends HandlerBase {
     const answer = Ans.playerAutoMove();
     const move = await chess.bestMove();
     await this.moveByPlayer(move, chess, answer);
-  }
-
-  static async acceptMove(): Promise<void> {
-    const move = this.contexts.get('confirm-move').parameters.move as string;
-    await this.prepareToMove(move);
-  }
-  
-  private static askOrRemind(): void {
-    const correctCtx = this.contexts.get('correct-last-move');
-    if (correctCtx) {
-      this.speak(Ask.correctFails());
-      return;
-    }
-    const fiftyFifty = Math.random();
-    if (fiftyFifty < 0.65) {
-      this.speak(Ask.askToMoveAgain());
-    } else {
-      this.speak(Ask.askToRemindBoard());
-      this.contexts.set('turn-showboard', 1);
-    }
   }
 
   static async turn(from: string, to: string, piece?: string): Promise<void> {
@@ -310,181 +321,4 @@ export class MoveHandlers extends HandlerBase {
     }
     await this.prepareToMove(move, chess);
   }
-
-  static async promotion(toPiece: string): Promise<void> {
-    const promContext = this.contexts.get('ask-to-promotion');
-    let move = promContext.parameters.move as string;
-    move += toPiece;
-    await this.moveByPlayer(move);
-    await this.moveByAI();
-  }
-
-  static async chooseSide(side: ChessSide): Promise<void> {
-    this.long.side = side;
-    if (side === ChessSide.WHITE) {
-      this.speak(Ans.whiteSide());
-      this.speak(Ask.askToMove());
-    } else {
-      this.speak(Ans.blackSide());
-      const fenstring = this.long.fen;
-      const difficulty = this.long.options.difficulty;
-      const chess = new Chess(fenstring, difficulty);
-      await chess.moveAuto();
-      this.long.fen = chess.fenstring;
-      const enemyFrom = chess.enemyMove.slice(0, 2);
-      const enemyTo = chess.enemyMove.slice(2, 4);
-      const board = new ChessBoard(chess.fenstring);
-      const enemyPiece = board.pos(enemyTo);
-      const historyItem = { m: enemyPiece + chess.enemyMove };
-      this.long.history.push(historyItem);
-      const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
-      const askYouStr = Ask.nowYouNeedToMove();
-      this.speak(enemyStr + '\n' + askYouStr);
-    }
-  }
-
-  static async moveAuto(): Promise<void> {
-    const fenstring = this.long.fen;
-    const difficulty = this.long.options.difficulty;
-    const chess = new Chess(fenstring, difficulty);
-    await this.playerMoveByAI(chess);
-    await this.moveByAI(chess);
-  }
-
-  static async castling(): Promise<void> {
-    const fenstring = this.long.fen;
-    const board = new ChessBoard(fenstring);
-    const playerSide = this.long.side;
-    const castlings = board.getAvailableCastlingMoves(playerSide);
-    if (castlings.length === 0) {
-      this.speak(Ans.cantCastling());
-      this.askOrRemind();
-      return;
-    }
-    const kingPos = castlings[0].slice(0, 2);
-    const to1 = castlings[0].slice(2, 4);
-    if (castlings.length === 2) {
-      const to2 = castlings[1].slice(2, 4);
-      this.speak(Ans.twoTypesOfCastling(kingPos, to1, to2));
-      this.speak(Ask.chooseCastling());
-      this.contexts.set('choose-castling', 1);
-      return;
-    }
-    const needConfirm = this.long.options.confirm;
-    if (needConfirm) {
-      const rockMove = board.rookMoveForCastlingMove(castlings[0]);
-      const rFrom = rockMove.slice(0, 2);
-      const rTo = rockMove.slice(2, 4);
-      this.speak(Ask.askToConfirmCastling(kingPos, to1, rFrom, rTo));
-      this.contexts.set('confirm-move', 1, { move: castlings[0] });
-      return;
-    }
-    await this.moveByPlayer(castlings[0]);
-    await this.moveByAI();
-  }
-  
-  static correct(): void {
-    const hist = this.long.history;
-    if (hist.length < 2) {
-      this.speak(Ans.noMoveToCorrect());
-      this.speak(Ask.waitMove());
-      return;
-    }
-    const lastMove = hist[hist.length - 2];
-    const from = lastMove.m.slice(1, 3);
-    const to = lastMove.m.slice(3, 5);
-    const piece = lastMove.m[0];
-    this.speak(Ask.moveToCorrect(from, to, piece));
-    this.contexts.set('correct-last-move', 1);
-  }
-
-  static async chooseCastling(cast?: CastlingType, piece?: string, cell?: string): Promise<void> {
-    const fenstring = this.long.fen;
-    const board = new ChessBoard(fenstring);
-    const playerSide = this.long.side;
-    const castlings = board.getAvailableCastlingMoves(playerSide);
-    const to1 = castlings[0].slice(2, 4);
-    const to2 = castlings[1].slice(2, 4);
-    const rockMove1 = board.rookMoveForCastlingMove(castlings[0]);
-    const rockFrom1 = rockMove1.slice(0, 2);
-    const rockTo1 = rockMove1.slice(2, 4);
-    const rockMove2 = board.rookMoveForCastlingMove(castlings[1]);
-    const rockFrom2 = rockMove2.slice(0, 2);
-    const rockTo2 = rockMove2.slice(2, 4);
-    let playerMove;
-    if (
-      cast === CastlingType.KINGSIDE ||
-      piece === 'k' ||
-      (cell === to1 || cell === rockFrom1 || cell === rockTo1)
-    ) {
-      playerMove = castlings[0];
-    } else if (
-      cast === CastlingType.QUEENSIDE ||
-      piece === 'q' ||
-      (cell === to2 || cell === rockFrom2 || cell === rockTo2)
-    ) {
-      playerMove = castlings[1];
-    } else {
-      Handlers.fallback();
-      return;
-    }
-    const needConfirm = this.long.options.confirm;
-    if (needConfirm) {
-      const kingPos = playerMove.slice(0, 2);
-      if (playerMove === castlings[0]) {
-        this.speak(Ask.askToConfirmCastling(kingPos, to1, rockFrom1, rockTo1));
-      } else {
-        this.speak(Ask.askToConfirmCastling(kingPos, to2, rockFrom2, rockTo2));
-      }
-      this.contexts.set('confirm-move', 1, { move: playerMove });
-      return;
-    }
-    await this.moveByPlayer(playerMove);
-    await this.moveByAI();
-  }
-
-  static async acceptAdvice(): Promise<void> {
-    const needConfirm = this.long.options.confirm;
-    const advCtx = this.contexts.get('advice-made');
-    const move = advCtx.parameters.move as string;
-    if (needConfirm) {
-      const from = move.slice(0, 2);
-      const to = move.slice(2, 4);
-      const fenstring = this.long.fen;
-      const board = new ChessBoard(fenstring);
-      const piece = board.pos(from);
-      this.speak(Ask.askToConfirm(from, to, piece));
-      this.contexts.set('confirm-move', 1, { move });
-      return;
-    }
-    await this.prepareToMove(move);
-  }
-  
-  static async advice(): Promise<void> {
-    const fenstring = this.long.fen;
-    const difficulty = this.long.options.difficulty;
-    const delta = 6;
-    const min = difficulty - delta;
-    const max = difficulty + delta;
-    const rndDif = (Math.floor((max - min) * gaussianRandom()) + min) | 0;
-    const chess = new Chess(fenstring, rndDif);
-    const randomChance = 0.2;
-    const rnd = Math.random();
-    let advisedMove = null;
-    if (rnd < randomChance) {
-      await chess.updateGameState();
-      const rndMoveIndex = Math.floor(Math.random() * chess.legalMoves.length);
-      advisedMove = chess.legalMoves[rndMoveIndex];
-    } else {
-      advisedMove = await chess.bestMove();
-    }
-    const from = advisedMove.slice(0, 2);
-    const to = advisedMove.slice(2, 4);
-    const board = new ChessBoard(fenstring);
-    const piece = board.pos(from);
-    this.speak(Ans.adviseMove(from, to, piece));
-    this.speak(Ask.waitForReactOnAdvise());
-    this.contexts.set('advice-made', 1, { move: advisedMove });
-  }
-  
 }

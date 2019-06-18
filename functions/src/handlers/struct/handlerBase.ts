@@ -1,9 +1,8 @@
-import { ContextManager } from "./context/contextManager";
-import { ConversationData } from "../../storage/conversationData";
-import { LongStorageData } from "../../storage/longStorageData";
+import { ContextManager } from './context/contextManager';
+import { ConversationData } from '../../storage/conversationData';
+import { LongStorageData } from '../../storage/longStorageData';
 
 export class HandlerBase {
-  
   protected static speak: (msg: string) => void;
   protected static end: (endMsg: string) => void;
 

@@ -28,7 +28,7 @@ app.middleware(
       conv.ask(`<speak>${text}</speak>`);
     }
     const gCont = new GoogleContextManager(conv.contexts);
-    Handlers.load(speak, gCont, conv.data, conv.user.storage, conv.close);
+    Handlers.load(speak, gCont, conv.data, conv.user.storage, conv.close.bind(conv));
   }
 );
 

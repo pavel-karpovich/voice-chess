@@ -1,14 +1,13 @@
-import { HandlerBase } from "../struct/handlerBase";
+import { HandlerBase } from '../struct/handlerBase';
 import { Answer as Ans } from '../../locales/answer';
-import { Ask } from "../../locales/ask";
-import { MoveHandlers } from "./move";
-import { InfoHandlers } from "./info";
-import { Handlers } from "../public";
-import { SettingsHandlers } from "./settings";
-import { GameHandlers } from "./game";
+import { Ask } from '../../locales/ask';
+import { InfoHandlers } from './info';
+import { Handlers } from '../public';
+import { SettingsHandlers } from './settings';
+import { GameHandlers } from './game';
+import { AroundMoveHandlers } from './aroundMove';
 
 export class NavigationHandlers extends HandlerBase {
-
   static async next(): Promise<void> {
     let isFallback = false;
     if (this.contexts.get('moves-next')) {
@@ -108,9 +107,9 @@ export class NavigationHandlers extends HandlerBase {
     } else if (this.contexts.get('turn-showboard')) {
       InfoHandlers.firstPartOfBoard();
     } else if (this.contexts.get('confirm-move')) {
-      await MoveHandlers.acceptMove();
+      await AroundMoveHandlers.acceptMove();
     } else if (this.contexts.get('advice-made')) {
-      await MoveHandlers.acceptAdvice();
+      await AroundMoveHandlers.acceptAdvice();
     } else {
       isFallback = true;
       Handlers.fallback();
@@ -119,5 +118,4 @@ export class NavigationHandlers extends HandlerBase {
       this.short.fallbackCount = 0;
     }
   }
-
 }

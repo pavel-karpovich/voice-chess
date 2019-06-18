@@ -1,11 +1,10 @@
-import { HandlerBase } from "../struct/handlerBase";
+import { HandlerBase } from '../struct/handlerBase';
 import { Answer as Ans } from '../../locales/answer';
-import { Ask } from "../../locales/ask";
-import { ChessBoard } from "../../chess/chessboard";
-import { Chess } from "../../chess/chess";
+import { Ask } from '../../locales/ask';
+import { ChessBoard } from '../../chess/chessboard';
+import { Chess } from '../../chess/chess';
 
 export class GameHandlers extends HandlerBase {
-
   static createNewGame(): void {
     this.long.fen = Chess.initialFen;
     this.long.history = [];
@@ -13,7 +12,7 @@ export class GameHandlers extends HandlerBase {
     this.speak(Ask.chooseSide());
     this.contexts.set('ask-side', 1);
   }
-  
+
   static newGame(): void {
     const fenstring = this.long.fen;
     const confirmNewGameCtx = this.contexts.get('confirm-new-game');
@@ -41,9 +40,9 @@ export class GameHandlers extends HandlerBase {
     this.speak(Ask.askToRemindBoard());
   }
 
-  static resign(): void {
+  static resign(chance = 0.4): void {
     const rnd = Math.random();
-    if (rnd < 0.4) {
+    if (rnd < chance) {
       const difficulty = this.long.options.difficulty;
       if (difficulty !== 0) {
         this.speak(Ask.wantReduceDifficulty(difficulty));
@@ -61,5 +60,4 @@ export class GameHandlers extends HandlerBase {
       this.contexts.set('ask-to-resign', 1);
     }
   }
-  
 }

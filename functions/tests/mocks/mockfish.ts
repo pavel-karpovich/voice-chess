@@ -1,3 +1,4 @@
+import { MockProto } from "./interface/mockProto";
 
 interface MockfishOptions {
   ponder?: boolean;
@@ -12,7 +13,7 @@ const defaultRetCheckers = ['d3', 'h4'];
 const defaultMoves = ['e1d1', 'e1f1', 'e1e2', 'b7b8q'];
 const defaultBestMove = 'e1d1';
 
-export class Mockfish {
+export class Mockfish extends MockProto {
 
   static instance: Mockfish;
   static retFen = defaultRetFen;
@@ -27,6 +28,18 @@ export class Mockfish {
     this.retBestMove = defaultBestMove;
   }
 
+  _retFen: string;
+  _retCheckers: string[];
+  _retMoves: string[];
+  _retBestMove: string;
+  
+  protected initMock(): void {
+    this._retFen = Mockfish.retFen;
+    this._retCheckers = Mockfish.retCheckers;
+    this._retMoves = Mockfish.retMoves;
+    this._retBestMove = Mockfish.retBestMove;
+  }
+
   options: MockfishOptions;
   fen: string;
   moves: string[];
@@ -34,11 +47,12 @@ export class Mockfish {
   onmessage: (e: string) => void;
 
   constructor() {
+    super();
     this.options = {};
     this.moves = [];
     this.history = [];
     Mockfish.instance = this;
-    Mockfish.resetMockedData();
+    this.initMock();
   }
 
   postMessage(message: string): void {

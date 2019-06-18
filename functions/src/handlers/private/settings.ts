@@ -1,17 +1,16 @@
-import { HandlerBase } from "../struct/handlerBase";
+import { HandlerBase } from '../struct/handlerBase';
 import { Answer as Ans } from '../../locales/answer';
-import { Ask } from "../../locales/ask";
-import { maxDifficulty } from "../../chess/chess";
+import { Ask } from '../../locales/ask';
+import { maxDifficulty } from '../../chess/chess';
 
 export class SettingsHandlers extends HandlerBase {
-
   static safeGameContext(): void {
     const gameContext = this.contexts.get('game');
     if (gameContext) {
       this.contexts.set('game', gameContext.lifespan + 1);
     }
   }
-  
+
   static directToNextLogicalAction(): void {
     const gameContext = this.contexts.get('game');
     if (gameContext) {
@@ -22,7 +21,6 @@ export class SettingsHandlers extends HandlerBase {
       this.contexts.set('ask-to-new-game', 1);
     }
   }
-  
 
   static difficulty(): void {
     this.safeGameContext();
@@ -55,5 +53,4 @@ export class SettingsHandlers extends HandlerBase {
     this.speak(Ans.confirmDisabled());
     this.directToNextLogicalAction();
   }
-
 }

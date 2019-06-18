@@ -1,18 +1,23 @@
-import { HandlerBase } from "../struct/handlerBase";
+import { HandlerBase } from '../struct/handlerBase';
 import { Answer as Ans } from '../../locales/answer';
-import { Ask } from "../../locales/ask";
-import { oneRank, manyRanks, listCapturedPieces, allPiecesForSide, allPiecesForType, someonePlayForColor } from "../../support/board";
-import { chessBoardSize, Chess } from "../../chess/chess";
-import { historyOfMoves } from "../../support/history";
-import { listMoves, getBulkOfMoves } from "../../support/moves";
-import { ChessBoard } from "../../chess/chessboard";
-import { oppositeSide, WhoseSide, ChessSide } from "../../chess/chessUtils";
-import { pause } from "../../support/helpers";
-import { Handlers } from "../public";
-
+import { Ask } from '../../locales/ask';
+import {
+  oneRank,
+  manyRanks,
+  listCapturedPieces,
+  allPiecesForSide,
+  allPiecesForType,
+  someonePlayForColor,
+} from '../../support/board';
+import { chessBoardSize, Chess } from '../../chess/chess';
+import { historyOfMoves } from '../../support/history';
+import { listMoves, getBulkOfMoves } from '../../support/moves';
+import { ChessBoard } from '../../chess/chessboard';
+import { oppositeSide, WhoseSide, ChessSide } from '../../chess/chessUtils';
+import { pause } from '../../support/helpers';
+import { Handlers } from '../public';
 
 export class InfoHandlers extends HandlerBase {
-
   static firstPartOfBoard(): void {
     const fenstring = this.long.fen;
     let longString = `<p><s>${Ans.board1()}</s></p>\n`;
@@ -87,7 +92,7 @@ export class InfoHandlers extends HandlerBase {
       this.contexts.set('rank-next', 1, { rank: thisRank, dir: 'd' });
     }
   }
-  
+
   static async listOfMoves(startNumber: number): Promise<void> {
     const fenstring = this.long.fen;
     const difficulty = this.long.options.difficulty;
@@ -137,7 +142,7 @@ export class InfoHandlers extends HandlerBase {
     this.speak(answer);
     this.speak(Ask.waitMove());
   }
-  
+
   static square(square: string): void {
     const fenstring = this.long.fen;
     const playerSide = this.long.side;
@@ -216,7 +221,7 @@ export class InfoHandlers extends HandlerBase {
     }
     this.speak(Ask.waitMove());
   }
-  
+
   static side(side?: ChessSide, who?: WhoseSide): void {
     const playerSide = this.long.side;
     this.speak(someonePlayForColor(who, side, playerSide));
@@ -234,5 +239,4 @@ export class InfoHandlers extends HandlerBase {
     }
     this.speak(Ask.waitMove());
   }
-
 }

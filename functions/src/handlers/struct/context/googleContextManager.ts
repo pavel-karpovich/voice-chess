@@ -11,18 +11,27 @@ export class GoogleContextManager extends ContextManager {
   }
 
   get(name: string): Context {
-    return this.googleContexts.get(name);
+    if (this.is(name)) {
+      return this.googleContexts.get(name);
+    } else {
+      return null;
+    }
   }
 
   set(name: string, lifespan: number, params?: ContextParams): void {
     this.googleContexts.set(name, lifespan, params);
   }
 
-  drop(name: string): void {
-    this.googleContexts.delete(name);
+  drop(name: string): boolean {
+    if (this.is(name)) {
+      this.googleContexts.delete(name);
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  it(name: string): boolean {
+  is(name: string): boolean {
     return !!this.googleContexts.get(name);
   }
 }

@@ -9,6 +9,7 @@ import { SettingsHandlers } from './private/settings';
 import { InfoHandlers } from './private/info';
 import { GameHandlers } from './private/game';
 import { NavigationHandlers } from './private/naviagation';
+import { AroundMoveHandlers } from './private/aroundMove';
 
 const restorableContexts = [
   'ask-side',
@@ -30,9 +31,7 @@ const restorableContexts = [
   'reduce-difficulty-instead-of-resign',
 ];
 
-
 export class Handlers extends HandlerBase {
-
   static load(
     response: (msg: string) => void,
     contextManager: ContextManager,
@@ -121,7 +120,7 @@ export class Handlers extends HandlerBase {
 
   static newGame = GameHandlers.newGame;
   static continueGame = GameHandlers.continueGame;
-  static resign = GameHandlers.resign;
+  static resign = () => GameHandlers.resign();
 
   static next = NavigationHandlers.next;
   static yes = NavigationHandlers.yes;
@@ -133,14 +132,15 @@ export class Handlers extends HandlerBase {
   static disableConfirm = SettingsHandlers.disableConfirm;
 
   static turn = MoveHandlers.turn;
-  static promotion = MoveHandlers.promotion;
-  static chooseSide = MoveHandlers.chooseSide;
-  static moveAuto = MoveHandlers.moveAuto;
-  static castling = MoveHandlers.castling;
-  static correct = MoveHandlers.correct;
-  static chooseCastling = MoveHandlers.chooseCastling;
-  static acceptAdvice = MoveHandlers.acceptAdvice;
-  static advice = MoveHandlers.advice;
+
+  static promotion = AroundMoveHandlers.promotion;
+  static chooseSide = AroundMoveHandlers.chooseSide;
+  static moveAuto = AroundMoveHandlers.moveAuto;
+  static castling = AroundMoveHandlers.castling;
+  static correct = AroundMoveHandlers.correct;
+  static chooseCastling = AroundMoveHandlers.chooseCastling;
+  static acceptAdvice = AroundMoveHandlers.acceptAdvice;
+  static advice = AroundMoveHandlers.advice;
 
   static firstPartOfBoard = InfoHandlers.firstPartOfBoard;
   static secondPartOfBoard = InfoHandlers.secondPartOfBoard;
@@ -155,5 +155,4 @@ export class Handlers extends HandlerBase {
   static captured = InfoHandlers.captured;
   static side = InfoHandlers.side;
   static fullmove = InfoHandlers.fullmove;
-
 }
