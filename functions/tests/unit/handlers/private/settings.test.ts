@@ -1,6 +1,6 @@
 import { SettingsHandlers } from '../../../../src/handlers/private/settings';
 import { initLanguage } from '../../../../src/locales/initLang';
-import { Env } from './env';
+import { Env } from './_env';
 
 describe('Tests for Settings Handlers', () => {
   

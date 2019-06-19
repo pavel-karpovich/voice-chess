@@ -2,14 +2,13 @@ import { HandlerBase } from '../struct/handlerBase';
 import { Answer as Ans } from '../../locales/answer';
 import { Ask } from '../../locales/ask';
 import { InfoHandlers } from './info';
-import { Handlers } from '../public';
 import { SettingsHandlers } from './settings';
 import { GameHandlers } from './game';
 import { AroundMoveHandlers } from './aroundMove';
+import { FallbackHandlers } from './fallback';
 
 export class NavigationHandlers extends HandlerBase {
   static async next(): Promise<void> {
-    let isFallback = false;
     if (this.contexts.get('moves-next')) {
       const fromPoint = Number(this.contexts.get('moves-next').parameters.start);
       await InfoHandlers.listOfMoves(fromPoint);
@@ -23,17 +22,14 @@ export class NavigationHandlers extends HandlerBase {
         InfoHandlers.prevRank();
       }
     } else {
-      isFallback = true;
-      Handlers.fallback();
+      FallbackHandlers.fallback();
+      return;
     }
-    if (!isFallback) {
-      this.short.fallbackCount = 0;
-    }
+    this.short.fallbackCount = 0;
   }
 
   static no(): void {
     SettingsHandlers.safeGameContext();
-    let isFallback = false;
     const gameCtx = this.contexts.get('game');
     if (this.contexts.get('turn-intent')) {
       this.speak(Ask.askWhatever());
@@ -66,17 +62,14 @@ export class NavigationHandlers extends HandlerBase {
     } else if (this.contexts.get('correct-last-move')) {
       this.speak(Ask.correctFails());
     } else {
-      isFallback = true;
-      Handlers.fallback();
+      FallbackHandlers.fallback();
+      return;
     }
-    if (!isFallback) {
-      this.short.fallbackCount = 0;
-    }
+    this.short.fallbackCount = 0;
   }
 
   static async yes(): Promise<void> {
     SettingsHandlers.safeGameContext();
-    let isFallback = false;
     if (this.contexts.get('turn-intent')) {
       this.speak(Ask.askToMove());
     } else if (this.contexts.get('moves-next')) {
@@ -111,11 +104,9 @@ export class NavigationHandlers extends HandlerBase {
     } else if (this.contexts.get('advice-made')) {
       await AroundMoveHandlers.acceptAdvice();
     } else {
-      isFallback = true;
-      Handlers.fallback();
+      FallbackHandlers.fallback();
+      return;
     }
-    if (!isFallback) {
-      this.short.fallbackCount = 0;
-    }
+    this.short.fallbackCount = 0;
   }
 }

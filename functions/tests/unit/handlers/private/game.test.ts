@@ -3,7 +3,7 @@ jest.doMock('../../../../src/chess/chessboard', () => {
   return { ChessBoard: MockBoard };
 });
 import { GameHandlers } from '../../../../src/handlers/private/game';
-import { Env } from './env';
+import { Env } from './_env';
 import { Chess } from '../../../../src/chess/chess';
 import { ChessSide } from '../../../../src/chess/chessUtils';
 import { initLanguage } from '../../../../src/locales/initLang';
@@ -128,6 +128,37 @@ describe('Tests for game handlers', () => {
       GameHandlers.resign(0);
       expect(env.output.length).toBe(1);
       expect(env.contexts.is('ask-to-resign')).toBeTruthy();
+    });
+  });
+
+  describe('Welcome handler', () => {
+
+    test('When a player starts the game for the first time', () => {
+      const initOpts = {
+        difficulty: 2,
+        confirm: true,
+      };
+      GameHandlers.welcome();
+      expect(env.convData.fallbackCount).toBe(0);
+      expect(env.userStorage.options).toEqual(initOpts);
+      expect(env.output.length).toBe(2);
+      expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
+    });
+
+    test("When a player doesn't have a running game", () => {
+      env.userStorage.options = { difficulty: 10 };
+      GameHandlers.welcome();
+      expect(env.output.length).toBe(2);
+      expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
+    });
+
+    test('When a player has a running game', () => {
+      const fen = 'rnbqk1nr/p3pp1p/1p4p1/3P4/P7/1Q3NP1/1P1K1P1P/RNB2B1R w KQkq - 2 10';
+      env.userStorage.options = { difficulty: 10 };
+      env.userStorage.fen = fen;
+      GameHandlers.welcome();
+      expect(env.output.length).toBe(2);
+      expect(env.contexts.is('ask-to-continue')).toBeTruthy();
     });
   });
 });

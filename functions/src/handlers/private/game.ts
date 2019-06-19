@@ -5,6 +5,33 @@ import { ChessBoard } from '../../chess/chessboard';
 import { Chess } from '../../chess/chess';
 
 export class GameHandlers extends HandlerBase {
+  private static firstGameRun(): void {
+    const initialDifficulty = 2;
+    const initialConfirmOpt = true;
+    this.long.options = {
+      difficulty: initialDifficulty,
+      confirm: initialConfirmOpt,
+    };
+    this.speak(Ans.firstPlay());
+    this.speak(Ask.askToNewGame());
+    this.contexts.set('ask-to-new-game', 1);
+  }
+
+  static welcome(): void {
+    this.short.fallbackCount = 0;
+    if (!this.long.options) {
+      this.firstGameRun();
+    } else if (!this.long.fen) {
+      this.speak(Ans.welcome());
+      this.speak(Ask.askToNewGame());
+      this.contexts.set('ask-to-new-game', 1);
+    } else {
+      this.speak(Ans.welcome());
+      this.speak(Ask.askToContinue());
+      this.contexts.set('ask-to-continue', 1);
+    }
+  }
+
   static createNewGame(): void {
     this.long.fen = Chess.initialFen;
     this.long.history = [];

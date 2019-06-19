@@ -11,26 +11,6 @@ import { GameHandlers } from './private/game';
 import { NavigationHandlers } from './private/naviagation';
 import { AroundMoveHandlers } from './private/aroundMove';
 
-const restorableContexts = [
-  'ask-side',
-  'rank-next',
-  'difficulty-followup',
-  'board-next',
-  'ask-to-new-game',
-  'ask-to-continue',
-  'turn-intent',
-  'turn-showboard',
-  'confirm-move',
-  'ask-to-promotion',
-  'moves-next',
-  'advice-made',
-  'correct-last-move',
-  'choose-castling',
-  'confirm-new-game',
-  'ask-to-resign',
-  'reduce-difficulty-instead-of-resign',
-];
-
 export class Handlers extends HandlerBase {
   static load(
     response: (msg: string) => void,
@@ -43,79 +23,6 @@ export class Handlers extends HandlerBase {
     MoveHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
     InfoHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
     SettingsHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
-  }
-
-  private static preserveContext(): void {
-    for (const context of restorableContexts) {
-      if (this.contexts.get(context)) {
-        this.contexts.set(context, 1);
-      }
-    }
-  }
-
-  private static firstGameRun(): void {
-    const initialDifficulty = 2;
-    const initialConfirmOpt = true;
-    this.long.options = {
-      difficulty: initialDifficulty,
-      confirm: initialConfirmOpt,
-    };
-    this.speak(Ans.firstPlay());
-    this.speak(Ask.askToNewGame());
-    this.contexts.set('ask-to-new-game', 1);
-  }
-
-  // -------------------- PUBLIC HANDLERS --------------------
-
-  static welcome(): void {
-    this.short.fallbackCount = 0;
-    if (!this.long.options) {
-      this.firstGameRun();
-    } else if (!this.long.fen) {
-      this.speak(Ans.welcome());
-      this.speak(Ask.askToNewGame());
-      this.contexts.set('ask-to-new-game', 1);
-    } else {
-      this.speak(Ans.welcome());
-      this.speak(Ask.askToContinue());
-      this.contexts.set('ask-to-continue', 1);
-    }
-  }
-
-  static help(): void {
-    if (this.contexts.get('game')) {
-      this.speak(Ask.ingameTips());
-    } else {
-      this.speak(Ask.nogameTips());
-    }
-  }
-
-  static fallback(): void {
-    this.preserveContext();
-    const fallbacks = this.short.fallbackCount;
-    this.short.fallbackCount = fallbacks + 1;
-    if (fallbacks < 3) {
-      this.speak(Ans.firstFallback());
-    } else if (fallbacks === 3) {
-      this.speak(Ans.secondFallback());
-      this.help();
-    } else {
-      this.end(Ans.confusedExit());
-    }
-  }
-
-  static silence(): void {
-    const gameContext = this.contexts.get('game');
-    if (gameContext) {
-      this.speak(Ans.doNotHurry());
-    } else {
-      this.speak(Ask.isAnybodyHere());
-    }
-  }
-
-  static repeat(): void {
-    this.speak('This feature is under development.');
-    SettingsHandlers.directToNextLogicalAction();
   }
 
   static newGame = GameHandlers.newGame;

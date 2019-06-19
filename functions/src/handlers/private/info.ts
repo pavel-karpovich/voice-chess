@@ -15,7 +15,7 @@ import { listMoves, getBulkOfMoves } from '../../support/moves';
 import { ChessBoard } from '../../chess/chessboard';
 import { oppositeSide, WhoseSide, ChessSide } from '../../chess/chessUtils';
 import { pause } from '../../support/helpers';
-import { Handlers } from '../public';
+import { FallbackHandlers } from './fallback';
 
 export class InfoHandlers extends HandlerBase {
   static firstPartOfBoard(): void {
@@ -191,7 +191,7 @@ export class InfoHandlers extends HandlerBase {
 
   static all(side?: ChessSide, whose?: WhoseSide): void {
     if (!side && !whose) {
-      Handlers.fallback();
+      FallbackHandlers.fallback();
       return;
     }
     const playerSide = this.long.side;

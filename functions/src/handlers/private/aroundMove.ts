@@ -5,7 +5,7 @@ import { MoveHandlers } from './move';
 import { ChessSide, CastlingType } from '../../chess/chessUtils';
 import { Chess } from '../../chess/chess';
 import { ChessBoard } from '../../chess/chessboard';
-import { Handlers } from '../public';
+import { FallbackHandlers } from './fallback';
 import { gaussianRandom } from '../../support/helpers';
 
 export class AroundMoveHandlers extends HandlerBase {
@@ -115,7 +115,7 @@ export class AroundMoveHandlers extends HandlerBase {
     ) {
       playerMove = castlings[1];
     } else {
-      Handlers.fallback();
+      FallbackHandlers.fallback();
       return;
     }
     const needConfirm = this.long.options.confirm;
