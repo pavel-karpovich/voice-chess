@@ -1,12 +1,65 @@
 import '../../extend/toIncludeAll';
 
-import { historyOfMoves, HistoryFrame } from '../../../src/support/history';
+import { 
+  historyOfMoves,
+  HistoryFrame,
+  createHistoryItem
+} from '../../../src/support/history';
 import { ChessSide } from '../../../src/chess/chessUtils';
 import { Vocabulary } from '../../../src/locales/vocabulary';
 
 const log = false;
 
 describe('Testing moves history functionality', () => {
+
+  describe('Creating one history item', () => {
+
+    test('For simple move', () => {
+      const piece = 'k';
+      const move = 'g4g5';
+      const expected = { m: piece + move };
+      const hItem = createHistoryItem(piece, move);
+      expect(hItem).toEqual(expected);
+    });
+    
+    test('For move with capturing', () => {
+      const piece = 'k';
+      const move = 'g4g5';
+      const capturedPiece = 'p';
+      const expected = { m: piece + move, b: capturedPiece };
+      const hItem = createHistoryItem(piece, move, capturedPiece);
+      expect(hItem).toEqual(expected);
+    });
+
+    test('For castling move', () => {
+      const piece = 'k';
+      const move = 'g4g5';
+      const rookMove = 'c3c6';
+      const expected = { m: piece + move, c: rookMove };
+      const hItem = createHistoryItem(piece, move, null, rookMove);
+      expect(hItem).toEqual(expected);
+    });
+
+    test('For En Passant move', () => {
+      const piece = 'P';
+      const move = 'h4g3';
+      const enPawn = 'g4';
+      const expected = { m: piece + move, e: enPawn };
+      const hItem = createHistoryItem(piece, move, null, null, enPawn);
+      expect(hItem).toEqual(expected);
+    });
+    
+    test('Can be only one additional field', () => {
+      const piece = 'P';
+      const move = 'h4g3';
+      const capt = 'p';
+      const rookMove = 'c3c6';
+      const enPawn = 'g4';
+      const expected = { m: piece + move, b: capt };
+      const hItem = createHistoryItem(piece, move, capt, rookMove, enPawn);
+      expect(hItem).toEqual(expected);
+    });
+  });
 
   describe.each([
     'en', 'ru',

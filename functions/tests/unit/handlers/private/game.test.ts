@@ -31,7 +31,7 @@ describe('Tests for game handlers', () => {
     GameHandlers.createNewGame();
     expect(env.userStorage.fen).toBe(Chess.initialFen);
     expect(env.userStorage.history).toEqual([]);
-    expect(env.output.length).toBe(2);
+    expect(env.output).toHaveLength(2);
     expect(env.contexts.is('ask-side')).toBeTruthy();
   });
 
@@ -41,15 +41,15 @@ describe('Tests for game handlers', () => {
       GameHandlers.newGame();
       expect(env.userStorage.fen).toBe(Chess.initialFen);
       expect(env.userStorage.history).toEqual([]);
-      expect(env.output.length).toBe(2);
+      expect(env.output).toHaveLength(2);
       expect(env.contexts.is('ask-side')).toBeTruthy();
     });
 
     test('When there is a running game', () => {
-      const fen = 'r2q1bnr/pppk4/P1pbp3/n4pN1/1PP2P1P/6BP/P2P4/RN1QKR2 b KQkq - 2 11';
+      const fen = 'Fenstring';
       env.userStorage.fen = fen;
       GameHandlers.newGame();
-      expect(env.output.length).toBe(1);
+      expect(env.output).toHaveLength(1);
       expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
       expect(env.contexts.is('confirm-new-game')).toBeTruthy();
     });
@@ -59,7 +59,7 @@ describe('Tests for game handlers', () => {
       GameHandlers.newGame();
       expect(env.userStorage.fen).toBe(Chess.initialFen);
       expect(env.userStorage.history).toEqual([]);
-      expect(env.output.length).toBe(2);
+      expect(env.output).toHaveLength(2);
       expect(env.contexts.is('ask-side')).toBeTruthy();
     });
   });
@@ -68,19 +68,19 @@ describe('Tests for game handlers', () => {
 
     test('Without running game', () => {
       GameHandlers.continueGame();
-      expect(env.output.length).toBe(2);
+      expect(env.output).toHaveLength(2);
       expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
     });
 
     test('With running game', () => {
-      const fen = 'r1k2q1r/p1p5/2p2n2/n4p2/2PP1P1P/6BP/P1QK4/R4R2 w KQkq - 2 19';
+      const fen = 'Just fenstring';
       const playerSide = ChessSide.WHITE;
       env.userStorage.fen = fen;
       env.userStorage.side = playerSide;
       GameHandlers.continueGame();
       expect(env.contexts.is('game')).toBeTruthy();
       expect(env.contexts.is('turn-showboard')).toBeTruthy();
-      expect(env.output.length).toBe(2);
+      expect(env.output).toHaveLength(2);
     });
   });
 
@@ -94,39 +94,39 @@ describe('Tests for game handlers', () => {
 
       test('With a lowest 0 difficulty', () => {
         const difficulty = 0;
-        const fen = 'r1k2q1r/p1p5/2p2n2/n4p2/2PP1P1P/6BP/P1QK4/R4R2 w KQkq - 3 25';
+        const fen = 'Fen for test';
         env.userStorage.options = { difficulty };
         env.userStorage.fen = fen;
         MockBoard.movesNumber = 2;
         GameHandlers.resign(1);
-        expect(env.output.length).toBe(2);
+        expect(env.output).toHaveLength(2);
       });
 
       test('Not with lowest difficulty', () => {
         const difficulty = 13;
         env.userStorage.options = { difficulty };
         GameHandlers.resign(1);
-        expect(env.output.length).toBe(1);
+        expect(env.output).toHaveLength(1);
         expect(env.contexts.is('reduce-difficulty-instead-of-resign')).toBeTruthy();
       });
 
     });
 
     test('When total number of moves less than 5', () => {
-      const fen = 'r1k2q1r/p1p5/2p2n2/n4p2/2PP1P1P/6BP/P1QK4/R4R2 w KQkq - 0 4';
+      const fen = 'Fen';
       env.userStorage.fen = fen;
       MockBoard.movesNumber = 4;
       GameHandlers.resign(0);
-      expect(env.output.length).toBe(2);
+      expect(env.output).toHaveLength(2);
       expect(env.contexts.is('ask-to-resign')).toBeFalsy();
     });
 
     test('With more than 5 moves behind', () => {
-      const fen = 'r1k2q1r/p1p5/2p2n2/n4p2/2PP1P1P/6BP/P1QK4/R4R2 w KQkq - 3 19';
+      const fen = 'Test fen';
       env.userStorage.fen = fen;
       MockBoard.movesNumber = 19;
       GameHandlers.resign(0);
-      expect(env.output.length).toBe(1);
+      expect(env.output).toHaveLength(1);
       expect(env.contexts.is('ask-to-resign')).toBeTruthy();
     });
   });
@@ -141,24 +141,35 @@ describe('Tests for game handlers', () => {
       GameHandlers.welcome();
       expect(env.convData.fallbackCount).toBe(0);
       expect(env.userStorage.options).toEqual(initOpts);
-      expect(env.output.length).toBe(2);
+      expect(env.output).toHaveLength(2);
       expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
     });
 
     test("When a player doesn't have a running game", () => {
       env.userStorage.options = { difficulty: 10 };
       GameHandlers.welcome();
-      expect(env.output.length).toBe(2);
+      expect(env.output).toHaveLength(2);
       expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
     });
 
     test('When a player has a running game', () => {
-      const fen = 'rnbqk1nr/p3pp1p/1p4p1/3P4/P7/1Q3NP1/1P1K1P1P/RNB2B1R w KQkq - 2 10';
+      const fen = 'Fen for the tes';
       env.userStorage.options = { difficulty: 10 };
       env.userStorage.fen = fen;
       GameHandlers.welcome();
-      expect(env.output.length).toBe(2);
+      expect(env.output).toHaveLength(2);
       expect(env.contexts.is('ask-to-continue')).toBeTruthy();
     });
+  });
+
+  test('End the game', () => {
+    const fen = 'Test fen';
+    env.userStorage.fen = fen;
+    env.contexts.set('game', 5);
+    GameHandlers.dropGame();
+    expect(env.contexts.is('game')).toBeFalsy();
+    expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
+    expect(env.userStorage.fen).toBeNull();
+    expect(env.output).toHaveLength(0);
   });
 });

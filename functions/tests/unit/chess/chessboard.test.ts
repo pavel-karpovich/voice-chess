@@ -107,6 +107,28 @@ describe('Tests of Chess Board class', () => {
       expect(recievedMove).toBe(rookMove);
     });
 
+    test.each([
+      ['p', 'h4g3', true],
+      ['b', 'h4g3', false],
+      ['p', 'h5g4', false],
+    ])('Is a move En Passant', (piece, move, itIs) => {
+      const mock = jest.spyOn(board, 'enPassant', 'get').mockImplementationOnce(() => 'g3');
+      const result = board.isEnPassant(piece as string, move as string);
+      expect(result).toBe(itIs);
+      mock.mockRestore();
+    });
+
+    test.each([
+      ['a5a7', true],
+      ['b5b6', false],
+    ])('Is a move with capturing', (move, itIs) => {
+      const mock = jest.spyOn(board, 'pos');
+      mock.mockImplementationOnce((pos) => pos === 'a7' ? 'p' : null);
+      const result = board.isCapturing(move as string);
+      expect(result).toBe(itIs);
+      mock.mockRestore();
+    });
+
     describe('Testing getters', () => {
       test('Get En Passant', () => {
         const expectedEnPassant = 'e6';

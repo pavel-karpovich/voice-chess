@@ -345,6 +345,21 @@ export class ChessBoard {
     return fen;
   }
 
+  isEnPassant(piece: string, move: string): boolean {
+    piece = piece.toLowerCase();
+    const to = move.slice(2, 4);
+    if (piece === 'p' && to === this.enPassant) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isCapturing(move: string): boolean {
+    const to = move.slice(2, 4);
+    return this.pos(to) !== null;
+  }
+
   get enPassant(): string {
     if (this.lazy) {
       this.parseFen();

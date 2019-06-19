@@ -5,16 +5,18 @@ import { Ask } from '../../locales/ask';
 import { ChessBoard } from '../../chess/chessboard';
 import { pause } from '../../support/helpers';
 import { getSide } from '../../chess/chessUtils';
+import { GameHandlers } from './game';
+import { createHistoryItem } from '../../support/history';
 
 export class MoveHandlers extends HandlerBase {
-  static askOrRemind(): void {
+  static askOrRemind(chance = 0.75): void {
     const correctCtx = this.contexts.get('correct-last-move');
     if (correctCtx) {
       this.speak(Ask.correctFails());
       return;
     }
     const fiftyFifty = Math.random();
-    if (fiftyFifty < 0.65) {
+    if (fiftyFifty < chance) {
       this.speak(Ask.askToMoveAgain());
     } else {
       this.speak(Ask.askToRemindBoard());
@@ -44,12 +46,6 @@ export class MoveHandlers extends HandlerBase {
     await this.moveByAI(chess);
   }
 
-  private static dropGame(): void {
-    this.contexts.set('ask-to-new-game', 1);
-    this.long.fen = null;
-    this.contexts.drop('game');
-  }
-
   static async moveByPlayer(move: string, chess?: Chess, prologue?: string): Promise<void> {
     let fenstring = this.long.fen;
     const difficulty = this.long.options.difficulty;
@@ -74,17 +70,19 @@ export class MoveHandlers extends HandlerBase {
     const board = new ChessBoard(chess.fenstring);
     this.long.cstFen = board.cstFen;
     const piece = board.pos(from);
-    const beatedPiece = board.pos(to);
     await chess.move(move);
+    const isCapturing = board.isCapturing(move);
+    const isEnPassant = board.isEnPassant(piece, move);
+    const isCastling = board.isMoveCastling(move);
+    const isPromotion = move.length === 5;
+    let captured = null;
+    let enPassPawn = null;
+    let rookMove = null;
     let answer = '';
     if (prologue) {
       answer += prologue + pause(1) + '\n';
     }
-    const isEnPassant = board.enPassant === to;
-    const cast = board.isMoveCastling(move);
-    let rookMove = null;
-    let enPassPawn = null;
-    if (cast) {
+    if (isCastling) {
       rookMove = board.rookMoveForCastlingMove(move);
       const rFrom = rookMove.slice(0, 2);
       const rTo = rookMove.slice(2, 4);
@@ -94,39 +92,33 @@ export class MoveHandlers extends HandlerBase {
       answer += Ans.enPassantPlayer(from, to, enPassPawn);
     } else {
       answer += Ans.playerMove(from, to, piece);
-      if (move.length === 5) {
+      if (isPromotion) {
         const promotionPieceCode = move[4];
         answer += ' ' + Ans.moveWithPromotion(promotionPieceCode);
       }
     }
-    let historyItem;
-    if (beatedPiece) {
-      historyItem = { m: piece + move, b: beatedPiece };
-      answer += Ans.playerEat(beatedPiece);
-    } else if (cast) {
-      historyItem = { m: piece + move, c: rookMove };
-    } else if (isEnPassant) {
-      historyItem = { m: piece + move, e: enPassPawn };
-    } else {
-      historyItem = { m: piece + move };
+    if (isCapturing) {
+      captured = board.pos(to);
+      answer += Ans.playerEat(captured);
     }
+    const historyItem = createHistoryItem(piece, move, captured, rookMove, enPassPawn);
     hist.push(historyItem);
     this.long.fen = chess.fenstring;
     switch (chess.currentGameState) {
       case ChessGameState.CHECKMATE:
         this.speak(answer + ' \n' + Ans.youWin());
         this.speak(Ask.askToNewGame());
-        this.dropGame();
+        GameHandlers.dropGame();
         return;
       case ChessGameState.STALEMATE:
         this.speak(`${answer} \n${Ans.stalemateToEnemy()} \n${Ans.draw()}`);
         this.speak(Ask.askToNewGame());
-        this.dropGame();
+        GameHandlers.dropGame();
         return;
       case ChessGameState.FIFTYMOVEDRAW:
         this.speak(`${answer} \n${Ans.fiftymove()} \n${Ans.draw()}`);
         this.speak(Ask.askToNewGame());
-        this.dropGame();
+        GameHandlers.dropGame();
         return;
       case ChessGameState.CHECK:
         answer += '\n' + Ans.checkToEnemy();
@@ -148,15 +140,17 @@ export class MoveHandlers extends HandlerBase {
     await chess.moveAuto();
     const enemyFrom = chess.enemyMove.slice(0, 2);
     const enemyTo = chess.enemyMove.slice(2, 4);
-    const beatedPiece = boardBeforeMove.pos(enemyTo);
     const boardAfterMove = new ChessBoard(chess.fenstring);
     const enemyPiece = boardAfterMove.pos(enemyTo);
-    let answer = '';
-    const isEnPassant = boardBeforeMove.enPassant === enemyTo;
-    const cast = boardBeforeMove.isMoveCastling(chess.enemyMove);
+    const isCapturing = boardBeforeMove.isCapturing(chess.enemyMove);
+    const isEnPassant = boardBeforeMove.isEnPassant(enemyPiece, chess.enemyMove);
+    const isCastling = boardBeforeMove.isMoveCastling(chess.enemyMove);
+    const isPromotion = chess.enemyMove.length === 5;
+    let captured = null;
     let rookMove = null;
     let enPassPawn = null;
-    if (cast) {
+    let answer = '';
+    if (isCastling) {
       rookMove = boardBeforeMove.rookMoveForCastlingMove(chess.enemyMove);
       const rFrom = rookMove.slice(0, 2);
       const rTo = rookMove.slice(2, 4);
@@ -165,43 +159,43 @@ export class MoveHandlers extends HandlerBase {
       enPassPawn = hist[hist.length - 1].m.slice(3, 5);
       answer += Ans.enPassantEnemy(enemyFrom, enemyTo, enPassPawn);
     } else {
-      if (chess.enemyMove.length === 5) {
+      if (isPromotion) {
         answer = Ans.enemyMove(enemyFrom, enemyTo, 'p');
         answer += ' ' + Ans.moveWithPromotion(enemyPiece);
       } else {
         answer = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
       }
     }
-    let historyItem;
-    if (beatedPiece) {
-      historyItem = { m: enemyPiece + chess.enemyMove, b: beatedPiece };
-      answer += Ans.enemyEat(beatedPiece);
-    } else if (cast) {
-      historyItem = { m: enemyPiece + chess.enemyMove, c: rookMove };
-    } else if (isEnPassant) {
-      historyItem = { m: enemyPiece + chess.enemyMove, e: enPassPawn };
-    } else {
-      historyItem = { m: enemyPiece + chess.enemyMove };
+    if (isCapturing) {
+      captured = boardBeforeMove.pos(enemyTo);
+      answer += Ans.enemyEat(captured);
     }
+    const historyItem = createHistoryItem(
+      enemyPiece,
+      chess.enemyMove,
+      captured,
+      rookMove,
+      enPassPawn
+    );
     hist.push(historyItem);
     switch (chess.currentGameState) {
       case ChessGameState.CHECKMATE:
         answer += `${answer} \n${Ans.checkmateToPlayer()} \n`;
         answer += `${Ans.youLose()} \n${Ask.askToNewGame()}`;
         this.speak(answer);
-        this.dropGame();
+        GameHandlers.dropGame();
         return;
       case ChessGameState.STALEMATE:
         answer += ` \n${Ans.stalemateToPlayer()} \n`;
         answer += `${Ans.draw()} \n${Ask.askToNewGame()}`;
         this.speak(answer);
-        this.dropGame();
+        GameHandlers.dropGame();
         return;
       case ChessGameState.FIFTYMOVEDRAW:
         answer += ` \n${Ans.fiftymove()} \n`;
         answer += `${Ans.draw()} \n${Ask.askToNewGame()}`;
         this.speak(answer);
-        this.dropGame();
+        GameHandlers.dropGame();
         return;
       case ChessGameState.CHECK:
         answer += '\n' + Ans.checkToPlayer() + pause(1);

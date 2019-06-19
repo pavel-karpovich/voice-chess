@@ -87,4 +87,10 @@ export class GameHandlers extends HandlerBase {
       this.contexts.set('ask-to-resign', 1);
     }
   }
+
+  static dropGame(): void {
+    this.contexts.set('ask-to-new-game', 1);
+    this.long.fen = null;
+    this.contexts.drop('game');
+  }
 }

@@ -9,6 +9,24 @@ export interface HistoryFrame {
   c?: string; // rock move when castling
 }
 
+export function createHistoryItem(
+  piece: string,
+  move: string,
+  beatedPiece?: string,
+  rookMove?: string,
+  enPassantPawn?: string
+): HistoryFrame {
+  const historyItem = { m: piece + move } as HistoryFrame;
+  if (beatedPiece) {
+    historyItem.b = beatedPiece;
+  } else if (rookMove) {
+    historyItem.c = rookMove;
+  } else if (enPassantPawn) {
+    historyItem.e = enPassantPawn;
+  }
+  return historyItem;
+}
+
 export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string {
   let result = '';
   let whoseMove = WhoseSide.ENEMY;
