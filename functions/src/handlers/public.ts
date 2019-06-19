@@ -1,8 +1,6 @@
 import { ContextManager } from './struct/context/contextManager';
 import { ConversationData } from '../storage/conversationData';
 import { LongStorageData } from '../storage/longStorageData';
-import { Answer as Ans } from '../locales/answer';
-import { Ask } from '../locales/ask';
 import { HandlerBase } from './struct/handlerBase';
 import { MoveHandlers } from './private/move';
 import { SettingsHandlers } from './private/settings';
@@ -10,6 +8,8 @@ import { InfoHandlers } from './private/info';
 import { GameHandlers } from './private/game';
 import { NavigationHandlers } from './private/naviagation';
 import { AroundMoveHandlers } from './private/aroundMove';
+import { FallbackHandlers } from './private/fallback';
+import { OtherHandlers } from './private/other';
 
 export class Handlers extends HandlerBase {
   static load(
@@ -21,13 +21,19 @@ export class Handlers extends HandlerBase {
   ) {
     super.load(response, contextManager, shortStorage, longStorage, endConv);
     MoveHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
-    InfoHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
     SettingsHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
+    InfoHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
+    GameHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
+    NavigationHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
+    AroundMoveHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
+    FallbackHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
+    OtherHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
   }
 
   static newGame = GameHandlers.newGame;
   static continueGame = GameHandlers.continueGame;
   static resign = () => GameHandlers.resign();
+  static welcome = GameHandlers.welcome;
 
   static next = NavigationHandlers.next;
   static yes = NavigationHandlers.yes;
@@ -62,4 +68,10 @@ export class Handlers extends HandlerBase {
   static captured = InfoHandlers.captured;
   static side = InfoHandlers.side;
   static fullmove = InfoHandlers.fullmove;
+
+  static fallback = FallbackHandlers.fallback;
+
+  static help = OtherHandlers.help;
+  static silence = OtherHandlers.silence;
+  static repeat = OtherHandlers.repeat;
 }
