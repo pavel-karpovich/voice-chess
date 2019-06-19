@@ -35,13 +35,6 @@ export class MockBoard extends MockProto {
     this.movesNumber = null;
     this.moveSide = null;
   }
-
-  static instance: MockBoard;
-  constructor() {
-    super();
-    MockBoard.instance = this;
-    this.initMock();
-  }
   
   _pos: string;
   _rank: ChessSquareData[];
@@ -75,39 +68,17 @@ export class MockBoard extends MockProto {
     this._moveSide = MockBoard.moveSide;
   }
 
-  pos(pos: string): string {
-    return this._pos;
-  }
-  rank(i: number): ChessSquareData[] {
-    return this._rank;
-  }
-  allPiecesByType(piece: string): string[] {
-    return this._piecesByType;
-  }
-  allPiecesBySide(side: ChessSide): ChessSquareData[] {
-    return this._piecesBySide;
-  }
-  capturedPieces(): Captured {
-    return this._captured;
-  }
-  getAvailableCastlingMoves(side: ChessSide): string[] {
-    return this._availableCastlings;
-  }
-  isMoveCastling(move: string): boolean {
-    return this._isCastling;
-  }
-  rookMoveForCastlingMove(move: string): string {
-    return this._rookMove;
-  }
-  extract(move: string, capt?: string, enPass?: string, cstl?: string): boolean {
-    return this._extract;
-  }
-  loadCorrectCastlingFen(cstFen: string): void {
-    return;
-  }
-  convertToFen(): string {
-    return this._convFen;
-  }
+  pos = jest.fn(() => this._pos);
+  rank = jest.fn(() => this._rank);
+  allPiecesByType = jest.fn(() => this._piecesByType);
+  allPiecesBySide = jest.fn(() => this._piecesBySide);
+  capturedPieces = jest.fn(() => this._captured);
+  getAvailableCastlingMoves = jest.fn(() => this._availableCastlings);
+  isMoveCastling = jest.fn(() => this._isCastling);
+  rookMoveForCastlingMove = jest.fn(() => this._rookMove);
+  extract = jest.fn(() => this._extract);
+  loadCorrectCastlingFen = jest.fn(() => void 0);
+  convertToFen = jest.fn(() => this._convFen);
   get enPassant(): string {
     return this._enPassant;
   }

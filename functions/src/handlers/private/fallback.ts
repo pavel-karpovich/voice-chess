@@ -20,6 +20,7 @@ const restorableContexts = [
   'confirm-new-game',
   'ask-to-resign',
   'reduce-difficulty-instead-of-resign',
+  'rank-info',
 ];
 
 export class FallbackHandlers extends HandlerBase {

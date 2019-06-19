@@ -4,4 +4,10 @@ export abstract class MockProto {
     throw new Error('static method resetMockedData() is not implemented');
   }
   protected abstract initMock(): void;
+  
+  static instance: MockProto;
+  constructor() {
+    MockProto.instance = this;
+    this.initMock();
+  }
 }

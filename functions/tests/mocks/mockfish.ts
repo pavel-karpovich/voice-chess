@@ -15,7 +15,6 @@ const defaultBestMove = 'e1d1';
 
 export class Mockfish extends MockProto {
 
-  static instance: Mockfish;
   static retFen = defaultRetFen;
   static retCheckers = defaultRetCheckers;
   static retMoves = defaultMoves;
@@ -51,8 +50,6 @@ export class Mockfish extends MockProto {
     this.options = {};
     this.moves = [];
     this.history = [];
-    Mockfish.instance = this;
-    this.initMock();
   }
 
   postMessage(message: string): void {

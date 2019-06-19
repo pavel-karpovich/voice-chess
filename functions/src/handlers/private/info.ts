@@ -25,6 +25,7 @@ export class InfoHandlers extends HandlerBase {
     this.speak(longString);
     this.speak(Ask.askToGoNext());
     this.contexts.set('board-next', 1);
+    this.contexts.set('rank-info', 1);
   }
 
   static secondPartOfBoard(): void {
@@ -37,7 +38,7 @@ export class InfoHandlers extends HandlerBase {
   }
 
   static rank(ord?: string, num?: string): void {
-    const fenstring = this.long.fen;
+    this.contexts.set('rank-info', 1);
     const rankNum = Number(num ? num : ord);
     if (!isNaN(rankNum)) {
       if (rankNum < 1 || rankNum > chessBoardSize) {
@@ -45,6 +46,7 @@ export class InfoHandlers extends HandlerBase {
         this.speak(Ask.askRankNumber());
         return;
       }
+      const fenstring = this.long.fen;
       this.speak(oneRank(fenstring, rankNum));
       this.speak(Ask.askToGoNext());
       this.contexts.set('rank-next', 1, { rank: rankNum, dir: 'u' });
@@ -54,6 +56,7 @@ export class InfoHandlers extends HandlerBase {
   }
 
   static nextRank(): void {
+    this.contexts.set('rank-info', 1);
     const rankContext = this.contexts.get('rank-next');
     const lastRank = Number(rankContext.parameters.rank);
     if (lastRank === 8) {
@@ -74,6 +77,7 @@ export class InfoHandlers extends HandlerBase {
   }
 
   static prevRank(): void {
+    this.contexts.set('rank-info', 1);
     const rankContext = this.contexts.get('rank-next');
     const lastRank = Number(rankContext.parameters.rank);
     if (lastRank === 1) {
@@ -107,12 +111,12 @@ export class InfoHandlers extends HandlerBase {
       return;
     }
     const bulkOfMoves = getBulkOfMoves(fenstring, moves, startNumber);
+    const answer = listMoves(bulkOfMoves.pieces);
     if (bulkOfMoves.end) {
-      const ans = listMoves(bulkOfMoves.pieces) + ' \n' + Ans.itsAll();
-      this.speak(ans);
+      this.speak(answer + ' \n' + Ans.itsAll());
       this.speak(Ask.waitMove());
     } else {
-      this.speak(listMoves(bulkOfMoves.pieces));
+      this.speak(answer);
       this.speak(Ask.askToGoNext());
       this.contexts.set('moves-next', 1, { start: bulkOfMoves.next });
     }
