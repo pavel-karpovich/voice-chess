@@ -45,7 +45,13 @@ export class MockBoard extends MockProto {
 
     this.posFn = defaultPosFn;
   }
-  
+
+  static instance: MockBoard;
+  constructor() {
+    super();
+    MockBoard.instance = this;
+  }
+
   _pos: string;
   _rank: ChessSquareData[];
   _piecesByType: string[];

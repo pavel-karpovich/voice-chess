@@ -5,9 +5,7 @@ export abstract class MockProto {
   }
   protected abstract initMock(): void;
   
-  static instance: MockProto;
   constructor() {
-    MockProto.instance = this;
     this.initMock();
   }
 }

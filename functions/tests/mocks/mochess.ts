@@ -26,9 +26,10 @@ export class Mochess extends MockProto {
     this.enemyMove = undefined;
   }
 
-  constructor(fen: string) {
+  static instance: Mochess;
+  constructor() {
     super();
-    if (fen) this._fen = fen;
+    Mochess.instance = this;
   }
 
   _isPromo: boolean;
@@ -52,24 +53,12 @@ export class Mochess extends MockProto {
   static get initialFen(): string {
     return this.initFen;
   }
-  async updateGameState(): Promise<void> {
-    return;
-  }
-  isPromotion(move: string): boolean {
-    return this._isPromo;
-  }
-  isMoveLegal(move: string): boolean {
-    return this._isLegal;
-  }
-  async bestMove(): Promise<string> {
-    return this._bestMove;
-  }
-  async move(move: string): Promise<void> {
-    return;
-  }
-  async moveAuto(): Promise<void> {
-    return;
-  }
+  updateGameState = jest.fn(async() => {});
+  isPromotion = jest.fn(() => this._isPromo);
+  isMoveLegal = jest.fn(() => this._isLegal);
+  bestMove = jest.fn(async() => this._bestMove);
+  move = jest.fn(async() => {});
+  moveAuto = jest.fn(async() => {});
   get currentGameState(): ChessGameState {
     return this._state;
   }

@@ -45,11 +45,13 @@ export class Mockfish extends MockProto {
   history: string[];
   onmessage: (e: string) => void;
 
+  static instance: Mockfish;
   constructor() {
     super();
     this.options = {};
     this.moves = [];
     this.history = [];
+    Mockfish.instance = this;
   }
 
   postMessage(message: string): void {
