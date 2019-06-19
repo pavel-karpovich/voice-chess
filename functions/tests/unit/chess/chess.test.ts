@@ -16,7 +16,7 @@ describe('Testing Stockfish Chess class', () => {
 
     test('Difficulty settings are sent to Stockfish', () => {
       const chess = new Chess(null, 10);
-      const opt = Mockfish.instance.options;
+      const opt = (Mockfish.instance as Mockfish).options;
       expect(chess).toBeDefined();
       expect(opt.skillLevel).toBeDefined();
       expect(opt.skillLevelMaximumError).toBeDefined();
@@ -25,7 +25,7 @@ describe('Testing Stockfish Chess class', () => {
 
     test('Other settings are sent to Stockfish', () => {
       const chess = new Chess(null, 10);
-      const opt = Mockfish.instance.options;
+      const opt = (Mockfish.instance as Mockfish).options;
       expect(chess).toBeDefined();
       expect(opt.ponder).toBeDefined();
       expect(opt.slowMover).toBeDefined();
@@ -58,7 +58,7 @@ describe('Testing Stockfish Chess class', () => {
       const chess = new Chess(null, 5);
       const move = 'b2b4';
       await chess.move(move);
-      expect(Mockfish.instance.moves[0]).toBe(move);
+      expect((Mockfish.instance as Mockfish).moves[0]).toBe(move);
     });
     test('Automatic move is sent to Stockfish', async () => {
       const chess = new Chess(null, 5);
@@ -70,13 +70,13 @@ describe('Testing Stockfish Chess class', () => {
       const chess = new Chess(null, 5);
       const move = 'b2b4';
       await chess.move(move);
-      expect(Mockfish.instance.history).toContain('d');
+      expect((Mockfish.instance as Mockfish).history).toContain('d');
     });
 
     test("Automatic move updates the state", async () => {
       const chess = new Chess(null, 5);
       await chess.moveAuto();
-      expect(Mockfish.instance.history).toContain('d');
+      expect((Mockfish.instance as Mockfish).history).toContain('d');
     });
   });
 
