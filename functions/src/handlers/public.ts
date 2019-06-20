@@ -53,7 +53,7 @@ export class Handlers extends HandlerBase {
   static correct = AroundMoveHandlers.correct;
   static chooseCastling = AroundMoveHandlers.chooseCastling;
   static acceptAdvice = AroundMoveHandlers.acceptAdvice;
-  static advice = AroundMoveHandlers.advice;
+  static advice = () => AroundMoveHandlers.advice();
 
   static firstPartOfBoard = InfoHandlers.firstPartOfBoard;
   static secondPartOfBoard = InfoHandlers.secondPartOfBoard;

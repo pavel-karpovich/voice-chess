@@ -150,7 +150,7 @@ export class AroundMoveHandlers extends HandlerBase {
     await MoveHandlers.prepareToMove(move);
   }
 
-  static async advice(): Promise<void> {
+  static async advice(randomChance = 0.2): Promise<void> {
     const fenstring = this.long.fen;
     const difficulty = this.long.options.difficulty;
     const delta = 6;
@@ -158,7 +158,6 @@ export class AroundMoveHandlers extends HandlerBase {
     const max = difficulty + delta;
     const rndDif = (Math.floor((max - min) * gaussianRandom()) + min) | 0;
     const chess = new Chess(fenstring, rndDif);
-    const randomChance = 0.2;
     const rnd = Math.random();
     let advisedMove = null;
     if (rnd < randomChance) {
