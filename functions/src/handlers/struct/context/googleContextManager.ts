@@ -1,4 +1,4 @@
-import { ContextManager, Context, ContextParams } from './contextManager';
+import { ContextManager, Context, Params } from './contextManager';
 import { Contexts } from 'actions-on-google';
 import { ContextValues } from 'actions-on-google/dist/service/dialogflow/context';
 
@@ -18,7 +18,7 @@ export class GoogleContextManager extends ContextManager {
     }
   }
 
-  set(name: string, lifespan: number, params?: ContextParams): void {
+  set(name: string, lifespan: number, params?: Params): void {
     this.googleContexts.set(name, lifespan, params);
   }
 

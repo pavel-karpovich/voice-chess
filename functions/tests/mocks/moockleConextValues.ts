@@ -1,4 +1,4 @@
-import { Context, ContextParams, } from "../../src/handlers/struct/context/contextManager";
+import { Context, Params, } from "../../src/handlers/struct/context/contextManager";
 
 export class MoockleContextValues {
 
@@ -11,7 +11,7 @@ export class MoockleContextValues {
   get(name: string): Context {
     return this.conte.get(name);
   }  
-  set(name: string, lifespan: number, params?: ContextParams): void {
+  set(name: string, lifespan: number, params?: Params): void {
     this.conte.set(
       name,
       { name, lifespan, parameters: params }

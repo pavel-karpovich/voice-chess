@@ -1,5 +1,5 @@
-import { HandlerBase } from '../../../src/handlers/struct/handlerBase';
-import { MockContextManager } from '../../mocks/mockContextManager';
+import { HandlerBase } from '../../../../src/handlers/struct/handlerBase';
+import { MockContextManager } from '../../../mocks/mockContextManager';
 
 describe('Tests for HandlerBase class', () => {
 
