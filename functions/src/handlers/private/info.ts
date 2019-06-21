@@ -193,7 +193,7 @@ export class InfoHandlers extends HandlerBase {
   static piece(piece: string, side?: ChessSide, whose?: WhoseSide): void {
     const fenstring = this.long.fen;
     const playerSide = this.long.side;
-    const board = new ChessBoard(fenstring, true);
+    const board = new ChessBoard(fenstring);
     if (side === ChessSide.WHITE) {
       piece = piece.toUpperCase();
     }
@@ -248,7 +248,7 @@ export class InfoHandlers extends HandlerBase {
   static captured(): void {
     const fenstring = this.long.fen;
     const playerSide = this.long.side;
-    const board = new ChessBoard(fenstring, true);
+    const board = new ChessBoard(fenstring);
     const captured = board.capturedPieces();
     if (captured.white.length === 0 && captured.black.length === 0) {
       this.speak(Ans.noCapturedPieces());

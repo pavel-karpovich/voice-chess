@@ -24,22 +24,16 @@ const castlings = new Map([['e1g1', 'h1f1'], ['e1c1', 'a1d1'], ['e8g8', 'h8f8'],
 export class ChessBoard {
   private board: Map<string, string>;
   private fen: string;
-  private lazy: boolean;
-  private dirty: boolean;
   private side: string;
   private castling: string;
   private enpsnt: string;
   private counter: number;
   private fullmove: number;
 
-  constructor(fen: string, lazy = false) {
+  constructor(fen: string) {
     this.board = new Map();
     this.fen = fen;
-    this.dirty = false;
-    this.lazy = lazy;
-    if (!this.lazy) {
-      this.parseFen();
-    }
+    this.parseFen();
   }
 
   private parseFen(): void {
@@ -66,10 +60,6 @@ export class ChessBoard {
   }
 
   pos(pos: string): string {
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
     if (!this.board.has(pos)) {
       return null;
     } else {
@@ -81,10 +71,6 @@ export class ChessBoard {
     if (i < 1 || i > chessBoardSize) {
       return null;
     }
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
     return files
       .map<ChessSquareData>(file => ({
         pos: file + i,
@@ -94,7 +80,6 @@ export class ChessBoard {
   }
 
   allPiecesByType(piece: string): string[] {
-    // Controversial decision
     const ret = [] as string[];
     let i = 0;
     let rank = 8;
@@ -120,10 +105,6 @@ export class ChessBoard {
   }
 
   allPiecesBySide(side: ChessSide): ChessSquareData[] {
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
     const data = [] as ChessSquareData[];
     for (const square of this.board.keys()) {
       const piece = this.board.get(square);
@@ -184,10 +165,6 @@ export class ChessBoard {
   }
 
   getAvailableCastlingMoves(side: ChessSide): string[] {
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
     const availableCastling = [] as string[];
     const rank = side === ChessSide.WHITE ? '1' : '8';
     const c = (p: string): string => {
@@ -243,10 +220,6 @@ export class ChessBoard {
     enPassantPawnPos?: string,
     castlingRockMove?: string
   ): boolean {
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
     let isReverseMoveValid = true;
     const from = move.slice(0, 2);
     const to = move.slice(2, 4);
@@ -305,7 +278,6 @@ export class ChessBoard {
       if (this.counter !== 0) {
         this.counter--;
       }
-      this.dirty = true;
       return true;
     } else {
       return false;
@@ -322,13 +294,6 @@ export class ChessBoard {
   }
 
   convertToFen(): string {
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
-    if (!this.dirty) {
-      return this.fen;
-    }
     let fen = '';
     for (let i = 8; i > 0; --i) {
       let emptyCount = 0;
@@ -356,7 +321,6 @@ export class ChessBoard {
     fen += ` ${this.castling} ${this.enpsnt}`;
     fen += ` ${this.counter} ${this.fullmove}`;
     this.fen = fen;
-    this.dirty = false;
     return fen;
   }
 
@@ -376,42 +340,22 @@ export class ChessBoard {
   }
 
   get enPassant(): string {
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
     return this.enpsnt;
   }
 
   get castlingFen(): string {
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
     return this.castling;
   }
 
   get counterFen(): number {
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
     return this.counter;
   }
 
   get movesNumber(): number {
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
     return this.fullmove;
   }
 
   get moveSide(): ChessSide {
-    if (this.lazy) {
-      this.parseFen();
-      this.lazy = false;
-    }
     if (this.side === 'w') {
       return ChessSide.WHITE;
     } else {
