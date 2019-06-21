@@ -17,7 +17,8 @@ export class MockBoard extends MockProto {
   static extract: boolean;
   static convFen: string;
   static enPassant: string;
-  static cstFen: string;
+  static castlingFen: string;
+  static counterFen: number;
   static movesNumber: number;
   static moveSide: ChessSide;
   static isEnPassant: boolean;
@@ -37,7 +38,8 @@ export class MockBoard extends MockProto {
     this.extract = null;
     this.convFen = null;
     this.enPassant = null;
-    this.cstFen = null;
+    this.castlingFen = null;
+    this.counterFen = null;
     this.movesNumber = null;
     this.moveSide = null;
     this.isEnPassant = null;
@@ -63,11 +65,12 @@ export class MockBoard extends MockProto {
   _extract: boolean;
   _convFen: string;
   _enPassant: string;
-  _cstFen: string;
   _movesNumber: number;
   _moveSide: ChessSide;
   _isEnPassant: boolean;
   _isCapturing: boolean;
+  _castlingFen: string;
+  _counterFen: number;
 
   protected initMock(): void {
     this._pos = MockBoard.pos;
@@ -81,7 +84,8 @@ export class MockBoard extends MockProto {
     this._extract = MockBoard.extract;
     this._convFen = MockBoard.convFen;
     this._enPassant = MockBoard.enPassant;
-    this._cstFen = MockBoard.cstFen;
+    this._castlingFen = MockBoard.castlingFen;
+    this._counterFen = MockBoard.counterFen;
     this._movesNumber = MockBoard.movesNumber;
     this._moveSide = MockBoard.moveSide;
     this._isEnPassant = MockBoard.isEnPassant;
@@ -99,20 +103,23 @@ export class MockBoard extends MockProto {
   isMoveCastling = jest.fn(() => this._isCastling);
   rookMoveForCastlingMove = jest.fn(() => this._rookMove);
   extract = jest.fn(() => this._extract);
-  loadCorrectCastlingFen = jest.fn(() => void 0);
+  loadNonRecoverableInfo = jest.fn(() => {});
   convertToFen = jest.fn(() => this._convFen);
   isEnPassant = jest.fn(() => this._isEnPassant);
   isCapturing = jest.fn(() => this._isCapturing);
   get enPassant(): string {
     return this._enPassant;
   }
-  get cstFen(): string {
-    return this._cstFen;
-  }
   get movesNumber(): number {
     return this._movesNumber;
   }
   get moveSide(): ChessSide {
     return this._moveSide;
+  }
+  get castlingFen(): string {
+    return this._castlingFen;
+  }
+  get counterFen(): number {
+    return this._counterFen;
   }
 }

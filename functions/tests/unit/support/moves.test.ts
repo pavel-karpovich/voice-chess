@@ -3,7 +3,7 @@ import '../../extend/toIncludeAll';
 import { getBulkOfMoves, listMoves,  } from '../../../src/support/moves';
 import { Vocabulary } from '../../../src/locales/vocabulary';
 
-const log = true;
+const log = false;
 
 interface PieceMoves {
   type: string;

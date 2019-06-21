@@ -99,11 +99,13 @@ describe('Tests for move handlers', () => {
     let chess: Chess;
     const fen2 = 'Fen after converting';
     const castlingFen = 'castl-part';
+    const counterFen = 5;
     const hist = [{ m: 'move1' }, { m: 'move2' }, { m: 'move3' }];
     beforeEach(() => {
       chess = new Chess('Test fen', 0);
       env.userStorage.history = hist.slice();
-      env.userStorage.cstFen = castlingFen;
+      env.userStorage.castlFen = castlingFen;
+      env.userStorage.countFen = counterFen;
       MockBoard.convFen = fen2;
     });
     afterEach(() => {
@@ -115,7 +117,7 @@ describe('Tests for move handlers', () => {
       const final = false;
       MoveHandlers.rollbackLastMoves(chess, final);
       expect(MockBoard.instance.extract).toBeCalledTimes(2);
-      expect(MockBoard.instance.loadCorrectCastlingFen).lastCalledWith(castlingFen);
+      expect(MockBoard.instance.loadNonRecoverableInfo).lastCalledWith(castlingFen, counterFen);
       expect(Mochess.instance.fenstring).toBe(fen2);
       expect(env.userStorage.history.length).toBe(hist.length);
     });
@@ -124,7 +126,7 @@ describe('Tests for move handlers', () => {
       const final = true;
       MoveHandlers.rollbackLastMoves(chess, final);
       expect(MockBoard.instance.extract).toBeCalledTimes(2);
-      expect(MockBoard.instance.loadCorrectCastlingFen).lastCalledWith(castlingFen);
+      expect(MockBoard.instance.loadNonRecoverableInfo).lastCalledWith(castlingFen, counterFen);
       expect(Mochess.instance.fenstring).toBe(fen2);
       expect(env.userStorage.history.length).toBe(hist.length - 2);
     });

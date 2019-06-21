@@ -45,8 +45,9 @@ export class MoveHandlers extends HandlerBase {
     }
     board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e, lastAIMove.c);
     board.extract(lastPlMove.m.slice(1), lastPlMove.b, lastPlMove.e, lastPlMove.c);
-    const cstFen = this.long.cstFen;
-    board.loadCorrectCastlingFen(cstFen);
+    const castlingFen = this.long.castlFen;
+    const counterFen = this.long.countFen;
+    board.loadNonRecoverableInfo(castlingFen, counterFen);
     chess.fenstring = board.convertToFen();
   }
 
@@ -63,7 +64,8 @@ export class MoveHandlers extends HandlerBase {
     const from = move.slice(0, 2);
     const to = move.slice(2, 4);
     const board = new ChessBoard(chess.fenstring);
-    this.long.cstFen = board.cstFen;
+    this.long.castlFen = board.castlingFen;
+    this.long.countFen = board.counterFen;
     const piece = board.pos(from);
     await chess.move(move);
     const isCapturing = board.isCapturing(move);

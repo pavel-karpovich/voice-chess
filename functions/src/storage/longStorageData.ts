@@ -11,5 +11,6 @@ export interface LongStorageData {
   side?: ChessSide;
   history?: HistoryFrame[];
   options?: Options;
-  cstFen?: string;
+  castlFen?: string;
+  countFen?: number;
 }

@@ -136,12 +136,6 @@ describe('Tests of Chess Board class', () => {
         expect(actual).toBe(expectedEnPassant);
       });
 
-      test('Get castling string', () => {
-        const expectedCastlings = 'KQkq';
-        const actual = board.cstFen;
-        expect(actual).toBe(expectedCastlings);
-      });
-
       test('Get number of full moves', () => {
         const expectFullMoves = 17;
         const actual = board.movesNumber;
@@ -152,6 +146,18 @@ describe('Tests of Chess Board class', () => {
         const expectSide = ChessSide.WHITE;
         const actual = board.moveSide;
         expect(actual).toBe(expectSide);
+      });
+
+      test('Get castling fen string', () => {
+        const expectedCastlings = 'KQkq';
+        const actual = board.castlingFen;
+        expect(actual).toBe(expectedCastlings);
+      });
+
+      test('Get 50-move counter fen number', () => {
+        const expectedCount = 2;
+        const actual = board.counterFen;
+        expect(actual).toBe(expectedCount);
       });
       
       test('Fen converting without move extraction just returned an initial fen', () => {
@@ -186,11 +192,13 @@ describe('Tests of Chess Board class', () => {
         before: string,
         move1: [string, string?, string?, string?],
         after: string,
-        tweak?: string
+        tweak?: [string, number]
       ): void {
         const board = new ChessBoard(after);
         board.extract(...move1);
-        if (tweak) board.loadCorrectCastlingFen(tweak);
+        if (tweak) {
+          board.loadNonRecoverableInfo(...tweak);
+        }
         const generated = board.convertToFen();
         expect(generated).toBe(before);
     }
@@ -200,12 +208,14 @@ describe('Tests of Chess Board class', () => {
         move1: [string, string?, string?, string?],
         move2: [string, string?, string?, string?],
         after: string,
-        tweak?: string
+        tweak?: [string, number]
       ): void {
         const board = new ChessBoard(after);
         board.extract(...move2);
         board.extract(...move1);
-        if (tweak) board.loadCorrectCastlingFen(tweak);
+        if (tweak) {
+          board.loadNonRecoverableInfo(...tweak);
+        }
         const generated = board.convertToFen();
         expect(generated).toBe(before);
     }
@@ -300,7 +310,7 @@ describe('Tests of Chess Board class', () => {
         'r3k1nr/1p4qp/p2pB3/n3Q3/4P1P1/2PP4/P1P2P1P/R3K2R w KQkq - 3 34',
         ['e1c1', null, null, 'a1d1'],
         'r3k1nr/1p4qp/p2pB3/n3Q3/4P1P1/2PP4/P1P2P1P/2KR3R b kq - 4 34',
-        'KQkq'
+        ['KQkq', 3]
       );
     });
 
@@ -309,7 +319,7 @@ describe('Tests of Chess Board class', () => {
         'r3k2r/1p5p/p2pB2n/8/4P1P1/2PP4/P6P/2KR2R1 b kq - 1 41',
         ['e8g8', null, null, 'h8f8'],
         'r4rk1/1p5p/p2pB2n/8/4P1P1/2PP4/P6P/2KR2R1 w - - 2 42',
-        'kq'
+        ['kq', 1]
       );
     });
 
@@ -319,7 +329,7 @@ describe('Tests of Chess Board class', () => {
         ['e1g1', null, null, 'h1f1'],
         ['e8c8', null, null, 'a8d8'],
         '2kr1bnr/ppp1q1pp/2npbp2/4p3/2B1P3/2PPBQ1N/P1P2PPP/RN3RK1 w - - 4 9',
-        'KQkq'
+        ['KQkq', 2]
       );
     });
 

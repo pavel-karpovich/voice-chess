@@ -29,8 +29,8 @@ export class ChessBoard {
   private side: string;
   private castling: string;
   private enpsnt: string;
-  private clock: number;
-  private count: number;
+  private counter: number;
+  private fullmove: number;
 
   constructor(fen: string, lazy = false) {
     this.board = new Map();
@@ -61,8 +61,8 @@ export class ChessBoard {
     this.side = fenParts[chessBoardSize];
     this.castling = fenParts[chessBoardSize + 1];
     this.enpsnt = fenParts[chessBoardSize + 2];
-    this.clock = Number(fenParts[chessBoardSize + 3]);
-    this.count = Number(fenParts[chessBoardSize + 4]);
+    this.counter = Number(fenParts[chessBoardSize + 3]);
+    this.fullmove = Number(fenParts[chessBoardSize + 4]);
   }
 
   pos(pos: string): string {
@@ -285,15 +285,25 @@ export class ChessBoard {
         const rock = this.board.get(rockTo);
         this.board.set(rockTo, null);
         this.board.set(rockFrom, rock);
+        const cstlStr = this.side === 'w' ? 'kq' : 'KQ';
+        if (this.castling === '-') {
+          this.castling = cstlStr;
+        } else {
+          if (this.side === 'w') {
+            this.castling += cstlStr;
+          } else {
+            this.castling = cstlStr + this.castling;
+          }
+        }
       }
       if (this.side === 'w') {
         this.side = 'b';
-        this.count--;
+        this.fullmove--;
       } else {
         this.side = 'w';
       }
-      if (this.clock !== 0) {
-        this.clock--;
+      if (this.counter !== 0) {
+        this.counter--;
       }
       this.dirty = true;
       return true;
@@ -302,8 +312,13 @@ export class ChessBoard {
     }
   }
 
-  loadCorrectCastlingFen(cstFen: string): void {
-    this.castling = cstFen;
+  loadNonRecoverableInfo(castlFen?: string, countFen?: number): void {
+    if (castlFen) {
+      this.castling = castlFen;
+    }
+    if (countFen) {
+      this.counter = countFen;
+    }
   }
 
   convertToFen(): string {
@@ -339,7 +354,7 @@ export class ChessBoard {
     }
     fen += ` ${this.side}`;
     fen += ` ${this.castling} ${this.enpsnt}`;
-    fen += ` ${this.clock} ${this.count}`;
+    fen += ` ${this.counter} ${this.fullmove}`;
     this.fen = fen;
     this.dirty = false;
     return fen;
@@ -368,7 +383,7 @@ export class ChessBoard {
     return this.enpsnt;
   }
 
-  get cstFen(): string {
+  get castlingFen(): string {
     if (this.lazy) {
       this.parseFen();
       this.lazy = false;
@@ -376,12 +391,20 @@ export class ChessBoard {
     return this.castling;
   }
 
+  get counterFen(): number {
+    if (this.lazy) {
+      this.parseFen();
+      this.lazy = false;
+    }
+    return this.counter;
+  }
+
   get movesNumber(): number {
     if (this.lazy) {
       this.parseFen();
       this.lazy = false;
     }
-    return this.count;
+    return this.fullmove;
   }
 
   get moveSide(): ChessSide {
