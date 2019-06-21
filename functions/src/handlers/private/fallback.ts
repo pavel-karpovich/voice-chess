@@ -38,9 +38,11 @@ export class FallbackHandlers extends HandlerBase {
     this.short.fallbackCount = fallbacks + 1;
     if (fallbacks < 3) {
       this.speak(Ans.firstFallback());
+      OtherHandlers.helpSuggestions();
     } else if (fallbacks === 3) {
       this.speak(Ans.secondFallback());
       OtherHandlers.help();
+      OtherHandlers.helpSuggestions(false);
     } else {
       this.end(Ans.confusedExit());
     }

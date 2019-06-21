@@ -966,7 +966,10 @@ export class Vocabulary {
     if (mix(!!whose, mixPerc)) {
       piece = upFirst(this.yourOrMy(pieceCode, whose, 'sin')) + ' ' + this.piece(pieceCode);
     } else {
-      piece = 'The ' + this.coloredPiece(pieceCode);
+      piece = ({
+        en: 'The ' + this.coloredPiece(pieceCode),
+        ru: upFirst(this.coloredPiece(pieceCode)),
+      } as LocalizationObject<string>)[this.lang];
     }
     return rand(
       ({

@@ -223,9 +223,10 @@ export class Ask {
         en: [
           'Now will you make a move?',
           "Ok, what's next? Maybe make your move?",
-          'I am awaiting your turn. Have you decided where to go?',
+          "Now it's your turn, and I'm waiting for you to make a move. Have you decided where to go?",
           'Now are you ready to make your move?',
-          'I am waiting for your turn. What will you do?',
+          'I am waiting for your move. What will you do?',
+          "I'm waiting for you to make a move. Have you decided where to go?",
         ],
         ru: [
           'Теперь вы будете ходить?',
@@ -360,7 +361,7 @@ export class Ask {
         ru: [
           `${upFirst(Voc.piece(pieceCode))} с ${char(from)} на ${char(to)}, да?`,
           `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(to)}. Всё верно?`,
-          `Вы хотите походить ${Voc.piece(pieceCode, 'rod')} ${char(from)} ${char(to)}. Верно?`,
+          `Вы хотите походить ${Voc.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}. Верно?`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -505,8 +506,8 @@ export class Ask {
         ],
         ru: [
           'Хотите узнать ещё о чем-нибудь?',
-          'Следующая клетка?',
-          'Другую клетку?',
+          'Ещё какую-нибудь клетку?',
+          'Другая клетка?',
           'Напомнить ещё какую-нибудь позицию?',
         ],
       } as LocalizationObject<string[]>)[this.lang]

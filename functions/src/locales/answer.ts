@@ -244,7 +244,7 @@ export class Answer {
         ],
         ru: [
           `Мой ход таков: ${Voc.piece(pieceCode)} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
-          `Так. Пожалуй, я отвечу ${Voc.piece(pieceCode)} ${Voc.square(from, 'rod')} ${Voc.square(to, 'vin')}.`,
+          `Так. Пожалуй, я отвечу ${Voc.piece(pieceCode)} ${char(from)} ${char(to)}.`,
           `Я сделаю ход ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}!`,
           `А я похожу ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
         ],
@@ -418,7 +418,7 @@ export class Answer {
         ru: [
           `Текущий уровень сложности: ${current}.`,
           `Текущая сложность: ${current}. Допустимые значения: от 0 до 20.`,
-          `Сейчас уровень сложности равен ${current}`,
+          `Сейчас уровень сложности равен ${current}.`,
         ],
       } as LocalizationObject<string[]>)[this.lang]
     );
@@ -901,7 +901,7 @@ export class Answer {
         ru: [
           `${upFirst(Voc.on(pos))} ${Voc.someonesColoredPiece(pieceCode, side)}.`,
           `${upFirst(Voc.on(pos))} стоит ${Voc.someonesColoredPiece(pieceCode, side)}.`,
-          `${upFirst(Voc.square(pos))} занята ${Voc.someonesPiece(whose, pieceCode, 'rod')}.`,
+          `${upFirst(Voc.square(pos))} занята ${Voc.someonesPiece(whose, pieceCode, 'tvr')}.`,
           `Здесь находится ${Voc.someonesPiece(whose, pieceCode)}.`,
           `${upFirst(Voc.on(pos))} находится ${Voc.someonesPiece(whose, pieceCode)}.`,
         ],

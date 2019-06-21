@@ -1,6 +1,7 @@
 import { HandlerBase } from '../struct/handlerBase';
 import { Answer as Ans } from '../../locales/answer';
 import { Ask } from '../../locales/ask';
+import { Suggestions as Sug } from '../../locales/suggestions';
 import { ChessBoard } from '../../chess/chessboard';
 import { Chess } from '../../chess/chess';
 
@@ -15,6 +16,7 @@ export class GameHandlers extends HandlerBase {
     this.speak(Ans.firstPlay());
     this.speak(Ask.askToNewGame());
     this.contexts.set('ask-to-new-game', 1);
+    this.suggest(Sug.newGame, Sug.help);
   }
 
   static welcome(): void {
@@ -25,10 +27,12 @@ export class GameHandlers extends HandlerBase {
       this.speak(Ans.welcome());
       this.speak(Ask.askToNewGame());
       this.contexts.set('ask-to-new-game', 1);
+      this.suggest(Sug.newGame, Sug.help, Sug.changeDifficulty);
     } else {
       this.speak(Ans.welcome());
       this.speak(Ask.askToContinue());
       this.contexts.set('ask-to-continue', 1);
+      this.suggest(Sug.continueGame, Sug.newGame, Sug.changeDifficulty);
     }
   }
 
@@ -38,6 +42,7 @@ export class GameHandlers extends HandlerBase {
     this.speak(Ans.newgame());
     this.speak(Ask.chooseSide());
     this.contexts.set('ask-side', 1);
+    this.suggest(Sug.white, Sug.black);
   }
 
   static newGame(): void {
@@ -49,6 +54,7 @@ export class GameHandlers extends HandlerBase {
       this.speak(Ask.confirmNewGame());
       this.contexts.set('ask-to-new-game', 1);
       this.contexts.set('confirm-new-game', 1);
+      this.suggest(Sug.yes, Sug.dont);
     }
   }
 
@@ -58,6 +64,7 @@ export class GameHandlers extends HandlerBase {
       this.speak(Ans.noGameToContinue());
       this.speak(Ask.askToNewGame());
       this.contexts.set('ask-to-new-game', 1);
+      this.suggest(Sug.newGame, Sug.help, Sug.changeDifficulty, Sug.exit);
       return;
     }
     this.contexts.set('game', 5);
@@ -65,6 +72,15 @@ export class GameHandlers extends HandlerBase {
     const playerSide = this.long.side;
     this.speak(Ans.continueGame(playerSide));
     this.speak(Ask.askToRemindBoard());
+    this.suggest(
+      Sug.yes,
+      Sug.move,
+      Sug.history,
+      Sug.captured,
+      Sug.availableMoves,
+      Sug.pieceInfo,
+      Sug.posInfo
+    );
   }
 
   static resign(chance = 0.4): void {
@@ -74,6 +90,7 @@ export class GameHandlers extends HandlerBase {
       if (difficulty !== 0) {
         this.speak(Ask.wantReduceDifficulty(difficulty));
         this.contexts.set('reduce-difficulty-instead-of-resign', 1);
+        this.suggest(Sug.yes, Sug.resign);
         return;
       }
     }
@@ -82,9 +99,11 @@ export class GameHandlers extends HandlerBase {
     if (board.movesNumber < 5) {
       this.speak(Ans.wtfYouAreJustStartedANewGame());
       this.speak(Ask.waitMove());
+      this.suggest(Sug.move, Sug.changeDifficulty, Sug.newGame);
     } else {
       this.speak(Ask.confirmResign());
       this.contexts.set('ask-to-resign', 1);
+      this.suggest(Sug.yes, Sug.no, Sug.changeDifficulty);
     }
   }
 
@@ -92,5 +111,6 @@ export class GameHandlers extends HandlerBase {
     this.contexts.set('ask-to-new-game', 1);
     this.long.fen = null;
     this.contexts.drop('game');
+    this.suggest(Sug.newGame, Sug.exit, Sug.changeDifficulty);
   }
 }

@@ -2,6 +2,7 @@ import { HandlerBase } from '../struct/handlerBase';
 import { Answer as Ans } from '../../locales/answer';
 import { Ask } from '../../locales/ask';
 import { maxDifficulty } from '../../chess/chess';
+import { OtherHandlers } from './other';
 
 export class SettingsHandlers extends HandlerBase {
   static safeGameContext(): void {
@@ -11,22 +12,12 @@ export class SettingsHandlers extends HandlerBase {
     }
   }
 
-  static directToNextLogicalAction(): void {
-    const gameContext = this.contexts.get('game');
-    if (gameContext) {
-      this.speak(Ask.waitMove());
-      this.contexts.set('turn-intent', 1);
-    } else {
-      this.speak(Ask.askToNewGame());
-      this.contexts.set('ask-to-new-game', 1);
-    }
-  }
-
   static difficulty(): void {
     this.safeGameContext();
     const currentDifficulty = this.long.options.difficulty;
     this.speak(Ans.showDifficulty(currentDifficulty));
     this.speak(Ask.askToChangeDifficulty());
+    this.suggest('0', '3', '6', '9', '12', '15', '18', '20');
   }
 
   static modifyDifficulty(num: number): void {
@@ -39,18 +30,18 @@ export class SettingsHandlers extends HandlerBase {
       this.speak(Ans.difficultyChanged(num, currentDifficulty));
       this.long.options.difficulty = num;
     }
-    this.directToNextLogicalAction();
+    OtherHandlers.directToNextLogicalAction();
   }
 
   static enableConfirm(): void {
     this.long.options.confirm = true;
     this.speak(Ans.confirmEnabled());
-    this.directToNextLogicalAction();
+    OtherHandlers.directToNextLogicalAction();
   }
 
   static disableConfirm(): void {
     this.long.options.confirm = false;
     this.speak(Ans.confirmDisabled());
-    this.directToNextLogicalAction();
+    OtherHandlers.directToNextLogicalAction();
   }
 }

@@ -17,61 +17,62 @@ export class Handlers extends HandlerBase {
     contextManager: ContextManager,
     shortStorage: ConversationData,
     longStorage: LongStorageData,
+    suggest: (...suggestions: string[]) => void,
     endConv?: (msg: string) => void
   ) {
-    super.load(response, contextManager, shortStorage, longStorage, endConv);
-    MoveHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
-    SettingsHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
-    InfoHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
-    GameHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
-    NavigationHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
-    AroundMoveHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
-    FallbackHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
-    OtherHandlers.load(response, contextManager, shortStorage, longStorage, endConv);
+    super.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
+    MoveHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
+    SettingsHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
+    InfoHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
+    GameHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
+    NavigationHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
+    AroundMoveHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
+    FallbackHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
+    OtherHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
   }
 
-  static newGame = GameHandlers.newGame;
-  static continueGame = GameHandlers.continueGame;
+  static newGame = GameHandlers.newGame.bind(GameHandlers);
+  static continueGame = GameHandlers.continueGame.bind(GameHandlers);
   static resign = () => GameHandlers.resign();
-  static welcome = GameHandlers.welcome;
+  static welcome = GameHandlers.welcome.bind(GameHandlers);
 
-  static next = NavigationHandlers.next;
-  static yes = NavigationHandlers.yes;
-  static no = NavigationHandlers.no;
+  static next = NavigationHandlers.next.bind(NavigationHandlers);
+  static yes = NavigationHandlers.yes.bind(NavigationHandlers);
+  static no = NavigationHandlers.no.bind(NavigationHandlers);
 
-  static difficulty = SettingsHandlers.difficulty;
-  static modifyDifficulty = SettingsHandlers.modifyDifficulty;
-  static enableConfirm = SettingsHandlers.enableConfirm;
-  static disableConfirm = SettingsHandlers.disableConfirm;
+  static difficulty = SettingsHandlers.difficulty.bind(SettingsHandlers);
+  static modifyDifficulty = SettingsHandlers.modifyDifficulty.bind(SettingsHandlers);
+  static enableConfirm = SettingsHandlers.enableConfirm.bind(SettingsHandlers);
+  static disableConfirm = SettingsHandlers.disableConfirm.bind(SettingsHandlers);
 
-  static turn = MoveHandlers.turn;
+  static turn = MoveHandlers.turn.bind(MoveHandlers);
 
-  static promotion = AroundMoveHandlers.promotion;
-  static chooseSide = AroundMoveHandlers.chooseSide;
-  static moveAuto = AroundMoveHandlers.moveAuto;
-  static castling = AroundMoveHandlers.castling;
-  static correct = AroundMoveHandlers.correct;
-  static chooseCastling = AroundMoveHandlers.chooseCastling;
-  static acceptAdvice = AroundMoveHandlers.acceptAdvice;
+  static promotion = AroundMoveHandlers.promotion.bind(AroundMoveHandlers);
+  static chooseSide = AroundMoveHandlers.chooseSide.bind(AroundMoveHandlers);
+  static moveAuto = AroundMoveHandlers.moveAuto.bind(AroundMoveHandlers);
+  static castling = AroundMoveHandlers.castling.bind(AroundMoveHandlers);
+  static correct = AroundMoveHandlers.correct.bind(AroundMoveHandlers);
+  static chooseCastling = AroundMoveHandlers.chooseCastling.bind(AroundMoveHandlers);
+  static acceptAdvice = AroundMoveHandlers.acceptAdvice.bind(AroundMoveHandlers);
   static advice = () => AroundMoveHandlers.advice();
 
-  static firstPartOfBoard = InfoHandlers.firstPartOfBoard;
-  static secondPartOfBoard = InfoHandlers.secondPartOfBoard;
-  static rank = InfoHandlers.rank;
-  static nextRank = InfoHandlers.nextRank;
-  static prevRank = InfoHandlers.prevRank;
-  static listOfMoves = InfoHandlers.listOfMoves;
-  static history = InfoHandlers.history;
-  static square = InfoHandlers.square;
-  static piece = InfoHandlers.piece;
-  static all = InfoHandlers.all;
-  static captured = InfoHandlers.captured;
-  static side = InfoHandlers.side;
-  static fullmove = InfoHandlers.fullmove;
+  static firstPartOfBoard = InfoHandlers.firstPartOfBoard.bind(InfoHandlers);
+  static secondPartOfBoard = InfoHandlers.secondPartOfBoard.bind(InfoHandlers);
+  static rank = InfoHandlers.rank.bind(InfoHandlers);
+  static nextRank = InfoHandlers.nextRank.bind(InfoHandlers);
+  static prevRank = InfoHandlers.prevRank.bind(InfoHandlers);
+  static listOfMoves = InfoHandlers.listOfMoves.bind(InfoHandlers);
+  static history = InfoHandlers.history.bind(InfoHandlers);
+  static square = InfoHandlers.square.bind(InfoHandlers);
+  static piece = InfoHandlers.piece.bind(InfoHandlers);
+  static all = InfoHandlers.all.bind(InfoHandlers);
+  static captured = InfoHandlers.captured.bind(InfoHandlers);
+  static side = InfoHandlers.side.bind(InfoHandlers);
+  static fullmove = InfoHandlers.fullmove.bind(InfoHandlers);
 
-  static fallback = FallbackHandlers.fallback;
+  static fallback = FallbackHandlers.fallback.bind(FallbackHandlers);
 
-  static help = OtherHandlers.help;
-  static silence = OtherHandlers.silence;
-  static repeat = OtherHandlers.repeat;
+  static help = OtherHandlers.help.bind(OtherHandlers);
+  static silence = OtherHandlers.silence.bind(OtherHandlers);
+  static repeat = OtherHandlers.repeat.bind(OtherHandlers);
 }

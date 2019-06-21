@@ -1,4 +1,4 @@
-import { dialogflow, DialogflowConversation } from 'actions-on-google';
+import { dialogflow, DialogflowConversation, Suggestions } from 'actions-on-google';
 
 import { initLanguage } from './locales/initLang';
 import { ChessSide, WhoseSide, CastlingType } from './chess/chessUtils';
@@ -27,8 +27,11 @@ app.middleware(
     function speak(text: string) {
       conv.ask(`<speak>${text}</speak>`);
     }
+    function suggest(...ss: string[]) {
+      conv.ask(new Suggestions(ss.filter((_, i) => i < 8)));
+    }
     const gCont = new GoogleContextManager(conv.contexts);
-    Handlers.load(speak, gCont, conv.data, conv.user.storage, conv.close.bind(conv));
+    Handlers.load(speak, gCont, conv.data, conv.user.storage, suggest, conv.close.bind(conv));
   }
 );
 

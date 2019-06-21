@@ -1,6 +1,7 @@
 import { HandlerBase } from '../struct/handlerBase';
 import { Answer as Ans } from '../../locales/answer';
 import { Ask } from '../../locales/ask';
+import { Suggestions as Sug } from '../../locales/suggestions';
 import {
   oneRank,
   manyRanks,
@@ -17,6 +18,8 @@ import { oppositeSide, WhoseSide, ChessSide } from '../../chess/chessUtils';
 import { pause } from '../../support/helpers';
 import { FallbackHandlers } from './fallback';
 
+const ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
+
 export class InfoHandlers extends HandlerBase {
   static firstPartOfBoard(): void {
     const fenstring = this.long.fen;
@@ -26,6 +29,7 @@ export class InfoHandlers extends HandlerBase {
     this.speak(Ask.askToGoNext());
     this.contexts.set('board-next', 1);
     this.contexts.set('rank-info', 1);
+    this.suggest(Sug.next, Sug.move);
   }
 
   static secondPartOfBoard(): void {
@@ -35,6 +39,7 @@ export class InfoHandlers extends HandlerBase {
     this.contexts.set('turn-intent', 1);
     this.speak(longString);
     this.speak(Ask.waitMove());
+    this.suggest(Sug.move, Sug.history);
   }
 
   static rank(ord?: string, num?: string): void {
@@ -44,14 +49,19 @@ export class InfoHandlers extends HandlerBase {
       if (rankNum < 1 || rankNum > chessBoardSize) {
         this.speak(Ans.incorrectRankNumber(rankNum));
         this.speak(Ask.askRankNumber());
+        this.suggest(...ranks);
         return;
       }
       const fenstring = this.long.fen;
       this.speak(oneRank(fenstring, rankNum));
       this.speak(Ask.askToGoNext());
       this.contexts.set('rank-next', 1, { rank: rankNum, dir: 'u' });
+      const suggestions = [Sug.nextRank, Sug.prevRank];
+      suggestions.push(...ranks.filter(rank => rank !== rankNum.toString()));
+      this.suggest(...suggestions);
     } else {
       this.speak(Ask.askRankNumber());
+      this.suggest(...ranks);
     }
   }
 
@@ -60,9 +70,10 @@ export class InfoHandlers extends HandlerBase {
     const rankContext = this.contexts.get('rank-next');
     const lastRank = Number(rankContext.parameters.rank);
     if (lastRank === 8) {
+      this.contexts.set('turn-intent', 1);
       this.speak(Ans.noNextRank());
       this.speak(Ask.waitMove());
-      this.contexts.set('turn-intent', 1);
+      this.suggest(Sug.move, Sug.history);
       return;
     }
     const fenstring = this.long.fen;
@@ -70,9 +81,13 @@ export class InfoHandlers extends HandlerBase {
     this.speak(oneRank(fenstring, thisRank));
     if (thisRank === 8) {
       this.speak(Ask.whatToDo());
+      this.suggest(Sug.move, Sug.history);
     } else {
       this.speak(Ask.askToGoNext());
       this.contexts.set('rank-next', 1, { rank: thisRank, dir: 'u' });
+      const suggestions = [Sug.nextRank, Sug.prevRank];
+      suggestions.push(...ranks.filter(rank => rank !== thisRank.toString()));
+      this.suggest(...suggestions);
     }
   }
 
@@ -81,9 +96,10 @@ export class InfoHandlers extends HandlerBase {
     const rankContext = this.contexts.get('rank-next');
     const lastRank = Number(rankContext.parameters.rank);
     if (lastRank === 1) {
+      this.contexts.set('turn-intent', 1);
       this.speak(Ans.noPrevRank());
       this.speak(Ask.waitMove());
-      this.contexts.set('turn-intent', 1);
+      this.suggest(Sug.move, Sug.history);
       return;
     }
     const fenstring = this.long.fen;
@@ -91,9 +107,13 @@ export class InfoHandlers extends HandlerBase {
     this.speak(oneRank(fenstring, thisRank));
     if (thisRank === 1) {
       this.speak(Ask.whatToDo());
+      this.suggest(Sug.move, Sug.history);
     } else {
       this.speak(Ask.askToGoNext());
       this.contexts.set('rank-next', 1, { rank: thisRank, dir: 'd' });
+      const suggestions = [Sug.nextRank, Sug.prevRank];
+      suggestions.push(...ranks.filter(rank => rank !== thisRank.toString()));
+      this.suggest(...suggestions);
     }
   }
 
@@ -108,6 +128,7 @@ export class InfoHandlers extends HandlerBase {
       console.log(`ERROR: ${msg}`);
       this.speak(Ans.error(msg));
       this.speak(Ask.tryAgainOrLater());
+      this.suggest(Sug.exit, Sug.newGame);
       return;
     }
     const bulkOfMoves = getBulkOfMoves(fenstring, moves, startNumber);
@@ -115,10 +136,12 @@ export class InfoHandlers extends HandlerBase {
     if (bulkOfMoves.end) {
       this.speak(answer + ' \n' + Ans.itsAll());
       this.speak(Ask.waitMove());
+      this.suggest(Sug.move, Sug.advice, Sug.posInfo, Sug.autoMove);
     } else {
       this.speak(answer);
       this.speak(Ask.askToGoNext());
       this.contexts.set('moves-next', 1, { start: bulkOfMoves.next });
+      this.suggest(Sug.next, Sug.move, Sug.advice, Sug.posInfo);
     }
   }
 
@@ -127,12 +150,14 @@ export class InfoHandlers extends HandlerBase {
     if (history.length === 0) {
       this.speak(Ans.emptyHistory());
       this.speak(Ask.waitMove());
+      this.suggest(Sug.move, Sug.advice);
       return;
     }
     movesNumber = movesNumber || history.length;
     if (movesNumber < 1) {
       this.speak(Ans.invalidMovesNumber(movesNumber));
       this.speak(Ask.whatToDo());
+      this.suggest(Sug.history, Sug.move);
       return;
     }
     let answer = '';
@@ -145,6 +170,7 @@ export class InfoHandlers extends HandlerBase {
     answer += historyOfMoves(requestedMoves, playerSide);
     this.speak(answer);
     this.speak(Ask.waitMove());
+    this.suggest(Sug.move, Sug.availableMoves, Sug.advice);
   }
 
   static square(square: string): void {
@@ -158,6 +184,7 @@ export class InfoHandlers extends HandlerBase {
       this.speak(Ans.emptyPosition(square));
     }
     this.speak(pause(1) + Ask.nextSquare() + ' ' + Ask.orMove());
+    this.suggest(Sug.move, Sug.posInfo, Sug.pieceInfo, Sug.captured, Sug.board);
   }
 
   static piece(piece: string, side?: ChessSide, whose?: WhoseSide): void {
@@ -191,6 +218,7 @@ export class InfoHandlers extends HandlerBase {
       this.speak(ans);
     }
     this.speak(pause(0.6) + Ask.nextPiece() + ' ' + Ask.orMove());
+    this.suggest(Sug.move, Sug.pieceInfo, Sug.posInfo, Sug.captured, Sug.board);
   }
 
   static all(side?: ChessSide, whose?: WhoseSide): void {
@@ -211,6 +239,7 @@ export class InfoHandlers extends HandlerBase {
     const positions = board.allPiecesBySide(side);
     this.speak(allPiecesForSide(positions, side, playerSide) + ' \n' + Ans.itsAll());
     this.speak(Ask.waitMove());
+    this.suggest(Sug.move, Sug.all(oppositeSide(side)), Sug.captured, Sug.board);
   }
 
   static captured(): void {
@@ -224,12 +253,14 @@ export class InfoHandlers extends HandlerBase {
       this.speak(listCapturedPieces(captured, playerSide));
     }
     this.speak(Ask.waitMove());
+    this.suggest(Sug.move, Sug.all(ChessSide.WHITE), Sug.all(ChessSide.BLACK));
   }
 
   static side(side?: ChessSide, who?: WhoseSide): void {
     const playerSide = this.long.side;
     this.speak(someonePlayForColor(who, side, playerSide));
     this.speak(Ask.waitMove());
+    this.suggest(Sug.move, Sug.pieceInfo, Sug.posInfo);
   }
 
   static fullmove(): void {
@@ -242,5 +273,6 @@ export class InfoHandlers extends HandlerBase {
       this.speak(Ans.fullmoveNumber(num));
     }
     this.speak(Ask.waitMove());
+    this.suggest(Sug.move, Sug.history, Sug.captured);
   }
 }

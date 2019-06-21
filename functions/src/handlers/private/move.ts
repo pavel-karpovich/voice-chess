@@ -1,9 +1,10 @@
 import { Chess, ChessGameState } from '../../chess/chess';
 import { HandlerBase } from '../struct/handlerBase';
 import { Answer as Ans } from '../../locales/answer';
+import { Suggestions as Sug } from '../../locales/suggestions';
 import { Ask } from '../../locales/ask';
 import { ChessBoard } from '../../chess/chessboard';
-import { pause } from '../../support/helpers';
+import { pause, shuffle } from '../../support/helpers';
 import { getSide } from '../../chess/chessUtils';
 import { GameHandlers } from './game';
 import { createHistoryItem } from '../../support/history';
@@ -18,9 +19,11 @@ export class MoveHandlers extends HandlerBase {
     const fiftyFifty = Math.random();
     if (fiftyFifty < chance) {
       this.speak(Ask.askToMoveAgain());
+      this.suggest(Sug.move, Sug.availableMoves, Sug.advice, Sug.history);
     } else {
       this.speak(Ask.askToRemindBoard());
       this.contexts.set('turn-showboard', 1);
+      this.suggest(Sug.yes, Sug.no, Sug.move, Sug.pieceInfo);
     }
   }
   static async prepareToMove(move: string, chess?: Chess): Promise<void> {
@@ -40,30 +43,37 @@ export class MoveHandlers extends HandlerBase {
       if (correctCtx) {
         this.contexts.set('correct-last-move', 1);
       }
+      this.suggest(Sug.queen, Sug.knight, Sug.rook, Sug.bishop);
       return;
     }
     await this.moveByPlayer(move, chess);
     await this.moveByAI(chess);
   }
 
+  static rollbackLastMoves(chess: Chess, final = false): void {
+    const hist = this.long.history;
+    const board = new ChessBoard(this.long.fen);
+    const lastAIMove = hist[hist.length - 1];
+    const lastPlMove = hist[hist.length - 2];
+    if (final) {
+      hist.length = hist.length - 2;
+    }
+    board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e, lastAIMove.c);
+    board.extract(lastPlMove.m.slice(1), lastPlMove.b, lastPlMove.e, lastPlMove.c);
+    const cstFen = this.long.cstFen;
+    board.loadCorrectCastlingFen(cstFen);
+    chess.fenstring = board.convertToFen();
+  }
+
   static async moveByPlayer(move: string, chess?: Chess, prologue?: string): Promise<void> {
-    let fenstring = this.long.fen;
     const difficulty = this.long.options.difficulty;
     if (!chess) {
-      chess = new Chess(fenstring, difficulty);
+      chess = new Chess(this.long.fen, difficulty);
     }
     const correctCtx = this.contexts.get('correct-last-move');
     const hist = this.long.history;
     if (correctCtx) {
-      const board = new ChessBoard(fenstring);
-      const lastAIMove = hist.pop();
-      const lastPlMove = hist.pop();
-      board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e, lastAIMove.c);
-      board.extract(lastPlMove.m.slice(1), lastPlMove.b, lastPlMove.e, lastPlMove.c);
-      const cstFen = this.long.cstFen;
-      board.loadCorrectCastlingFen(cstFen);
-      fenstring = board.convertToFen();
-      chess.fenstring = fenstring;
+      this.rollbackLastMoves(chess, true);
     }
     const from = move.slice(0, 2);
     const to = move.slice(2, 4);
@@ -206,6 +216,46 @@ export class MoveHandlers extends HandlerBase {
     const askYouStr = Ask.nowYouNeedToMove();
     this.speak(`${pause(2)}${answer}\n${askYouStr}`);
     this.long.fen = chess.fenstring;
+    const suggestions = [Sug.move];
+    const chanceToGiveAdvice = Math.random();
+    if (chanceToGiveAdvice < 0.3) {
+      suggestions.push(Sug.advice);
+    }
+    const chanceToAskAboutConfirmationSettings = Math.random();
+    const confirm = this.long.options.confirm;
+    if (chanceToAskAboutConfirmationSettings < 0.15) {
+      suggestions.push(confirm ? Sug.disableConfirm : Sug.enableConfirm);
+    }
+    const chanceToSuggestCorrect = Math.random();
+    const suggestCorrect = chanceToSuggestCorrect < 0.4;
+    const avlbCapacity = 8 - suggestions.length - Number(suggestCorrect);
+    const moves = await this.moveSuggestions(avlbCapacity, chess);
+    suggestions.push(...moves);
+    if (suggestCorrect) {
+      suggestions.push(Sug.correct);
+    }
+    this.suggest(...suggestions);
+  }
+
+  static async moveSuggestions(num: number, chess?: Chess): Promise<string[]> {
+    if (!chess) {
+      const fen = this.long.fen;
+      const difficulty = this.long.options.difficulty;
+      chess = new Chess(fen, difficulty);
+    }
+    await chess.updateGameState();
+    const suggestions = [] as string[];
+    if (chess.legalMoves.length < num) {
+      suggestions.push(...chess.legalMoves);
+    } else {
+      shuffle(chess.legalMoves).forEach(move => {
+        const from = move.slice(0, 2);
+        if (suggestions.length < num && suggestions.every(mv => mv.slice(0, 2) !== from)) {
+          suggestions.push(move);
+        }
+      });
+    }
+    return suggestions;
   }
 
   static async simpleMoveByAI(): Promise<void> {
@@ -223,6 +273,10 @@ export class MoveHandlers extends HandlerBase {
     const enemyStr = Ans.enemyMove(enemyFrom, enemyTo, enemyPiece);
     const askYouStr = Ask.nowYouNeedToMove();
     this.speak(enemyStr + '\n' + askYouStr);
+    const suggestions = [Sug.move];
+    const moves = await this.moveSuggestions(8 - suggestions.length, chess);
+    suggestions.push(...moves);
+    this.suggest(...suggestions);
   }
 
   static async playerMoveByAI(chess?: Chess): Promise<void> {
@@ -240,28 +294,21 @@ export class MoveHandlers extends HandlerBase {
     from = from.toLowerCase();
     to = to.toLowerCase();
     const move = from + to;
-    let fenstring = this.long.fen;
+    const fenstring = this.long.fen;
+    const difficulty = this.long.options.difficulty;
+    const chess = new Chess(fenstring, difficulty);
     const correctCtx = this.contexts.get('correct-last-move');
     if (correctCtx) {
-      const hist = this.long.history;
-      const board = new ChessBoard(fenstring);
-      const lastAIMove = hist[hist.length - 1];
-      const lastPlMove = hist[hist.length - 2];
-      board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e, lastAIMove.c);
-      board.extract(lastPlMove.m.slice(1), lastPlMove.b, lastPlMove.e, lastPlMove.c);
-      const cstFen = this.long.cstFen;
-      board.loadCorrectCastlingFen(cstFen);
-      fenstring = board.convertToFen();
+      this.rollbackLastMoves(chess);
     }
-    const difficulty = this.long.options.difficulty;
     const playerSide = this.long.side;
-    const chess = new Chess(fenstring, difficulty);
     const board = new ChessBoard(chess.fenstring);
     if (board.moveSide !== playerSide) {
       const msg = 'The player and server sides are messed.';
       console.log(`ERROR: ${msg}`);
       this.speak(Ans.error(msg));
       this.speak(Ask.tryAgainOrLater());
+      this.suggest(Sug.exit, Sug.newGame);
       return;
     }
     const actualPiece = board.pos(from);
@@ -302,6 +349,7 @@ export class MoveHandlers extends HandlerBase {
       if (correctCtx) {
         this.contexts.set('correct-last-move', 1);
       }
+      this.suggest(Sug.confirm, Sug.no);
       return;
     }
     const needConfirm = this.long.options.confirm;
@@ -311,6 +359,7 @@ export class MoveHandlers extends HandlerBase {
       if (correctCtx) {
         this.contexts.set('correct-last-move', 1);
       }
+      this.suggest(Sug.confirm, Sug.no);
       return;
     }
     await this.prepareToMove(move, chess);

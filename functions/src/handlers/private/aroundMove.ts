@@ -1,5 +1,6 @@
 import { HandlerBase } from '../struct/handlerBase';
 import { Answer as Ans } from '../../locales/answer';
+import { Suggestions as Sug } from '../../locales/suggestions';
 import { Ask } from '../../locales/ask';
 import { MoveHandlers } from './move';
 import { ChessSide, CastlingType } from '../../chess/chessUtils';
@@ -27,6 +28,10 @@ export class AroundMoveHandlers extends HandlerBase {
     if (side === ChessSide.WHITE) {
       this.speak(Ans.whiteSide());
       this.speak(Ask.askToMove());
+      const suggestions = [Sug.move];
+      const moves = await MoveHandlers.moveSuggestions(8 - suggestions.length);
+      suggestions.push(...moves);
+      this.suggest(...suggestions);
     } else {
       this.speak(Ans.blackSide());
       await MoveHandlers.simpleMoveByAI();
@@ -58,6 +63,7 @@ export class AroundMoveHandlers extends HandlerBase {
       this.speak(Ans.twoTypesOfCastling(kingPos, to1, to2));
       this.speak(Ask.chooseCastling());
       this.contexts.set('choose-castling', 1);
+      this.suggest(Sug.queenside, Sug.kingside);
       return;
     }
     const needConfirm = this.long.options.confirm;
@@ -67,17 +73,19 @@ export class AroundMoveHandlers extends HandlerBase {
       const rTo = rockMove.slice(2, 4);
       this.speak(Ask.askToConfirmCastling(kingPos, to1, rFrom, rTo));
       this.contexts.set('confirm-move', 1, { move: castlings[0] });
+      this.suggest(Sug.confirm, Sug.no);
       return;
     }
     await MoveHandlers.moveByPlayer(castlings[0]);
     await MoveHandlers.moveByAI();
   }
 
-  static correct(): void {
+  static async correct(): Promise<void> {
     const hist = this.long.history;
     if (hist.length < 2) {
       this.speak(Ans.noMoveToCorrect());
       this.speak(Ask.waitMove());
+      this.suggest(Sug.move, Sug.availableMoves, Sug.advice, Sug.autoMove);
       return;
     }
     const lastMove = hist[hist.length - 2];
@@ -86,6 +94,11 @@ export class AroundMoveHandlers extends HandlerBase {
     const piece = lastMove.m[0];
     this.speak(Ask.moveToCorrect(from, to, piece));
     this.contexts.set('correct-last-move', 1);
+    const chess = new Chess(this.long.fen, 0);
+    MoveHandlers.rollbackLastMoves(chess);
+    const suggestions = await MoveHandlers.moveSuggestions(7, chess);
+    suggestions.push(Sug.no);
+    this.suggest(...suggestions);
   }
 
   static async chooseCastling(cast?: CastlingType, piece?: string, cell?: string): Promise<void> {
@@ -127,6 +140,7 @@ export class AroundMoveHandlers extends HandlerBase {
         this.speak(Ask.askToConfirmCastling(kingPos, to2, rockFrom2, rockTo2));
       }
       this.contexts.set('confirm-move', 1, { move: playerMove });
+      this.suggest(Sug.confirm, Sug.no);
       return;
     }
     await MoveHandlers.moveByPlayer(playerMove);
@@ -145,6 +159,7 @@ export class AroundMoveHandlers extends HandlerBase {
       const piece = board.pos(from);
       this.speak(Ask.askToConfirm(from, to, piece));
       this.contexts.set('confirm-move', 1, { move });
+      this.suggest(Sug.confirm, Sug.no);
       return;
     }
     await MoveHandlers.prepareToMove(move);
@@ -174,5 +189,6 @@ export class AroundMoveHandlers extends HandlerBase {
     this.speak(Ans.adviseMove(from, to, piece));
     this.speak(Ask.waitForReactOnAdvise());
     this.contexts.set('advice-made', 1, { move: advisedMove });
+    this.suggest(Sug.agree, Sug.no);
   }
 }
