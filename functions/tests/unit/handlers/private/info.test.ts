@@ -10,7 +10,7 @@ jest.doMock('../../../../src/chess/chess', () => {
   };
 });
 import { InfoHandlers } from '../../../../src/handlers/private/info';
-import { Env } from './_env';
+import { Env } from '../../../mocks/env';
 import { initLanguage } from '../../../../src/locales/initLang';
 import * as board from '../../../../src/support/board';
 import { chessBoardSize } from '../../../../src/chess/chess';
@@ -34,6 +34,7 @@ describe('Tests for info handlers', () => {
       env.contexts,
       env.convData,
       env.userStorage,
+      env.addSuggestions.bind(env),
       env.endConversation.bind(env)
     );
   });
@@ -51,6 +52,7 @@ describe('Tests for info handlers', () => {
       expect(env.contexts.is('board-next')).toBeTruthy();
       expect(env.contexts.is('rank-info')).toBeTruthy();
       expect(board.manyRanks).toBeCalledWith(fen, fromRank, toRank);
+      expect(env.suggestions).not.toHaveLength(0);
       mock.mockReset();
     });
 
@@ -64,6 +66,7 @@ describe('Tests for info handlers', () => {
       expect(env.output).toHaveLength(2);
       expect(env.contexts.is('turn-intent')).toBeTruthy();
       expect(board.manyRanks).toBeCalledWith(fen, fromRank, toRank);
+      expect(env.suggestions).not.toHaveLength(0);
       mock.mockReset();
     });
 
@@ -89,6 +92,7 @@ describe('Tests for info handlers', () => {
           expect(env.output).toHaveLength(2);
           expect(env.contexts.get('rank-next').parameters).toEqual(expParams);
           expect(board.oneRank).toBeCalledWith(fen, Number(rankNum));
+          expect(env.suggestions).not.toHaveLength(0);
         });
 
         test('With invalid rank number', () => {
@@ -96,12 +100,14 @@ describe('Tests for info handlers', () => {
           InfoHandlers.rank(undefined, rankNum);
           expect(env.output).toHaveLength(2);
           expect(board.oneRank).not.toBeCalled();
+          expect(env.suggestions).not.toHaveLength(0);
         });
 
         test('Even without specifying the rank number', () => {
           InfoHandlers.rank();
           expect(env.output).toHaveLength(1);
           expect(board.oneRank).not.toBeCalled();
+          expect(env.suggestions).not.toHaveLength(0);
         });
       });
 
@@ -118,6 +124,7 @@ describe('Tests for info handlers', () => {
           expect(env.contexts.is('rank-info')).toBeTruthy();
           expect(board.oneRank).toBeCalledWith(fen, Number(afterRank) + 1); 
           expect(env.contexts.get('rank-next').parameters).toEqual(expectedParams);
+          expect(env.suggestions).not.toHaveLength(0);
         });
 
         test('The last rank', () => {
@@ -128,7 +135,8 @@ describe('Tests for info handlers', () => {
           InfoHandlers.nextRank();
           expect(env.output).toHaveLength(2);
           expect(env.contexts.is('rank-info')).toBeTruthy();
-          expect(board.oneRank).toBeCalledWith(fen, Number(afterRank) + 1); 
+          expect(board.oneRank).toBeCalledWith(fen, Number(afterRank) + 1);
+          expect(env.suggestions).not.toHaveLength(0); 
         });
 
         test('Next after last rank', () => {
@@ -139,6 +147,7 @@ describe('Tests for info handlers', () => {
           expect(env.contexts.is('rank-info')).toBeTruthy();
           expect(board.oneRank).not.toBeCalled();
           expect(env.contexts.is('turn-intent')).toBeTruthy();
+          expect(env.suggestions).not.toHaveLength(0);
         });
       });
 
@@ -155,6 +164,7 @@ describe('Tests for info handlers', () => {
           expect(env.contexts.is('rank-info')).toBeTruthy();
           expect(board.oneRank).toBeCalledWith(fen, Number(beforeRank) - 1); 
           expect(env.contexts.get('rank-next').parameters).toEqual(expectedParams);
+          expect(env.suggestions).not.toHaveLength(0);
         });
 
         test('The first rank', () => {
@@ -166,6 +176,7 @@ describe('Tests for info handlers', () => {
           expect(env.output).toHaveLength(2);
           expect(env.contexts.is('rank-info')).toBeTruthy();
           expect(board.oneRank).toBeCalledWith(fen, Number(beforeRank) - 1);
+          expect(env.suggestions).not.toHaveLength(0);
         });
 
         test('Previous to the first rank', () => {
@@ -176,6 +187,7 @@ describe('Tests for info handlers', () => {
           expect(env.contexts.is('rank-info')).toBeTruthy();
           expect(board.oneRank).not.toBeCalled();
           expect(env.contexts.is('turn-intent')).toBeTruthy();
+          expect(env.suggestions).not.toHaveLength(0);
         });
       });
     });
@@ -214,6 +226,7 @@ describe('Tests for info handlers', () => {
       expect(moves.listMoves).toBeCalledWith(testBulk.pieces);
       expect(env.output).toHaveLength(2);
       expect(env.contexts.get('moves-next').parameters).toEqual({ start: testBulk.next });
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('The last bulk of available moves', async () => {
@@ -235,6 +248,7 @@ describe('Tests for info handlers', () => {
       expect(moves.listMoves).toBeCalledWith(testBulk.pieces);
       expect(env.output).toHaveLength(2);
       expect(env.contexts.is('moves-next')).toBeFalsy();
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('No available moves', async () => {
@@ -249,6 +263,7 @@ describe('Tests for info handlers', () => {
       expect(moves.getBulkOfMoves).not.toBeCalled();
       expect(env.output).toHaveLength(2);
       expect(env.contexts.is('moves-next')).toBeFalsy();
+      expect(env.suggestions).not.toHaveLength(0);
     });
   });
 
@@ -274,6 +289,7 @@ describe('Tests for info handlers', () => {
       InfoHandlers.history(movesNum);
       expect(history.historyOfMoves).toBeCalledWith(histMoves, playerSide);
       expect(env.output).toHaveLength(2);
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('When the history is actually empty', () => {
@@ -283,6 +299,7 @@ describe('Tests for info handlers', () => {
       InfoHandlers.history(movesNum);
       expect(history.historyOfMoves).not.toBeCalled();
       expect(env.output).toHaveLength(2);
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('With an invalid number of moves', () => {
@@ -292,6 +309,7 @@ describe('Tests for info handlers', () => {
       InfoHandlers.history(movesNum);
       expect(history.historyOfMoves).not.toBeCalled();
       expect(env.output).toHaveLength(2);
+      expect(env.suggestions).not.toHaveLength(0);
     });
   });
 
@@ -306,6 +324,7 @@ describe('Tests for info handlers', () => {
     expect(env.output).toHaveLength(2);
     expect((MockBoard.instance as MockBoard).pos).toBeCalledWith(square);
     MockBoard.resetMockedData();
+    expect(env.suggestions).not.toHaveLength(0);
   });
 
   describe('Getting the info about all pieces by specific type', () => {
@@ -334,6 +353,7 @@ describe('Tests for info handlers', () => {
       InfoHandlers.piece(piece, side as ChessSide, whose as WhoseSide);
       expect(env.output).toHaveLength(2);
       expect(board.allPiecesForType).toBeCalled();
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('When no such pieces left on the board', () => {
@@ -346,12 +366,12 @@ describe('Tests for info handlers', () => {
       InfoHandlers.piece(piece);
       expect(env.output).toHaveLength(2);
       expect(board.allPiecesForType).not.toBeCalled();
+      expect(env.suggestions).not.toHaveLength(0);
     });
   });
 
   describe('Getting all pieces of specific side', () => {
 
-    
     test.each([
       [undefined, WhoseSide.PLAYER],
       [undefined, WhoseSide.ENEMY],
@@ -372,6 +392,7 @@ describe('Tests for info handlers', () => {
       expect(env.output).toHaveLength(2);
       expect((MockBoard.instance as MockBoard).allPiecesBySide).toBeCalledTimes(1);
       expect(board.allPiecesForSide).toBeCalledTimes(1);
+      expect(env.suggestions).not.toHaveLength(0);
       MockBoard.resetMockedData();
       mock.mockReset();
     });
@@ -400,6 +421,7 @@ describe('Tests for info handlers', () => {
     expect(env.output).toHaveLength(2);
     expect((MockBoard.instance as MockBoard).capturedPieces).toBeCalledTimes(1);
     expect(board.listCapturedPieces).toBeCalledWith(capt, playerSide);
+    expect(env.suggestions).not.toHaveLength(0);
     MockBoard.resetMockedData();
     mock.mockReset();
   });
@@ -413,6 +435,7 @@ describe('Tests for info handlers', () => {
     InfoHandlers.side(side, who);
     expect(board.someonePlayForColor).toBeCalledWith(who, side, playerSide);
     expect(env.output).toHaveLength(2);
+    expect(env.suggestions).not.toHaveLength(0);
     mock.mockReset();
   });
 
@@ -422,6 +445,7 @@ describe('Tests for info handlers', () => {
     env.userStorage.fen = fen;
     InfoHandlers.fullmove();
     expect(env.output).toHaveLength(2);
+    expect(env.suggestions).not.toHaveLength(0);
   });
 
 });

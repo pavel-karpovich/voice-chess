@@ -3,7 +3,7 @@ jest.doMock('../../../../src/chess/chessboard', () => {
   return { ChessBoard: MockBoard };
 });
 import { GameHandlers } from '../../../../src/handlers/private/game';
-import { Env } from './_env';
+import { Env } from '../../../mocks/env';
 import { Chess } from '../../../../src/chess/chess';
 import { ChessSide } from '../../../../src/chess/chessUtils';
 import { initLanguage } from '../../../../src/locales/initLang';
@@ -23,8 +23,43 @@ describe('Tests for game handlers', () => {
       env.contexts,
       env.convData,
       env.userStorage,
+      env.addSuggestions.bind(env),
       env.endConversation.bind(env)
     );
+  });
+
+  describe('Welcome handler', () => {
+
+    test('When a player starts the game for the first time', () => {
+      const initOpts = {
+        difficulty: 2,
+        confirm: true,
+      };
+      GameHandlers.welcome();
+      expect(env.convData.fallbackCount).toBe(0);
+      expect(env.userStorage.options).toEqual(initOpts);
+      expect(env.output).toHaveLength(2);
+      expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
+      expect(env.suggestions).not.toHaveLength(0);
+    });
+
+    test("When a player doesn't have a running game", () => {
+      env.userStorage.options = { difficulty: 10 };
+      GameHandlers.welcome();
+      expect(env.output).toHaveLength(2);
+      expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
+      expect(env.suggestions).not.toHaveLength(0);
+    });
+
+    test('When a player has a running game', () => {
+      const fen = 'Fen for the tes';
+      env.userStorage.options = { difficulty: 10 };
+      env.userStorage.fen = fen;
+      GameHandlers.welcome();
+      expect(env.output).toHaveLength(2);
+      expect(env.contexts.is('ask-to-continue')).toBeTruthy();
+      expect(env.suggestions).not.toHaveLength(0);
+    });
   });
 
   test('Creating new game', () => {
@@ -33,16 +68,31 @@ describe('Tests for game handlers', () => {
     expect(env.userStorage.history).toEqual([]);
     expect(env.output).toHaveLength(2);
     expect(env.contexts.is('ask-side')).toBeTruthy();
+    expect(env.suggestions).not.toHaveLength(0);
   });
 
   describe('New game handler', () => {
 
+    let newGameMock: jest.SpyInstance;
+    beforeEach(() => {
+      newGameMock = jest.spyOn(GameHandlers, 'createNewGame');
+      newGameMock.mockImplementationOnce(() => {});
+    });
+    afterEach(() => {
+      newGameMock.mockReset();
+    });
+
     test('When there is no running game', () => {
       GameHandlers.newGame();
-      expect(env.userStorage.fen).toBe(Chess.initialFen);
-      expect(env.userStorage.history).toEqual([]);
-      expect(env.output).toHaveLength(2);
-      expect(env.contexts.is('ask-side')).toBeTruthy();
+      expect(GameHandlers.createNewGame).toBeCalledTimes(1);
+      expect(env.output).toHaveLength(0);
+    });
+    
+    test('When there is a confirming context', () => {
+      env.contexts.set('confirm-new-game', 1);
+      GameHandlers.newGame();
+      expect(GameHandlers.createNewGame).toBeCalledTimes(1);
+      expect(env.output).toHaveLength(0);
     });
 
     test('When there is a running game', () => {
@@ -52,15 +102,7 @@ describe('Tests for game handlers', () => {
       expect(env.output).toHaveLength(1);
       expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
       expect(env.contexts.is('confirm-new-game')).toBeTruthy();
-    });
-    
-    test('When there is a confirming context', () => {
-      env.contexts.set('confirm-new-game', 1);
-      GameHandlers.newGame();
-      expect(env.userStorage.fen).toBe(Chess.initialFen);
-      expect(env.userStorage.history).toEqual([]);
-      expect(env.output).toHaveLength(2);
-      expect(env.contexts.is('ask-side')).toBeTruthy();
+      expect(env.suggestions).not.toHaveLength(0);
     });
   });
 
@@ -70,6 +112,7 @@ describe('Tests for game handlers', () => {
       GameHandlers.continueGame();
       expect(env.output).toHaveLength(2);
       expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('With running game', () => {
@@ -81,6 +124,7 @@ describe('Tests for game handlers', () => {
       expect(env.contexts.is('game')).toBeTruthy();
       expect(env.contexts.is('turn-showboard')).toBeTruthy();
       expect(env.output).toHaveLength(2);
+      expect(env.suggestions).not.toHaveLength(0);
     });
   });
 
@@ -100,6 +144,7 @@ describe('Tests for game handlers', () => {
         MockBoard.movesNumber = 2;
         GameHandlers.resign(1);
         expect(env.output).toHaveLength(2);
+        expect(env.suggestions).not.toHaveLength(0);
       });
 
       test('Not with lowest difficulty', () => {
@@ -108,8 +153,8 @@ describe('Tests for game handlers', () => {
         GameHandlers.resign(1);
         expect(env.output).toHaveLength(1);
         expect(env.contexts.is('reduce-difficulty-instead-of-resign')).toBeTruthy();
+        expect(env.suggestions).not.toHaveLength(0);
       });
-
     });
 
     test('When total number of moves less than 5', () => {
@@ -119,6 +164,7 @@ describe('Tests for game handlers', () => {
       GameHandlers.resign(0);
       expect(env.output).toHaveLength(2);
       expect(env.contexts.is('ask-to-resign')).toBeFalsy();
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('With more than 5 moves behind', () => {
@@ -128,37 +174,7 @@ describe('Tests for game handlers', () => {
       GameHandlers.resign(0);
       expect(env.output).toHaveLength(1);
       expect(env.contexts.is('ask-to-resign')).toBeTruthy();
-    });
-  });
-
-  describe('Welcome handler', () => {
-
-    test('When a player starts the game for the first time', () => {
-      const initOpts = {
-        difficulty: 2,
-        confirm: true,
-      };
-      GameHandlers.welcome();
-      expect(env.convData.fallbackCount).toBe(0);
-      expect(env.userStorage.options).toEqual(initOpts);
-      expect(env.output).toHaveLength(2);
-      expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
-    });
-
-    test("When a player doesn't have a running game", () => {
-      env.userStorage.options = { difficulty: 10 };
-      GameHandlers.welcome();
-      expect(env.output).toHaveLength(2);
-      expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
-    });
-
-    test('When a player has a running game', () => {
-      const fen = 'Fen for the tes';
-      env.userStorage.options = { difficulty: 10 };
-      env.userStorage.fen = fen;
-      GameHandlers.welcome();
-      expect(env.output).toHaveLength(2);
-      expect(env.contexts.is('ask-to-continue')).toBeTruthy();
+      expect(env.suggestions).not.toHaveLength(0);
     });
   });
 
@@ -171,5 +187,6 @@ describe('Tests for game handlers', () => {
     expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
     expect(env.userStorage.fen).toBeNull();
     expect(env.output).toHaveLength(0);
+    expect(env.suggestions).not.toHaveLength(0);
   });
 });

@@ -25,4 +25,8 @@ export class MockContextManager extends ContextManager {
     return this.conte.has(name);
   }
 
+  clear(): void {
+    this.conte.clear();
+  }
+
 }

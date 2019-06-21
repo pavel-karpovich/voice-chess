@@ -58,6 +58,7 @@ export class InfoHandlers extends HandlerBase {
       this.contexts.set('rank-next', 1, { rank: rankNum, dir: 'u' });
       const suggestions = [Sug.nextRank, Sug.prevRank];
       suggestions.push(...ranks.filter(rank => rank !== rankNum.toString()));
+      suggestions.pop();
       this.suggest(...suggestions);
     } else {
       this.speak(Ask.askRankNumber());
@@ -87,6 +88,7 @@ export class InfoHandlers extends HandlerBase {
       this.contexts.set('rank-next', 1, { rank: thisRank, dir: 'u' });
       const suggestions = [Sug.nextRank, Sug.prevRank];
       suggestions.push(...ranks.filter(rank => rank !== thisRank.toString()));
+      suggestions.pop();
       this.suggest(...suggestions);
     }
   }
@@ -113,6 +115,7 @@ export class InfoHandlers extends HandlerBase {
       this.contexts.set('rank-next', 1, { rank: thisRank, dir: 'd' });
       const suggestions = [Sug.nextRank, Sug.prevRank];
       suggestions.push(...ranks.filter(rank => rank !== thisRank.toString()));
+      suggestions.pop();
       this.suggest(...suggestions);
     }
   }

@@ -8,6 +8,7 @@ import { Chess } from '../../chess/chess';
 import { ChessBoard } from '../../chess/chessboard';
 import { FallbackHandlers } from './fallback';
 import { gaussianRandom } from '../../support/helpers';
+import { OtherHandlers } from './other';
 
 export class AroundMoveHandlers extends HandlerBase {
   static async acceptMove(): Promise<void> {
@@ -53,7 +54,7 @@ export class AroundMoveHandlers extends HandlerBase {
     const castlings = board.getAvailableCastlingMoves(playerSide);
     if (castlings.length === 0) {
       this.speak(Ans.cantCastling());
-      MoveHandlers.askOrRemind();
+      OtherHandlers.askOrRemind();
       return;
     }
     const kingPos = castlings[0].slice(0, 2);

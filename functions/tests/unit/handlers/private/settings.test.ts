@@ -1,6 +1,7 @@
 import { SettingsHandlers } from '../../../../src/handlers/private/settings';
 import { initLanguage } from '../../../../src/locales/initLang';
-import { Env } from './_env';
+import { Env } from '../../../mocks/env';
+import { OtherHandlers } from '../../../../src/handlers/private/other';
 
 describe('Tests for Settings Handlers', () => {
   
@@ -17,6 +18,7 @@ describe('Tests for Settings Handlers', () => {
       env.contexts,
       env.convData,
       env.userStorage,
+      env.addSuggestions.bind(env),
       env.endConversation.bind(env)
     );
   });
@@ -36,61 +38,48 @@ describe('Tests for Settings Handlers', () => {
     });
   });
 
-  describe('Direct to the next logical action', () => {
-
-    test('With a running game', () => {
-      env.contexts.set('game', 1);
-      SettingsHandlers.directToNextLogicalAction();
-      expect(env.contexts.is('turn-intent')).toBeTruthy();
-      expect(env.output.length).toBe(1);
-    });
-
-    test('Without a running game', () => {
-      SettingsHandlers.directToNextLogicalAction();
-      expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
-      expect(env.output.length).toBe(1);
-    });
-  });
-
   describe('Difficulty settings', () => {
 
+    let safeGameMock: jest.SpyInstance;
+    let directMock: jest.SpyInstance;
+    const initDifficulty = 9;
     beforeEach(() => {
-      jest.spyOn(SettingsHandlers, 'safeGameContext').mockImplementationOnce(() => {});
-      jest.spyOn(SettingsHandlers, 'directToNextLogicalAction').mockImplementationOnce(() => {});
+      safeGameMock = jest.spyOn(SettingsHandlers, 'safeGameContext');
+      safeGameMock.mockImplementationOnce(() => {});
+      directMock = jest.spyOn(OtherHandlers, 'directToNextLogicalAction');
+      directMock.mockImplementationOnce(() => {});
+      env.userStorage.options = { difficulty: initDifficulty };
+    });
+    afterEach(() => {
+      safeGameMock.mockReset();
+      directMock.mockReset();
     });
     
     test('Basic difficulty handler', () => {
-      const difficulty = 2;
-      env.userStorage.options = { difficulty };
       SettingsHandlers.difficulty();
       expect(env.output.length).toBe(2);
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
-    describe('Change difficulty level', () => {
-
-      test('Set new value to difficulty level', () => {
-        const initDifficulty = 8;
-        env.userStorage.options = { difficulty: initDifficulty };
-        const newValue = 12;
-        SettingsHandlers.modifyDifficulty(newValue);
-        expect(env.output.length).toBe(1);
-        expect(env.userStorage.options.difficulty).toBe(newValue);
-      });
-
-      test('Trying to set the same value', () => {
-        const initDifficulty = 8;
-        env.userStorage.options = { difficulty: initDifficulty };
-        const newValue = 8;
-        SettingsHandlers.modifyDifficulty(newValue);
-        expect(env.userStorage.options.difficulty).toBe(newValue);
-      });
+    test.each([
+      12, initDifficulty,
+    ])('Set value to difficulty level', (newVal) => {
+      SettingsHandlers.modifyDifficulty(newVal);
+      expect(env.output.length).toBe(1);
+      expect(env.userStorage.options.difficulty).toBe(newVal);
+      expect(OtherHandlers.directToNextLogicalAction).toBeCalledTimes(1);
     });
   });
 
   describe('Move confirmation settings', () => {
 
+    let directMock: jest.SpyInstance;
     beforeEach(() => {
-      jest.spyOn(SettingsHandlers, 'directToNextLogicalAction').mockImplementationOnce(() => {});
+      directMock = jest.spyOn(OtherHandlers, 'directToNextLogicalAction');
+      directMock.mockImplementationOnce(() => {});
+    });
+    afterEach(() => {
+      directMock.mockReset();
     });
 
     test('Enable confirmation', () => {
@@ -98,6 +87,7 @@ describe('Tests for Settings Handlers', () => {
       SettingsHandlers.enableConfirm();
       expect(env.userStorage.options.confirm).toBeTruthy();
       expect(env.output.length).toBe(1);
+      expect(OtherHandlers.directToNextLogicalAction).toBeCalledTimes(1);
     });
 
     test('Disable confirmation', () => {
@@ -105,7 +95,7 @@ describe('Tests for Settings Handlers', () => {
       SettingsHandlers.disableConfirm();
       expect(env.userStorage.options.confirm).toBeFalsy();
       expect(env.output.length).toBe(1);
+      expect(OtherHandlers.directToNextLogicalAction).toBeCalledTimes(1);
     });
   });
-  
 });

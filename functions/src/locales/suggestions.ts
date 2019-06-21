@@ -182,13 +182,13 @@ export class Suggestions {
   static get disableConfirm(): string {
     return ({
       en: 'Disable move confirmation',
-      ru: 'Отключить подтверждение хода',
+      ru: 'Откл подтверждение хода',
     } as Langs)[this.lang];
   }
   static get enableConfirm(): string {
     return ({
       en: 'Enable move confirmation',
-      ru: 'Включить подтверждение хода',
+      ru: 'Вкл подтверждение хода',
     } as Langs)[this.lang];
   }
   static get confirm(): string {

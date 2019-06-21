@@ -43,6 +43,7 @@ export class OtherHandlers extends HandlerBase {
     const gameContext = this.contexts.get('game');
     if (gameContext) {
       this.speak(Ans.doNotHurry());
+      this.suggest(Sug.move, Sug.board, Sug.posInfo, Sug.pieceInfo, Sug.captured, Sug.exit);
     } else {
       this.speak(Ask.isAnybodyHere());
       if (this.long.fen) {
@@ -51,6 +52,11 @@ export class OtherHandlers extends HandlerBase {
         this.suggest(Sug.newGame, Sug.exit);
       }
     }
+  }
+
+  static repeat(): void {
+    this.speak('This feature is under development.');
+    this.directToNextLogicalAction();
   }
 
   static directToNextLogicalAction(): void {
@@ -70,8 +76,21 @@ export class OtherHandlers extends HandlerBase {
     }
   }
 
-  static repeat(): void {
-    this.speak('This feature is under development.');
-    this.directToNextLogicalAction();
+  static askOrRemind(chance = 0.75): void {
+    const correctCtx = this.contexts.get('correct-last-move');
+    if (correctCtx) {
+      this.speak(Ask.correctFails());
+      this.suggest(Sug.move, Sug.availableMoves, Sug.advice);
+      return;
+    }
+    const fiftyFifty = Math.random();
+    if (fiftyFifty < chance) {
+      this.speak(Ask.askToMoveAgain());
+      this.suggest(Sug.move, Sug.availableMoves, Sug.advice, Sug.history);
+    } else {
+      this.speak(Ask.askToRemindBoard());
+      this.contexts.set('turn-showboard', 1);
+      this.suggest(Sug.yes, Sug.no, Sug.move, Sug.pieceInfo);
+    }
   }
 }

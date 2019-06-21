@@ -33,10 +33,10 @@ export class NavigationHandlers extends HandlerBase {
   static no(): void {
     SettingsHandlers.safeGameContext();
     const gameCtx = this.contexts.get('game');
-    const confirm = this.long.options.confirm;
-    const confSug = confirm ? Sug.disableConfirm : Sug.enableConfirm;
     if (this.contexts.get('turn-intent')) {
       this.speak(Ask.askWhatever());
+      const confirm = this.long.options.confirm;
+      const confSug = confirm ? Sug.disableConfirm : Sug.enableConfirm;
       this.suggest(
         Sug.move,
         Sug.changeDifficulty,

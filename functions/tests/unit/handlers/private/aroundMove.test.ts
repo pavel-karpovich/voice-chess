@@ -9,14 +9,15 @@ jest.doMock('../../../../src/chess/chess', () => {
     chessBoardSize: 8,
   };
 });
-import { Env } from './_env';
+import { Env } from '../../../mocks/env';
 import { initLanguage } from '../../../../src/locales/initLang';
 import { AroundMoveHandlers } from '../../../../src/handlers/private/aroundMove';
 import { MoveHandlers } from '../../../../src/handlers/private/move';
 import { ChessSide, CastlingType } from '../../../../src/chess/chessUtils';
 import { FallbackHandlers } from '../../../../src/handlers/private/fallback';
+import { OtherHandlers } from '../../../../src/handlers/private/other';
 
-describe('Tests for move handlers', () => {
+describe('Tests for Around move handlers', () => {
 
   const locale = 'ru';
   let prepareToMoveMock: jest.SpyInstance;
@@ -46,6 +47,7 @@ describe('Tests for move handlers', () => {
       env.contexts,
       env.convData,
       env.userStorage,
+      env.addSuggestions.bind(env),
       env.endConversation.bind(env)
     );
   });
@@ -69,12 +71,16 @@ describe('Tests for move handlers', () => {
   describe('Chose side', () => {
 
     let simpleCompMove: jest.SpyInstance;
+    let suggestMock: jest.SpyInstance;
     beforeAll(() => {
       simpleCompMove = jest.spyOn(MoveHandlers, 'simpleMoveByAI');
       simpleCompMove.mockImplementationOnce(async() => {});
+      suggestMock = jest.spyOn(MoveHandlers, 'moveSuggestions');
+      suggestMock.mockImplementationOnce(async() => ['sug1']);
     });
     afterEach(() => {
       simpleCompMove.mockReset();
+      suggestMock.mockReset();
     });
 
     test('White', async () => {
@@ -82,6 +88,8 @@ describe('Tests for move handlers', () => {
       await AroundMoveHandlers.chooseSide(side);
       expect(env.output).toHaveLength(2);
       expect(MoveHandlers.simpleMoveByAI).not.toBeCalled();
+      expect(MoveHandlers.moveSuggestions).toBeCalledTimes(1);
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('Black', async () => {
@@ -120,12 +128,12 @@ describe('Tests for move handlers', () => {
     });
 
     test('Castling is not available', async () => {
-      const mock = jest.spyOn(MoveHandlers, 'askOrRemind');
+      const mock = jest.spyOn(OtherHandlers, 'askOrRemind');
       mock.mockImplementationOnce(() => {});
       MockBoard.availableCastlings = [];
       await AroundMoveHandlers.castling();
       expect(env.output).toHaveLength(1);
-      expect(MoveHandlers.askOrRemind).toBeCalledTimes(1);
+      expect(OtherHandlers.askOrRemind).toBeCalledTimes(1);
       expect(MoveHandlers.moveByPlayer).not.toBeCalled();
       mock.mockReset();
     });
@@ -136,6 +144,7 @@ describe('Tests for move handlers', () => {
       expect(env.output).toHaveLength(2);
       expect(env.contexts.is('choose-castling')).toBeTruthy();
       expect(MoveHandlers.moveByPlayer).not.toBeCalled();
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('Can do castling, but need a confirmation', async () => {
@@ -147,6 +156,7 @@ describe('Tests for move handlers', () => {
       expect(env.output).toHaveLength(1);
       expect(env.contexts.get('confirm-move').parameters).toEqual({ move: cstMove });
       expect(MoveHandlers.moveByPlayer).not.toBeCalled();
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('Do castling', async () => {
@@ -163,20 +173,31 @@ describe('Tests for move handlers', () => {
 
   describe('Last move correction', () => {
 
-    test('No move to correct', () => {
+    test('No move to correct', async () => {
       const hist = [] as any[];
       env.userStorage.history = hist;
-      AroundMoveHandlers.correct();
+      await AroundMoveHandlers.correct();
       expect(env.output).toHaveLength(2);
       expect(env.contexts.is('correct-last-move')).toBeFalsy();
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
-    test('Start correction action', () => {
+    test('Start correction action', async () => {
+      const rollbackMock = jest.spyOn(MoveHandlers, 'rollbackLastMoves');
+      rollbackMock.mockImplementationOnce(() => {});
+      const suggestMock = jest.spyOn(MoveHandlers, 'moveSuggestions');
+      suggestMock.mockImplementationOnce(async() => ['sug1']);
+      const fen = 'Test fen';
+      env.userStorage.fen = fen;
       const hist = [{ m: 'move1' }, { m: 'move2' }];
       env.userStorage.history = hist;
-      AroundMoveHandlers.correct();
+      await AroundMoveHandlers.correct();
       expect(env.output).toHaveLength(1);
       expect(env.contexts.is('correct-last-move')).toBeTruthy();
+      expect(env.suggestions).not.toHaveLength(0);
+      rollbackMock.mockReset();
+      suggestMock.mockReset();
+      Mochess.resetMockedData();
     });
   });
 
@@ -211,6 +232,7 @@ describe('Tests for move handlers', () => {
       expect(env.output).toHaveLength(1);
       expect(env.contexts.is('confirm-move')).toBeTruthy();
       expect(MoveHandlers.moveByAI).not.toBeCalled();
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('Do castling', async () => {
@@ -240,6 +262,7 @@ describe('Tests for move handlers', () => {
       await AroundMoveHandlers.acceptAdvice();
       expect(env.output).toHaveLength(1);
       expect(env.contexts.get('confirm-move').parameters).toEqual({ move });
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('Accept advice and make a move', async () => {
@@ -270,6 +293,7 @@ describe('Tests for move handlers', () => {
       expect(Mochess.instance.updateGameState).toBeCalledTimes(1);
       expect(env.output).toHaveLength(2);
       expect(env.contexts.get('advice-made').parameters).toEqual(expected);
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('100% best move advice', async () => {
@@ -278,6 +302,7 @@ describe('Tests for move handlers', () => {
       expect(Mochess.instance.bestMove).toBeCalledTimes(1);
       expect(env.output).toHaveLength(2);
       expect(env.contexts.get('advice-made').parameters).toEqual(expected);
+      expect(env.suggestions).not.toHaveLength(0);
     });
   });
 });

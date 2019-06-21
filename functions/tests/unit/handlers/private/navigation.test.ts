@@ -1,11 +1,12 @@
 import { NavigationHandlers } from '../../../../src/handlers/private/naviagation';
 import { InfoHandlers } from '../../../../src/handlers/private/info';
 import { initLanguage } from "../../../../src/locales/initLang";
-import { Env } from "./_env";
+import { Env } from "../../../mocks/env";
 import { FallbackHandlers } from '../../../../src/handlers/private/fallback';
 import { SettingsHandlers } from '../../../../src/handlers/private/settings';
 import { GameHandlers } from '../../../../src/handlers/private/game';
 import { AroundMoveHandlers } from '../../../../src/handlers/private/aroundMove';
+import { MoveHandlers } from '../../../../src/handlers/private/move';
 
 describe('Tests for navigation handlers', () => {
 
@@ -22,6 +23,7 @@ describe('Tests for navigation handlers', () => {
       env.contexts,
       env.convData,
       env.userStorage,
+      env.addSuggestions.bind(env),
       env.endConversation.bind(env)
     );
   });
@@ -82,8 +84,10 @@ describe('Tests for navigation handlers', () => {
   describe('Refuse handler', () => {
 
     let mock: jest.SpyInstance;
+    const confirm = true;
     beforeEach(() => {
       mock = jest.spyOn(SettingsHandlers, 'safeGameContext').mockImplementationOnce(() => {});
+      env.userStorage.options = { confirm };
     });
     afterEach(() => {
       mock.mockClear();
@@ -106,6 +110,7 @@ describe('Tests for navigation handlers', () => {
       expect(SettingsHandlers.safeGameContext).toBeCalledTimes(1);
       expect(env.output.length).toBe(1);
       expect(env.convData.fallbackCount).toBe(0);
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test.each([
@@ -118,6 +123,7 @@ describe('Tests for navigation handlers', () => {
       expect(env.output.length).toBe(1);
       expect(env.contexts.is(outputCtx)).toBeTruthy();
       expect(env.convData.fallbackCount).toBe(0);
+      expect(env.suggestions).not.toHaveLength(0);
     });
 
     test('Without any suitable context', () => {
@@ -141,11 +147,15 @@ describe('Tests for navigation handlers', () => {
     });
 
     test('With "turn-intent" context', async () => {
+      const suggestMock = jest.spyOn(MoveHandlers, 'moveSuggestions');
+      suggestMock.mockImplementationOnce(async() => ['sug1']);
       env.contexts.set('turn-intent', 1);
       await NavigationHandlers.yes();
       expect(env.output.length).toBe(1);
       expect(SettingsHandlers.safeGameContext).toBeCalledTimes(1);
       expect(env.convData.fallbackCount).toBe(0);
+      expect(env.suggestions).not.toHaveLength(0);
+      suggestMock.mockReset();
     });
     
     test('With "moves-next" context', async () => {
@@ -208,17 +218,15 @@ describe('Tests for navigation handlers', () => {
     });
 
     test('With "ask-to-resign" context', async () => {
-      const fen = 'rnbqk1nr/p3pp1p/1p4p1/3P4/P7/1Q3NP1/1P1K1P1P/RNB2B1R w KQkq - 10 20';
-      env.contexts.set('game', 5);
-      env.userStorage.fen = fen;
+      const dropGameMock = jest.spyOn(GameHandlers, 'dropGame');
+      dropGameMock.mockImplementationOnce(() => {});
       env.contexts.set('ask-to-resign', 1);
       await NavigationHandlers.yes();
       expect(SettingsHandlers.safeGameContext).toBeCalledTimes(1);
       expect(env.convData.fallbackCount).toBe(0);
       expect(env.output.length).toBe(2);
-      expect(env.contexts.is('ask-to-new-game')).toBeTruthy();
-      expect(env.contexts.is('game')).toBeFalsy();
-      expect(env.userStorage.fen).toBeNull();
+      expect(GameHandlers.dropGame).toBeCalledTimes(1);
+      dropGameMock.mockReset();
     });
 
     test('With "ask-to-new-game" context', async () => {

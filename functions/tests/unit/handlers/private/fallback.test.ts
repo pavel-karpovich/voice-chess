@@ -1,6 +1,6 @@
 import { FallbackHandlers } from '../../../../src/handlers/private/fallback';
 import { initLanguage } from "../../../../src/locales/initLang";
-import { Env } from "./_env";
+import { Env } from "../../../mocks/env";
 import { OtherHandlers } from '../../../../src/handlers/private/other';
 
 describe('Tests for Fallback handlers', () => {
@@ -18,12 +18,22 @@ describe('Tests for Fallback handlers', () => {
       env.contexts,
       env.convData,
       env.userStorage,
+      env.addSuggestions.bind(env),
       env.endConversation.bind(env)
     );
   });
 
   describe('Main fallback handler', () => {
-
+      
+    let suggestMock: jest.SpyInstance;
+    beforeEach(() => {
+      suggestMock = jest.spyOn(OtherHandlers, 'helpSuggestions');
+      suggestMock.mockImplementationOnce(() => {});
+    });
+    afterEach(() => {
+      suggestMock.mockReset();
+    });
+    
     test('Preserve context', () => {
       const ctx = 'confirm-move';
       const fallbackCount = 0;
@@ -34,13 +44,14 @@ describe('Tests for Fallback handlers', () => {
     });
 
     describe('Fallback actions', () => {
-      
+
       test('Less than 3 fallbacks count', () => {
         const fallbackCount = 1;
         env.convData.fallbackCount = fallbackCount;
         FallbackHandlers.fallback();
         expect(env.output.length).toBe(1);
         expect(env.isEnd).toBeFalsy();
+        expect(OtherHandlers.helpSuggestions).toBeCalledTimes(1);
       });
 
       test('Exactly 3 fallbacks count', () => {
@@ -51,6 +62,7 @@ describe('Tests for Fallback handlers', () => {
         expect(env.output.length).toBe(1);
         expect(env.isEnd).toBeFalsy();
         expect(OtherHandlers.help).toBeCalledTimes(1);
+        expect(OtherHandlers.helpSuggestions).toBeCalledTimes(1);
         mock.mockReset();
       });
       
@@ -60,6 +72,7 @@ describe('Tests for Fallback handlers', () => {
         FallbackHandlers.fallback();
         expect(env.output.length).toBe(1);
         expect(env.isEnd).toBeTruthy();
+        expect(OtherHandlers.helpSuggestions).not.toBeCalled();
       });
     });
   });

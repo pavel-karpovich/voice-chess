@@ -8,24 +8,9 @@ import { pause, shuffle } from '../../support/helpers';
 import { getSide } from '../../chess/chessUtils';
 import { GameHandlers } from './game';
 import { createHistoryItem } from '../../support/history';
+import { OtherHandlers } from './other';
 
 export class MoveHandlers extends HandlerBase {
-  static askOrRemind(chance = 0.75): void {
-    const correctCtx = this.contexts.get('correct-last-move');
-    if (correctCtx) {
-      this.speak(Ask.correctFails());
-      return;
-    }
-    const fiftyFifty = Math.random();
-    if (fiftyFifty < chance) {
-      this.speak(Ask.askToMoveAgain());
-      this.suggest(Sug.move, Sug.availableMoves, Sug.advice, Sug.history);
-    } else {
-      this.speak(Ask.askToRemindBoard());
-      this.contexts.set('turn-showboard', 1);
-      this.suggest(Sug.yes, Sug.no, Sug.move, Sug.pieceInfo);
-    }
-  }
   static async prepareToMove(move: string, chess?: Chess): Promise<void> {
     if (!chess) {
       const fenstring = this.long.fen;
@@ -315,11 +300,11 @@ export class MoveHandlers extends HandlerBase {
     let piecesMatch = true;
     if (!piece && !actualPiece) {
       this.speak(Ans.squareIsEmpty(from));
-      this.askOrRemind();
+      OtherHandlers.askOrRemind();
       return;
     } else if (piece && !actualPiece) {
       this.speak(Ans.squareIsEmpty(from, piece));
-      this.askOrRemind();
+      OtherHandlers.askOrRemind();
       return;
     } else if (!piece && actualPiece) {
       piece = actualPiece;
@@ -328,7 +313,7 @@ export class MoveHandlers extends HandlerBase {
     }
     if (getSide(actualPiece) !== playerSide) {
       this.speak(Ans.wrongSide(playerSide, from, actualPiece));
-      this.askOrRemind();
+      OtherHandlers.askOrRemind();
       return;
     }
     await chess.updateGameState();
@@ -339,7 +324,7 @@ export class MoveHandlers extends HandlerBase {
         illegal = `${Ans.checkToPlayer()}${pause(2)}\n${illegal}`;
       }
       this.speak(illegal);
-      this.askOrRemind();
+      OtherHandlers.askOrRemind();
       return;
     }
     if (!piecesMatch) {
