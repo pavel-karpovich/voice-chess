@@ -25,7 +25,8 @@ import { app } from '../../src/app';
 import { ConversationData } from '../../src/storage/conversationData';
 import { LongStorageData } from '../../src/storage/longStorageData';
 import * as InitLang from '../../src/locales/initLang';
-import { ChessSide, CastlingType, WhoseSide } from '../../src/chess/chessUtils';
+import { ChessSide, WhoseSide } from '../../src/chess/chessUtils';
+import { CastlingType } from '../../src/chess/castling';
 
 const mApp = app as unknown as Dialogmock<ConversationData, LongStorageData>;
 
