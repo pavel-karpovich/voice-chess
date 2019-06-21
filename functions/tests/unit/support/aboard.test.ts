@@ -26,9 +26,9 @@ describe('Tests for board support functions', () => {
       let newLog: (str: string) => void;
       if (log) {
         const consoleLog = console.log;
-        newLog = str =>  consoleLog('\n' + str);
+        newLog = str => consoleLog('\n' + str);
       } else {
-        newLog = str => void 0;
+        newLog = str => {};
       }
       console.log = jest.fn().mockImplementation(newLog);
     });

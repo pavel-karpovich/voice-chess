@@ -1,26 +1,23 @@
 import { ChessSide, getSide, WhoseSide, oppositeWho } from '../chess/chessUtils';
 import { Vocabulary as Voc } from '../locales/vocabulary';
 import { upFirst, pause } from './helpers';
+import { rookMoveForCastlingMove, isMoveSuitableForCastling } from '../chess/castling';
 
 export interface HistoryFrame {
   m: string; // pieceCode + move: "pg2g4", "Pe7e8Q"
   b?: string; // captured piece code
   e?: string; // captured 'en passant' pawn position
-  c?: string; // rock move when castling
 }
 
 export function createHistoryItem(
   piece: string,
   move: string,
   beatedPiece?: string,
-  rookMove?: string,
   enPassantPawn?: string
 ): HistoryFrame {
   const historyItem = { m: piece + move } as HistoryFrame;
   if (beatedPiece) {
     historyItem.b = beatedPiece;
-  } else if (rookMove) {
-    historyItem.c = rookMove;
   } else if (enPassantPawn) {
     historyItem.e = enPassantPawn;
   }
@@ -41,8 +38,9 @@ export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string 
   }
   for (const move of moves) {
     const piece = move.m[0];
-    const from = move.m.slice(1, 3);
-    const to = move.m.slice(3, 5);
+    const mv = move.m.slice(1);
+    const from = mv.slice(0, 2);
+    const to = mv.slice(2, 4);
     const optTotal = Number('b' in move) + Number(move.m.length === 6);
     let optCount = 0;
     const addSeparator = () => {
@@ -59,11 +57,12 @@ export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string 
       intro = true;
     }
     const enPassant = move.e;
-    const castling = move.c;
+    const castling = isMoveSuitableForCastling(piece, mv);
     if (castling) {
-      const rockFrom = castling.slice(0, 2);
-      const rockTo = castling.slice(2, 4);
-      let castlingPhrase = Voc.someoneDoCastling(whoseMove, from, to, rockFrom, rockTo);
+      const rookMove = rookMoveForCastlingMove(mv);
+      const rookFrom = rookMove.slice(0, 2);
+      const rookTo = rookMove.slice(2, 4);
+      let castlingPhrase = Voc.someoneDoCastling(whoseMove, from, to, rookFrom, rookTo);
       if (!intro) {
         castlingPhrase = upFirst(castlingPhrase);
       }

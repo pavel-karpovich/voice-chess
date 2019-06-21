@@ -9,6 +9,7 @@ import { getSide } from '../../chess/chessUtils';
 import { GameHandlers } from './game';
 import { createHistoryItem } from '../../support/history';
 import { OtherHandlers } from './other';
+import { rookMoveForCastlingMove } from '../../chess/castling';
 
 export class MoveHandlers extends HandlerBase {
   static async prepareToMove(move: string, chess?: Chess): Promise<void> {
@@ -43,8 +44,8 @@ export class MoveHandlers extends HandlerBase {
     if (final) {
       hist.length = hist.length - 2;
     }
-    board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e, lastAIMove.c);
-    board.extract(lastPlMove.m.slice(1), lastPlMove.b, lastPlMove.e, lastPlMove.c);
+    board.extract(lastAIMove.m.slice(1), lastAIMove.b, lastAIMove.e);
+    board.extract(lastPlMove.m.slice(1), lastPlMove.b, lastPlMove.e);
     const castlingFen = this.long.castlFen;
     const counterFen = this.long.countFen;
     board.loadNonRecoverableInfo(castlingFen, counterFen);
@@ -80,7 +81,7 @@ export class MoveHandlers extends HandlerBase {
       answer += prologue + pause(1) + '\n';
     }
     if (isCastling) {
-      rookMove = board.rookMoveForCastlingMove(move);
+      rookMove = rookMoveForCastlingMove(move);
       const rFrom = rookMove.slice(0, 2);
       const rTo = rookMove.slice(2, 4);
       answer += Ans.castlingByPlayer(from, to, rFrom, rTo);
@@ -98,7 +99,7 @@ export class MoveHandlers extends HandlerBase {
       captured = board.pos(to);
       answer += Ans.playerEat(captured);
     }
-    const historyItem = createHistoryItem(piece, move, captured, rookMove, enPassPawn);
+    const historyItem = createHistoryItem(piece, move, captured, enPassPawn);
     hist.push(historyItem);
     this.long.fen = chess.fenstring;
     switch (chess.currentGameState) {
@@ -148,7 +149,7 @@ export class MoveHandlers extends HandlerBase {
     let enPassPawn = null;
     let answer = '';
     if (isCastling) {
-      rookMove = boardBeforeMove.rookMoveForCastlingMove(chess.enemyMove);
+      rookMove = rookMoveForCastlingMove(chess.enemyMove);
       const rFrom = rookMove.slice(0, 2);
       const rTo = rookMove.slice(2, 4);
       answer += Ans.castlingByOpponent(enemyFrom, enemyTo, rFrom, rTo);
@@ -167,13 +168,7 @@ export class MoveHandlers extends HandlerBase {
       captured = boardBeforeMove.pos(enemyTo);
       answer += Ans.enemyEat(captured);
     }
-    const historyItem = createHistoryItem(
-      enemyPiece,
-      chess.enemyMove,
-      captured,
-      rookMove,
-      enPassPawn
-    );
+    const historyItem = createHistoryItem(enemyPiece, chess.enemyMove, captured, rookMove);
     hist.push(historyItem);
     switch (chess.currentGameState) {
       case ChessGameState.CHECKMATE:

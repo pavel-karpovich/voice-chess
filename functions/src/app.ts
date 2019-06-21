@@ -1,11 +1,12 @@
 import { dialogflow, DialogflowConversation, Suggestions } from 'actions-on-google';
 
 import { initLanguage } from './locales/initLang';
-import { ChessSide, WhoseSide, CastlingType } from './chess/chessUtils';
+import { ChessSide, WhoseSide } from './chess/chessUtils';
 import { ConversationData } from './storage/conversationData';
 import { LongStorageData } from './storage/longStorageData';
 import { GoogleContextManager } from './handlers/struct/context/googleContextManager';
 import { Handlers } from './handlers/public';
+import { CastlingType } from './chess/castling';
 
 type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
 

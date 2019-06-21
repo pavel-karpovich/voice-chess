@@ -4,7 +4,20 @@ jest.mock('stockfish', () => {
 });
 import { Chess, ChessGameState } from '../../../src/chess/chess';
 
+const log = false;
+
 describe('Testing Stockfish Chess class', () => {
+
+  beforeAll(() => {
+    let newLog: (str: string) => void;
+    if (log) {
+      const consoleLog = console.log;
+      newLog = str => consoleLog('\n' + str);
+    } else {
+      newLog = str => {};
+    }
+    console.log = jest.fn().mockImplementation(newLog);
+  });
 
   describe('Engine initialize correctly', () => {
     test('Initial fen string', () => {

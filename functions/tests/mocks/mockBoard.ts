@@ -13,7 +13,6 @@ export class MockBoard extends MockProto {
   static captured: Captured;
   static availableCastlings: string[];
   static isCastling: boolean;
-  static rookMove: string;
   static extract: boolean;
   static convFen: string;
   static enPassant: string;
@@ -34,7 +33,6 @@ export class MockBoard extends MockProto {
     this.captured = null;
     this.availableCastlings = null;
     this.isCastling = null;
-    this.rookMove = null;
     this.extract = null;
     this.convFen = null;
     this.enPassant = null;
@@ -61,7 +59,6 @@ export class MockBoard extends MockProto {
   _captured: Captured;
   _availableCastlings: string[];
   _isCastling: boolean;
-  _rookMove: string;
   _extract: boolean;
   _convFen: string;
   _enPassant: string;
@@ -80,7 +77,6 @@ export class MockBoard extends MockProto {
     this._captured = MockBoard.captured;
     this._availableCastlings = MockBoard.availableCastlings;
     this._isCastling = MockBoard.isCastling;
-    this._rookMove = MockBoard.rookMove;
     this._extract = MockBoard.extract;
     this._convFen = MockBoard.convFen;
     this._enPassant = MockBoard.enPassant;
@@ -101,7 +97,6 @@ export class MockBoard extends MockProto {
   capturedPieces = jest.fn(() => this._captured);
   getAvailableCastlingMoves = jest.fn(() => this._availableCastlings);
   isMoveCastling = jest.fn(() => this._isCastling);
-  rookMoveForCastlingMove = jest.fn(() => this._rookMove);
   extract = jest.fn(() => this._extract);
   loadNonRecoverableInfo = jest.fn(() => {});
   convertToFen = jest.fn(() => this._convFen);

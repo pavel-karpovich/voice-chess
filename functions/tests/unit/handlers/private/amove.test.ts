@@ -16,6 +16,7 @@ import { Chess, ChessGameState } from '../../../../src/chess/chess';
 import { GameHandlers } from '../../../../src/handlers/private/game';
 import { ChessSide, oppositeSide } from '../../../../src/chess/chessUtils';
 import { OtherHandlers } from '../../../../src/handlers/private/other';
+import * as castling from '../../../../src/chess/castling';
 
 describe('Tests for move handlers', () => {
 
@@ -158,14 +159,17 @@ describe('Tests for move handlers', () => {
       ['b2b4q', false, false, false],
       ['b2b4q', true, false, false],
     ])('Different types of move', async (move, isCapturing, isEnPassant, isCastling) => {
+      const rookMove = 'e2e4';
+      const rookCstlMock = jest.spyOn(castling, 'rookMoveForCastlingMove');
+      rookCstlMock.mockImplementationOnce(() => rookMove);
       MockBoard.isCapturing = isCapturing as boolean;
       MockBoard.isEnPassant = isEnPassant as boolean;
       MockBoard.isCastling = isCastling as boolean;
-      MockBoard.rookMove = 'e2e4';
       Mochess.state = ChessGameState.OK;
       await MoveHandlers.moveByPlayer(move as string);
       expect(env.output).toHaveLength(1);
       expect(env.userStorage.history).toHaveLength(1);
+      rookCstlMock.mockReset();
     });
 
     describe('Types of result', () => {
@@ -248,17 +252,17 @@ describe('Tests for move handlers', () => {
       ['b2b4q', false, false, false],
       ['b2b4q', true, false, false],
     ])('Different types of move', async (move, isCapturing, isEnPassant, isCastling) => {
-      const fen = 'Test fen';
+      const rookMove = 'e2e4';
+      const rookCstlMock = jest.spyOn(castling, 'rookMoveForCastlingMove');
+      rookCstlMock.mockImplementationOnce(() => rookMove);
       const newFen = 'Fen after move';
-      const difficulty = 4;
-      env.userStorage.fen = fen;
-      env.userStorage.options = { difficulty };
+      env.userStorage.fen = 'Test fen';
+      env.userStorage.options = { difficulty: 4 };
       env.userStorage.history = [];
       MockBoard.isCapturing = isCapturing as boolean;
       MockBoard.isEnPassant = isEnPassant as boolean;
       MockBoard.isCastling = isCastling as boolean;
       MockBoard.pos = 'p';
-      MockBoard.rookMove = 'e2e4';
       Mochess.state = ChessGameState.OK;
       Mochess.enemyMove = move as string;
       Mochess.fen = newFen;
@@ -268,6 +272,7 @@ describe('Tests for move handlers', () => {
       expect(env.userStorage.fen).toBe(newFen);
       expect(MoveHandlers.moveSuggestions).toBeCalledTimes(1);
       expect(env.suggestions).not.toHaveLength(0);
+      rookCstlMock.mockReset();
     });
 
     describe('Types of result', () => {

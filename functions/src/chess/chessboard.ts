@@ -1,5 +1,6 @@
 import { chessBoardSize } from './chess';
 import { ChessSide, getSide, oppositeSide } from './chessUtils';
+import { rookMoveForCastlingMove, isMoveSuitableForCastling } from './castling';
 
 export interface ChessSquareData {
   pos: string;
@@ -18,8 +19,6 @@ export interface Captured {
 
 const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const piecesPriority = 'kqrbnp';
-
-const castlings = new Map([['e1g1', 'h1f1'], ['e1c1', 'a1d1'], ['e8g8', 'h8f8'], ['e8c8', 'a8d8']]);
 
 export class ChessBoard {
   private board: Map<string, string>;
@@ -206,82 +205,67 @@ export class ChessBoard {
     return false;
   }
 
-  rookMoveForCastlingMove(move: string): string {
-    if (castlings.has(move)) {
-      return castlings.get(move);
-    } else {
-      return null;
-    }
-  }
-
-  extract(
-    move: string,
-    captured?: string,
-    enPassantPawnPos?: string,
-    castlingRockMove?: string
-  ): boolean {
-    let isReverseMoveValid = true;
+  extract(move: string, captured?: string, enPassantPawnPos?: string): boolean {
     const from = move.slice(0, 2);
     const to = move.slice(2, 4);
     const movedPiece = this.board.get(to);
+    // TODO: Adequate correct moves validation for every type of piece
     if (
       this.board.get(from) ||
       !movedPiece ||
       getSide(movedPiece) !== oppositeSide(this.moveSide)
     ) {
-      isReverseMoveValid = false;
-    }
-    // TODO: Adequate correct moves validation for every type of piece
-    if (isReverseMoveValid) {
-      let piece;
-      if (move.length === 5) {
-        piece = this.side === 'w' ? 'p' : 'P';
-      } else {
-        piece = this.board.get(to);
-      }
-      this.board.set(from, piece);
-      if (captured && !enPassantPawnPos) {
-        this.board.set(to, captured);
-      } else {
-        this.board.set(to, null);
-      }
-      if (enPassantPawnPos) {
-        const enemyPawn = this.side === 'w' ? 'P' : 'p';
-        this.board.set(enPassantPawnPos, enemyPawn);
-        this.enpsnt = to;
-      } else {
-        this.enpsnt = '-';
-      }
-      if (castlingRockMove) {
-        const rockFrom = castlingRockMove.slice(0, 2);
-        const rockTo = castlingRockMove.slice(2, 4);
-        const rock = this.board.get(rockTo);
-        this.board.set(rockTo, null);
-        this.board.set(rockFrom, rock);
-        const cstlStr = this.side === 'w' ? 'kq' : 'KQ';
-        if (this.castling === '-') {
-          this.castling = cstlStr;
-        } else {
-          if (this.side === 'w') {
-            this.castling += cstlStr;
-          } else {
-            this.castling = cstlStr + this.castling;
-          }
-        }
-      }
-      if (this.side === 'w') {
-        this.side = 'b';
-        this.fullmove--;
-      } else {
-        this.side = 'w';
-      }
-      if (this.counter !== 0) {
-        this.counter--;
-      }
-      return true;
-    } else {
       return false;
     }
+    let piece;
+    const itIsMoveBlack = this.side === 'w';
+    if (move.length === 5) {
+      piece = itIsMoveBlack ? 'p' : 'P';
+    } else {
+      piece = this.board.get(to);
+    }
+    this.board.set(from, piece);
+    if (captured && !enPassantPawnPos) {
+      this.board.set(to, captured);
+    } else {
+      this.board.set(to, null);
+    }
+    if (enPassantPawnPos) {
+      const enemyPawn = this.side === 'w' ? 'P' : 'p';
+      this.board.set(enPassantPawnPos, enemyPawn);
+      this.enpsnt = to;
+    } else {
+      this.enpsnt = '-';
+    }
+    const isCastling = isMoveSuitableForCastling(piece, move);
+    if (isCastling) {
+      const rookMove = rookMoveForCastlingMove(move);
+      const rookFrom = rookMove.slice(0, 2);
+      const rookTo = rookMove.slice(2, 4);
+      const rook = this.board.get(rookTo);
+      this.board.set(rookTo, null);
+      this.board.set(rookFrom, rook);
+      const cstlStr = itIsMoveBlack ? 'kq' : 'KQ';
+      if (this.castling === '-') {
+        this.castling = cstlStr;
+      } else {
+        if (itIsMoveBlack) {
+          this.castling += cstlStr;
+        } else {
+          this.castling = cstlStr + this.castling;
+        }
+      }
+    }
+    if (this.side === 'w') {
+      this.side = 'b';
+      this.fullmove--;
+    } else {
+      this.side = 'w';
+    }
+    if (this.counter !== 0) {
+      this.counter--;
+    }
+    return true;
   }
 
   loadNonRecoverableInfo(castlFen?: string, countFen?: number): void {

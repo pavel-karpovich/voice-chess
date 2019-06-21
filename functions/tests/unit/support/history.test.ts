@@ -31,21 +31,12 @@ describe('Testing moves history functionality', () => {
       expect(hItem).toEqual(expected);
     });
 
-    test('For castling move', () => {
-      const piece = 'k';
-      const move = 'g4g5';
-      const rookMove = 'c3c6';
-      const expected = { m: piece + move, c: rookMove };
-      const hItem = createHistoryItem(piece, move, null, rookMove);
-      expect(hItem).toEqual(expected);
-    });
-
     test('For En Passant move', () => {
       const piece = 'P';
       const move = 'h4g3';
       const enPawn = 'g4';
       const expected = { m: piece + move, e: enPawn };
-      const hItem = createHistoryItem(piece, move, null, null, enPawn);
+      const hItem = createHistoryItem(piece, move, null, enPawn);
       expect(hItem).toEqual(expected);
     });
     
@@ -53,10 +44,9 @@ describe('Testing moves history functionality', () => {
       const piece = 'P';
       const move = 'h4g3';
       const capt = 'p';
-      const rookMove = 'c3c6';
       const enPawn = 'g4';
       const expected = { m: piece + move, b: capt };
-      const hItem = createHistoryItem(piece, move, capt, rookMove, enPawn);
+      const hItem = createHistoryItem(piece, move, capt, enPawn);
       expect(hItem).toEqual(expected);
     });
   });
@@ -70,9 +60,9 @@ describe('Testing moves history functionality', () => {
       let newLog: (str: string) => void;
       if (log) {
         const consoleLog = console.log;
-        newLog = str =>  consoleLog('\n' + str);
+        newLog = str => consoleLog('\n' + str);
       } else {
-        newLog = str => void 0;
+        newLog = str => {};
       }
       console.log = jest.fn().mockImplementation(newLog);
     });
@@ -93,7 +83,7 @@ describe('Testing moves history functionality', () => {
       [
         [
           { m: 'Pd3e4', b: 'b' }, { m: 'nf6d4', b: 'P' }, { m: 'Qc3h8', b: 'r' },
-          { m: 'ke8c8', c: 'a8d8' }, { m: 'Qh8h7', b: 'p' }, { m: 'qd6f6' },
+          { m: 'ke8c8' }, { m: 'Qh8h7', b: 'p' }, { m: 'qd6f6' },
           { m: 'Qh7h6', b: 'b' },
         ], ChessSide.WHITE,
       ],

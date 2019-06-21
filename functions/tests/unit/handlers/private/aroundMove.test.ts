@@ -13,9 +13,10 @@ import { Env } from '../../../mocks/env';
 import { initLanguage } from '../../../../src/locales/initLang';
 import { AroundMoveHandlers } from '../../../../src/handlers/private/aroundMove';
 import { MoveHandlers } from '../../../../src/handlers/private/move';
-import { ChessSide, CastlingType } from '../../../../src/chess/chessUtils';
+import { ChessSide } from '../../../../src/chess/chessUtils';
 import { FallbackHandlers } from '../../../../src/handlers/private/fallback';
 import { OtherHandlers } from '../../../../src/handlers/private/other';
+import * as castling from '../../../../src/chess/castling';
 
 describe('Tests for Around move handlers', () => {
 
@@ -118,13 +119,16 @@ describe('Tests for Around move handlers', () => {
     const fen = 'Fensting-blah-blah-blah';
     const side = ChessSide.WHITE;
     const rookMove = 'test';
+    let rookCstlMock: jest.SpyInstance;
     beforeEach(() => {
+      rookCstlMock = jest.spyOn(castling, 'rookMoveForCastlingMove');
+      rookCstlMock.mockImplementationOnce(() => rookMove);
       env.userStorage.fen = fen;
       env.userStorage.side = side;
-      MockBoard.rookMove = rookMove;
     });
     afterEach(() => {
       MockBoard.resetMockedData();
+      rookCstlMock.mockReset();
     });
 
     test('Castling is not available', async () => {
@@ -208,11 +212,17 @@ describe('Tests for Around move handlers', () => {
     const cstMove1 = 'move1';
     const cstMove2 = 'move2';
     const rookMove = 'rook';
+    let rookCstlMock: jest.SpyInstance;
     beforeEach(() => {
+      rookCstlMock = jest.spyOn(castling, 'rookMoveForCastlingMove');
+      rookCstlMock.mockImplementation(() => rookMove);
       env.userStorage.fen = fen;
       env.userStorage.side = side;
       MockBoard.availableCastlings = [cstMove1, cstMove2];
-      MockBoard.rookMove = rookMove;
+    });
+    afterEach(() => {
+      MockBoard.resetMockedData();
+      rookCstlMock.mockReset();
     });
 
     test('When no information provided', async () => {
@@ -225,7 +235,7 @@ describe('Tests for Around move handlers', () => {
     });
 
     test('Can do castling, but need confirmation', async () => {
-      const castl = CastlingType.KINGSIDE;
+      const castl = castling.CastlingType.KINGSIDE;
       const confirm = true;
       env.userStorage.options = { confirm };
       await AroundMoveHandlers.chooseCastling(castl);

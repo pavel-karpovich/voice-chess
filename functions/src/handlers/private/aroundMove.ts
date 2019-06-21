@@ -3,12 +3,13 @@ import { Answer as Ans } from '../../locales/answer';
 import { Suggestions as Sug } from '../../locales/suggestions';
 import { Ask } from '../../locales/ask';
 import { MoveHandlers } from './move';
-import { ChessSide, CastlingType } from '../../chess/chessUtils';
+import { ChessSide } from '../../chess/chessUtils';
 import { Chess } from '../../chess/chess';
 import { ChessBoard } from '../../chess/chessboard';
 import { FallbackHandlers } from './fallback';
 import { gaussianRandom } from '../../support/helpers';
 import { OtherHandlers } from './other';
+import { rookMoveForCastlingMove, CastlingType } from '../../chess/castling';
 
 export class AroundMoveHandlers extends HandlerBase {
   static async acceptMove(): Promise<void> {
@@ -69,7 +70,7 @@ export class AroundMoveHandlers extends HandlerBase {
     }
     const needConfirm = this.long.options.confirm;
     if (needConfirm) {
-      const rockMove = board.rookMoveForCastlingMove(castlings[0]);
+      const rockMove = rookMoveForCastlingMove(castlings[0]);
       const rFrom = rockMove.slice(0, 2);
       const rTo = rockMove.slice(2, 4);
       this.speak(Ask.askToConfirmCastling(kingPos, to1, rFrom, rTo));
@@ -109,10 +110,10 @@ export class AroundMoveHandlers extends HandlerBase {
     const castlings = board.getAvailableCastlingMoves(playerSide);
     const to1 = castlings[0].slice(2, 4);
     const to2 = castlings[1].slice(2, 4);
-    const rockMove1 = board.rookMoveForCastlingMove(castlings[0]);
+    const rockMove1 = rookMoveForCastlingMove(castlings[0]);
     const rockFrom1 = rockMove1.slice(0, 2);
     const rockTo1 = rockMove1.slice(2, 4);
-    const rockMove2 = board.rookMoveForCastlingMove(castlings[1]);
+    const rockMove2 = rookMoveForCastlingMove(castlings[1]);
     const rockFrom2 = rockMove2.slice(0, 2);
     const rockTo2 = rockMove2.slice(2, 4);
     let playerMove;

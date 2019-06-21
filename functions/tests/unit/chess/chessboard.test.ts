@@ -97,17 +97,6 @@ describe('Tests of Chess Board class', () => {
     });
 
     test.each([
-      ['e1g1', 'h1f1'],
-      ['e1c1', 'a1d1'],
-      ['e8c8', 'a8d8'],
-      ['e8h8', null],
-      ['g5c1', null],
-    ])('Getting the Rook move for th king castling move', (kingMove, rookMove) => {
-      const recievedMove = board.rookMoveForCastlingMove(kingMove);
-      expect(recievedMove).toBe(rookMove);
-    });
-
-    test.each([
       ['p', 'h4g3', true],
       ['b', 'h4g3', false],
       ['p', 'h5g4', false],
@@ -190,7 +179,7 @@ describe('Tests of Chess Board class', () => {
 
     function oneMove(
         before: string,
-        move1: [string, string?, string?, string?],
+        move1: [string, string?, string?],
         after: string,
         tweak?: [string, number]
       ): void {
@@ -205,8 +194,8 @@ describe('Tests of Chess Board class', () => {
     
     function twoMoves(
         before: string,
-        move1: [string, string?, string?, string?],
-        move2: [string, string?, string?, string?],
+        move1: [string, string?, string?],
+        move2: [string, string?, string?],
         after: string,
         tweak?: [string, number]
       ): void {
@@ -308,7 +297,7 @@ describe('Tests of Chess Board class', () => {
     test('Queenside castling move', () => {
       oneMove(
         'r3k1nr/1p4qp/p2pB3/n3Q3/4P1P1/2PP4/P1P2P1P/R3K2R w KQkq - 3 34',
-        ['e1c1', null, null, 'a1d1'],
+        ['e1c1', null, null],
         'r3k1nr/1p4qp/p2pB3/n3Q3/4P1P1/2PP4/P1P2P1P/2KR3R b kq - 4 34',
         ['KQkq', 3]
       );
@@ -317,7 +306,7 @@ describe('Tests of Chess Board class', () => {
     test('Kingside castling move', () => {
       oneMove(
         'r3k2r/1p5p/p2pB2n/8/4P1P1/2PP4/P6P/2KR2R1 b kq - 1 41',
-        ['e8g8', null, null, 'h8f8'],
+        ['e8g8', null, null],
         'r4rk1/1p5p/p2pB2n/8/4P1P1/2PP4/P6P/2KR2R1 w - - 2 42',
         ['kq', 1]
       );
@@ -326,8 +315,8 @@ describe('Tests of Chess Board class', () => {
     test('Two castling moves', () => {
       twoMoves(
         'r3kbnr/ppp1q1pp/2npbp2/4p3/2B1P3/2PPBQ1N/P1P2PPP/RN2K2R w KQkq - 2 8',
-        ['e1g1', null, null, 'h1f1'],
-        ['e8c8', null, null, 'a8d8'],
+        ['e1g1', null, null],
+        ['e8c8', null, null],
         '2kr1bnr/ppp1q1pp/2npbp2/4p3/2B1P3/2PPBQ1N/P1P2PPP/RN3RK1 w - - 4 9',
         ['KQkq', 2]
       );
