@@ -40,7 +40,14 @@ export class FallbackHandlers extends HandlerBase {
       this.speak(Ans.firstFallback());
       OtherHandlers.helpSuggestions();
     } else if (fallbacks === 3) {
-      this.speak(Ans.secondFallback());
+      if (this.contexts.is('game')) {
+        this.speak(Ans.secondFallbackInGame());
+      } else {
+        this.speak(Ans.secondFallbackOutOfGame());
+      }
+      OtherHandlers.helpSuggestions();
+    } else if (fallbacks === 4) {
+      this.speak(Ans.thirdFallback());
       OtherHandlers.help();
       OtherHandlers.helpSuggestions(false);
     } else {

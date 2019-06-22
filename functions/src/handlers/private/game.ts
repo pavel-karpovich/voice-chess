@@ -68,19 +68,27 @@ export class GameHandlers extends HandlerBase {
       return;
     }
     this.contexts.set('game', 5);
-    this.contexts.set('turn-showboard', 1);
     const playerSide = this.long.side;
-    this.speak(Ans.continueGame(playerSide));
-    this.speak(Ask.askToRemindBoard());
-    this.suggest(
-      Sug.yes,
-      Sug.move,
-      Sug.history,
-      Sug.captured,
-      Sug.availableMoves,
-      Sug.pieceInfo,
-      Sug.posInfo
-    );
+    const hadMoves = this.long.history.length !== 0;
+    if (hadMoves) {
+      const lastMove = this.long.history[this.long.history.length - 1].m.slice(1);
+      this.speak(Ans.continueGame(playerSide, lastMove));
+      this.speak(Ask.askToRemindBoard());
+    this.contexts.set('turn-showboard', 1);
+      this.suggest(
+        Sug.yes,
+        Sug.move,
+        Sug.history,
+        Sug.captured,
+        Sug.availableMoves,
+        Sug.pieceInfo,
+        Sug.posInfo
+      );
+    } else {
+      this.speak(Ans.continueNewGame(playerSide));
+      this.speak(Ask.waitMove());
+      this.suggest(Sug.move, Sug.availableMoves, Sug.history);
+    }
   }
 
   static resign(chance = 0.4): void {

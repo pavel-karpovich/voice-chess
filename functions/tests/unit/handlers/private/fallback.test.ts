@@ -54,7 +54,30 @@ describe('Tests for Fallback handlers', () => {
         expect(OtherHandlers.helpSuggestions).toBeCalledTimes(1);
       });
 
-      test('Exactly 3 fallbacks count', () => {
+      test('3 fallbacks count within a game', () => {
+        const mock = jest.spyOn(OtherHandlers, 'help').mockImplementation(() => {});
+        env.contexts.set('game', 4);
+        const fallbackCount = 3;
+        env.convData.fallbackCount = fallbackCount;
+        FallbackHandlers.fallback();
+        expect(env.output.length).toBe(1);
+        expect(env.isEnd).toBeFalsy();
+        expect(OtherHandlers.helpSuggestions).toBeCalledWith();
+        mock.mockReset();
+      });
+      
+      test('3 fallbacks count out of game', () => {
+        const mock = jest.spyOn(OtherHandlers, 'help').mockImplementation(() => {});
+        const fallbackCount = 3;
+        env.convData.fallbackCount = fallbackCount;
+        FallbackHandlers.fallback();
+        expect(env.output.length).toBe(1);
+        expect(env.isEnd).toBeFalsy();
+        expect(OtherHandlers.helpSuggestions).toBeCalledWith();
+        mock.mockReset();
+      });
+      
+      test('4 fallbacks count', () => {
         const mock = jest.spyOn(OtherHandlers, 'help').mockImplementation(() => {});
         const fallbackCount = 3;
         env.convData.fallbackCount = fallbackCount;
@@ -62,11 +85,11 @@ describe('Tests for Fallback handlers', () => {
         expect(env.output.length).toBe(1);
         expect(env.isEnd).toBeFalsy();
         expect(OtherHandlers.help).toBeCalledTimes(1);
-        expect(OtherHandlers.helpSuggestions).toBeCalledTimes(1);
+        expect(OtherHandlers.helpSuggestions).toBeCalledWith(false);
         mock.mockReset();
       });
       
-      test('More than 3 fallbacks count', () => {
+      test('More than 4 fallbacks count', () => {
         const fallbackCount = 4;
         env.convData.fallbackCount = fallbackCount;
         FallbackHandlers.fallback();

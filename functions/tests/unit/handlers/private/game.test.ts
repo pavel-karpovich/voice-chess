@@ -115,14 +115,27 @@ describe('Tests for game handlers', () => {
       expect(env.suggestions).not.toHaveLength(0);
     });
 
-    test('With running game', () => {
+    test('With running played game', () => {
+      const fen = 'Just fenstring';
+      const playerSide = ChessSide.WHITE;
+      env.userStorage.fen = fen;
+      env.userStorage.side = playerSide;
+      env.userStorage.history = [ { m: 'move1' }];
+      GameHandlers.continueGame();
+      expect(env.contexts.is('game')).toBeTruthy();
+      expect(env.contexts.is('turn-showboard')).toBeTruthy();
+      expect(env.output).toHaveLength(2);
+      expect(env.suggestions).not.toHaveLength(0);
+    });
+
+    test('With running new game', () => {
       const fen = 'Just fenstring';
       const playerSide = ChessSide.WHITE;
       env.userStorage.fen = fen;
       env.userStorage.side = playerSide;
       GameHandlers.continueGame();
       expect(env.contexts.is('game')).toBeTruthy();
-      expect(env.contexts.is('turn-showboard')).toBeTruthy();
+      expect(env.contexts.is('turn-showboard')).toBeFalsy();
       expect(env.output).toHaveLength(2);
       expect(env.suggestions).not.toHaveLength(0);
     });

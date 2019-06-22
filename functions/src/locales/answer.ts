@@ -20,7 +20,7 @@ export class Answer {
       ru:
         'Добро пожаловать в Голосовые Шахматы! Голосовые Шахматы - это игра в шахматы, ' +
         'рассчитанная полностью на голосовое управление. Чтобы узнать о возможностях и ' +
-        'доступных командах произнесите "Помощь", "Инфо" или "Справка".',
+        'доступных командах произнесите "Помощь" или "Справка".',
     } as Langs)[this.lang];
   }
   static welcome(): string {
@@ -29,31 +29,58 @@ export class Answer {
         en: [
           'Welcome to the Voice Chess!',
           'Hi!',
+          'Voice Chess welcomes you!',
+          'Chessy chessy chess! Welcome back!',
+          'Welcome back, grandmaster!',
           'Want to play chess? This we can.',
           'Hi, I have not seen you for a while!',
         ],
         ru: [
           'Добро пожаловать в Голосовые Шахматы!',
           'С возвращением!',
+          'С возвращением, гроссмейстер!',
           'Соскучились по шахматам? Я ждал вас.',
           'С возвращением в Голосовые Шахматы!',
           'Привет!',
+          'Рад вас видеть, гроссмейстер!',
         ],
       } as rLangs)[this.lang]
     );
   }
-  static continueGame(side: ChessSide): string {
+  static continueGame(side: ChessSide, lastMove: string): string {
+    const from = lastMove.slice(0, 2);
+    const to = lastMove.slice(2, 4);
     return rand(
       ({
         en: [
           `I was waiting for you! You play ${Voc.side(side)}. Now it's your turn.`,
           `Let's go! Your turn. I remind, that you play ${Voc.side(side)}.`,
-          `It's time! You are ${Voc.side(side, 'plr')}. And your move.`,
+          `It's time! You are ${Voc.side(side, 'plr')}. And now it's your turn.`,
+          `Well, we continue our game. I remind you that last time I made the  move ${char(from)} ${char(to)}, and now your turn.`,
+          `Good, let's continue! We stopped at my turn ${char(from)} ${char(to)}. What are you going to do?`,
         ],
         ru: [
           `Я ждал вас! Вы играете за ${Voc.side(side, 'plr/rod')}, и сейчас ваш ход.`,
-          `Поехали! Вам ходить. Напоминаю, что вы за ${Voc.side(side, 'plr/rod')}.`,
+          `Поехали! Напоминаю, что вы за ${Voc.side(side, 'plr/rod')} и сейчас ваш ход.`,
           `Давно пора! Ваш ход. Вы играете ${Voc.side(side, 'plr/tvr')}.`,
+          `Значит продолжаем. Напомню, что последний раз я сделал ход ${char(from)} ${char(to)}, и сейчас ваша очередь.`,
+          `Отлично, давайте продолжим! Мы остановились на моём ходе ${char(from)} ${char(to)}. Что вы будете делать?`,
+        ],
+      } as rLangs)[this.lang]
+    );
+  }
+  static continueNewGame(side: ChessSide): string {
+    return rand(
+      ({
+        en: [
+          "Well, let's continue. By the way, we have not made any move yet.",
+          'So, we continue, you are for white. All pieces in the original positions. We have not made any move yet.',
+          'Continue the game? Ok, but we have just begun, and no one has yet made a single move.',
+        ],
+        ru: [
+          'Значит продолжаем. Между прочим, мы ещё не сделали ни одного хода.',
+          'Продолжаем, вы за белых. Все фигуры на начальных позициях. Мы ещё не сделали ни одного хода.',
+          'А продолжать то практически и нечего - мы начали новую игру, и вы ещё не сделали в ней ни одного хода',
         ],
       } as rLangs)[this.lang]
     );
@@ -61,8 +88,24 @@ export class Answer {
   static newgame(): string {
     return rand(
       ({
-        en: ['New game is started.', "Let's go, I cleared the board.", 'Ok.'],
-        ru: ['Новая игра запущена.', 'Ну давайте заново.', 'Всегда рад новой партейке!'],
+        en: [
+          'New game is started.',
+          "Let's go, I cleared the board.",
+          'Ok.',
+          'Ok, we start a new game.',
+          'We are starting a new game from scratch.',
+          'So, new game!',
+          "Let's go! It's a new game.",
+        ],
+        ru: [
+          'Новая игра запущена.',
+          'Поехали!. Новая игра.',
+          'Всегда рад новой партейке!',
+          'Ладно, мы начинаем новую партию!',
+          'Что ж, да начнётся новая игра!',
+          'Тогда мы начинаем!',
+          'Новую игру в студию!',
+        ],
       } as rLangs)[this.lang]
     );
   }
@@ -90,24 +133,100 @@ export class Answer {
           "I'm sorry, can you try again?",
           "Sorry, I didn't understand you...",
           'Sorry, can you say it again?',
+          "I don't get it.",
+          'What do you mean?',
+          "What it's mean?",
+          "I don't know what to answer",
+          "I don't know what to say about this",
+          "Are you sure this is what you want from me?",
         ],
         ru: [
           'Я вас не совсем понял...',
           'Повторите, пожалуйста.',
           'Можно ещё раз?',
           'Не могли бы вы повторить?',
+          'Я вас не понял.',
+          'Что вы хотели этим сказать?',
+          'Что это значит?',
+          'Я даже не знаю, что сказать.',
+          'Я даже не знаю, как на это ответить',
+          'Я не знаю, как мне на это отреагировать...',
         ],
       } as rLangs)[this.lang]
     );
   }
-  static secondFallback(): string {
+  static secondFallbackInGame(): string {
     return rand(
       ({
-        en: ["Sorry, I didn't understand what you want.", "I'm sorry, I didn't understand."],
+        en: [
+          'May I ask you, maybe you want to make a move?',
+          'Just make a move, amigo.',
+          `Just say "Make a move", or something like ${char('g2')} ${char('g4')}.`,
+          'You kidding me?',
+          'Are you joking?',
+          "Are you specifically asking me about something extra? I'm just a robot chess player.",
+          "I'm a robot chess player, and I can't do anything except chess.",
+          "Don't ask me about anything, I'm not Google Assistant, I'm just a poor robot chess player.",
+          `If you want to make a move, just say it. Fore example, pawn ${char('a7')} ${char('a5')}.`,
+        ],
+        ru: [
+          'Может быть вы хотите сделать ход?',
+          'Может вы хотите походить?',
+          `Просто скажите "Сделать ход", или назовите ход, например ${char('g2')} ${char('g4')}.`,
+          'Вы шутите?',
+          'Вы специально спрашиваете меня о чём-то лишнем? Я просто робот шахматист.',
+          'Я робот шахматист, и не умею ничего кроме шахмат.',
+          'Не спрашивайте меня ни о чём постороннем, я не Google Ассистент, я просто бедный робот шахматист.',
+          `Если вы хотите походить, то просто назовите свой ход. Например так: пешка ${char('a7')} ${char('a5')}.`,
+        ],
+      } as rLangs)[this.lang]
+    );
+  }
+  static secondFallbackOutOfGame(): string {
+    return rand(
+      ({
+        en: [
+          'You kidding me?',
+          'Are you joking?',
+          "Are you specifically asking me about something extra? I'm just a robot chess player.",
+          "I'm a robot chess player, and I can't do anything except chess.",
+          "Don't ask me about anything, I'm not Google Assistant, I'm just a poor robot chess player.",
+          'Just say that you want to start a new game, and we will play chess.',
+          'This can no longer continue! Or start a new game, or exit!',
+          `Please say "Let's start a new game", otherwise we will have to go to extremes!`,
+        ],
+        ru: [
+          'Вы шутите?',
+          'Вы специально спрашиваете меня о чём-то лишнем? Я просто робот шахматист.',
+          'Я робот шахматист, и не умею ничего кроме шахмат.',
+          'Не спрашивайте меня ни о чём постороннем, я не Google Ассистент, я просто бедный робот шахматист.',
+          'Просто скажите, что вы хотите начать новую игру, и мы начнём.',
+          'Так не может продолжаться долго! Или начинайте новую игру, или заканчивайте.',
+          'Скажите "Давай начнём новую игру", или нам придётся дойти до крайностей!',
+        ],
+      } as rLangs)[this.lang]
+    );
+  }
+  static thirdFallback(): string {
+    return rand(
+      ({
+        en: [
+          "Sorry, I didn't understand what you want.",
+          "I'm sorry, I didn't understand.",
+          "I can't understand.",
+          "I still don't understand.",
+          "Sorry, I'm still didn't understand what you want.",
+          'I just show you the help options...',
+          "I don't know what to do, and just show you the help options...",
+        ],
         ru: [
           'Простите, я не могу понять, чего вы хотите.',
           'Извините, я не могу понять, о чём вы говорите.',
-          'Я не могу вас понять...',
+          'Я никак не могу вас понять.',
+          'Видимо это бесполезно.',
+          'Нет, никак... Тогда я просто зачитаю вам справку:',
+          'Не знаю ,что и делать, вот вам справка:',
+          'Я не знаю, что с вами делать. Просто покажу вам справку:',
         ],
       } as rLangs)[this.lang]
     );
@@ -117,13 +236,21 @@ export class Answer {
       ({
         en: [
           "Sorry, but I can't understand what you want.\nMaybe try again later...",
-          "It is a Chess Game. Is that exactly what you need?\nI'm not sure...",
+          "It is a chess game. Is that exactly what you need?\nI'm not sure...",
           'Sorry, try again later.',
+          'Come back when you are ready to play chess!',
+          'Come back when you decide to play chess and not something else!',
+          'Sorry, It was not normal, I hope this will not happen again.',
+          'Sorry, It was strange. I hope this will not happen here again.',
         ],
         ru: [
           'Извините, но я совсем не могу вас понять.\nПопробуйте позже.',
           'Может быть в другой раз...',
           'Это игра в шахматы. Вы точно попали куда нужно?\nЯ не уверен.',
+          'Возвращайтесь, когда будет настроены играть в шахматы!',
+          'Приходите, когда решите сыграть в шахматы, а не во что-то другое!',
+          'Это было не нормально, надеюсь, такого больше не повторится',
+          'Это было странно. Я надеюсь, у нас такого больше не произойдет.',
         ],
       } as rLangs)[this.lang]
     );
