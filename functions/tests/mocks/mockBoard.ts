@@ -22,6 +22,7 @@ export class MockBoard extends MockProto {
   static moveSide: ChessSide;
   static isEnPassant: boolean;
   static isCapturing: boolean;
+  static totalPieces: number;
 
   static posFn: (pos: string) => string;
 
@@ -42,6 +43,7 @@ export class MockBoard extends MockProto {
     this.moveSide = null;
     this.isEnPassant = null;
     this.isCapturing = null;
+    this.totalPieces = null;
 
     this.posFn = defaultPosFn;
   }
@@ -68,6 +70,7 @@ export class MockBoard extends MockProto {
   _isCapturing: boolean;
   _castlingFen: string;
   _counterFen: number;
+  _totalPieces: number;
 
   protected initMock(): void {
     this._pos = MockBoard.pos;
@@ -86,6 +89,7 @@ export class MockBoard extends MockProto {
     this._moveSide = MockBoard.moveSide;
     this._isEnPassant = MockBoard.isEnPassant;
     this._isCapturing = MockBoard.isCapturing;
+    this._totalPieces = MockBoard.totalPieces;
 
     this.pos = jest.fn(MockBoard.posFn);
   }
@@ -102,6 +106,7 @@ export class MockBoard extends MockProto {
   convertToFen = jest.fn(() => this._convFen);
   isEnPassant = jest.fn(() => this._isEnPassant);
   isCapturing = jest.fn(() => this._isCapturing);
+  totalPiecesCount = jest.fn(() => this._totalPieces);
   get enPassant(): string {
     return this._enPassant;
   }

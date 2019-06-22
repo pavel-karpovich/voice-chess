@@ -56,7 +56,7 @@ export class Handlers extends HandlerBase {
   static acceptAdvice = AroundMoveHandlers.acceptAdvice.bind(AroundMoveHandlers);
   static advice = () => AroundMoveHandlers.advice();
 
-  static firstPartOfBoard = InfoHandlers.firstPartOfBoard.bind(InfoHandlers);
+  static showBoard = InfoHandlers.showBoard.bind(InfoHandlers);
   static secondPartOfBoard = InfoHandlers.secondPartOfBoard.bind(InfoHandlers);
   static rank = InfoHandlers.rank.bind(InfoHandlers);
   static nextRank = InfoHandlers.nextRank.bind(InfoHandlers);

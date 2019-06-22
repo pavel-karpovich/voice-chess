@@ -41,33 +41,50 @@ describe('Tests for info handlers', () => {
 
   describe('Getting the info about board ranks', () => {
 
+    let ranksMock: jest.SpyInstance;
+    const fen = 'fen string';
+    beforeEach(() => {
+      ranksMock = jest.spyOn(board, 'manyRanks');
+      ranksMock.mockImplementation(() => '');
+      env.userStorage.fen = fen;
+    });
+    afterEach(() => {
+      ranksMock.mockReset();
+      MockBoard.resetMockedData();
+    });
+
+    test('Full board with all ranks', () => {
+      const fromRank = 1;
+      const toRank = chessBoardSize;
+      MockBoard.totalPieces = 15;
+      InfoHandlers.showBoard();
+      expect(board.manyRanks).toBeCalledWith(fen, fromRank, toRank);
+      expect(env.output).toHaveLength(2);
+      expect(env.contexts.is('turn-intent')).toBeTruthy();
+      expect(env.suggestions).not.toHaveLength(0);
+    });
+
     test('First part of the board ranks', () => {
-      const mock = jest.spyOn(board, 'manyRanks').mockImplementation(() => '');
-      const fen = 'fen string';
       const fromRank = 1;
       const toRank = chessBoardSize / 2;
-      env.userStorage.fen = fen;
-      InfoHandlers.firstPartOfBoard();
+      MockBoard.totalPieces = 20;
+      InfoHandlers.showBoard();
+      expect(board.manyRanks).toBeCalledWith(fen, fromRank, toRank);
       expect(env.output).toHaveLength(2);
       expect(env.contexts.is('board-next')).toBeTruthy();
       expect(env.contexts.is('rank-info')).toBeTruthy();
-      expect(board.manyRanks).toBeCalledWith(fen, fromRank, toRank);
       expect(env.suggestions).not.toHaveLength(0);
-      mock.mockReset();
     });
 
     test('Second part of the board ranks', () => {
-      const mock = jest.spyOn(board, 'manyRanks').mockImplementation(() => '');
-      const fen = 'fen string';
       const fromRank = chessBoardSize / 2 + 1;
       const toRank = chessBoardSize;
       env.userStorage.fen = fen;
       InfoHandlers.secondPartOfBoard();
+      expect(board.manyRanks).toBeCalledWith(fen, fromRank, toRank);
       expect(env.output).toHaveLength(2);
       expect(env.contexts.is('turn-intent')).toBeTruthy();
-      expect(board.manyRanks).toBeCalledWith(fen, fromRank, toRank);
       expect(env.suggestions).not.toHaveLength(0);
-      mock.mockReset();
     });
 
     describe('Info about one rank', () => {

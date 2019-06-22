@@ -259,14 +259,22 @@ export class Answer {
     return rand(
       ({
         en: [
-          'You want see the board? Here is the first part: ',
+          'You want to see the board? Here is the first part: ',
           'Look at first part: ',
           'The first part of the board: ',
+          "Let's start with the first row of the board",
+          "Now I'll tell you.",
+          'Okay, listen.',
+          'Ok, here it is. Listen.',
         ],
         ru: [
           'Первая половина доски: ',
           'Слушайте, что на первой половине доски: ',
           'Вот первая половина доски: ',
+          'Начну с первого ряда: ',
+          'Сначала первая половина доски: ',
+          'Сейчас расскажу.',
+          'Хорошо, слушайте.',
         ],
       } as rLangs)[this.lang]
     );
@@ -274,8 +282,20 @@ export class Answer {
   static board2(): string {
     return rand(
       ({
-        en: ['The second part of the board: '],
-        ru: ['Вторая половина доски: '],
+        en: [
+          'The second part of the board: ',
+          'Next: ',
+          'Next part: ',
+          'And the next part of the board: ',
+          '',
+        ],
+        ru: [
+          'Вторая половина доски: ',
+          'Следующая часть: ',
+          'Следующая половина: ',
+          'Продолжаю.',
+          '',
+        ],
       } as rLangs)[this.lang]
     );
   }
@@ -283,14 +303,51 @@ export class Answer {
     return rand(
       ({
         en: [
-          'And this is on our chessboard: ',
+          'Here is what we have on the board now: ',
           'So, chessboard: ',
-          "And what's on the board? Listen: ",
+          "What's on the board? Listen: ",
+          'Listen. ',
+          'Here it is. Listen. ',
+          'Here is the situation: ',
+          'The game is in full swing: ',
+          'We are almost on the endgame: ',
+          "That's what we have: ",
+          "I'll show you now. ",
+          '',
         ],
         ru: [
           'Вот что у нас сейчас на доске: ',
           'Итак, шахматная доска: ',
-          'Что же происходит на доске? Слушайте: ',
+          'Что у нас на доске? Слушайте: ',
+          'Вот: ',
+          'Вот как обстоят дела: ',
+          'Игра в самом разгаре: ',
+          'Мы практически на эндшпиле: ',
+          'Вот что у нас есть: ',
+          'Что мы имеем: ',
+          '',
+        ],
+      } as rLangs)[this.lang]
+    );
+  }
+  static initialBoard(): string {
+    return rand(
+      ({
+        en: [
+          'We have just started new game, and all the pieces in the original position.',
+          'All pieces in the starting position.',
+          'All in the starting position - we have not played yet.',
+          "It's an original position. You have not made a first move.",
+          'All pieces in their original places.',
+          'I have nothing unusual to show, the chessboard is now in initial position.',
+        ],
+        ru: [
+          'Это новая игра, все фигуры в начальном положении.',
+          'Все фигуры на своих начальных позициях.',
+          'Всё на начальных позициях - мы только начали.',
+          'Это начальная позиция. Вы ещё не сделали первого хода.',
+          'Все фигуры на своих начальных местах.',
+          'Нечего показывать, шахматная доска в начальном положении.',
         ],
       } as rLangs)[this.lang]
     );

@@ -157,6 +157,17 @@ describe('Tests of Chess Board class', () => {
       });
     });
   });
+  
+  test.each([
+    ['rnb1kb1r/pp1p1ppp/1q2pn2/2p5/2P1P3/N2B4/PP1P1PPP/R1BQK1NR w KQkq - 2 6', 32],
+    ['r4rk1/1p5p/p2pB2n/8/4P1P1/2PP4/P6P/2KR2R1 w - - 2 42', 18],
+    ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 32],
+    ['8/1p6/qP6/3p1rn1/k6b/3RK3/1P6/8 w KQkq - 4 60', 11],
+  ])('', (fen, piecesCount) => {
+    const board = new ChessBoard(fen as string);
+    const num = board.totalPiecesCount();
+    expect(num).toBe(piecesCount);
+  });
 
   describe('Move extracting and generating fen string', () => {
 

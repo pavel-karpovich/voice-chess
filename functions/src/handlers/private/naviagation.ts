@@ -135,7 +135,7 @@ export class NavigationHandlers extends HandlerBase {
     } else if (this.contexts.get('ask-to-continue')) {
       GameHandlers.continueGame();
     } else if (this.contexts.get('turn-showboard')) {
-      InfoHandlers.firstPartOfBoard();
+      InfoHandlers.showBoard();
     } else if (this.contexts.get('confirm-move')) {
       await AroundMoveHandlers.acceptMove();
     } else if (this.contexts.get('advice-made')) {

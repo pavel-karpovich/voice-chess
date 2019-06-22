@@ -110,7 +110,7 @@ app.intent('Default Welcome Intent', Handlers.welcome);
 app.intent('Default Fallback Intent', Handlers.fallback);
 app.intent('New Game', Handlers.newGame);
 app.intent('Continue Game', Handlers.continueGame);
-app.intent('Board', Handlers.firstPartOfBoard);
+app.intent('Board', Handlers.showBoard);
 app.intent('Board - next', Handlers.secondPartOfBoard);
 app.intent('Rank', rankHandler);
 app.intent('Rank - number', rankHandler);

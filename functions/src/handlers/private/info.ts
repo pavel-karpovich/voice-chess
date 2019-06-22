@@ -21,15 +21,25 @@ import { FallbackHandlers } from './fallback';
 const ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
 export class InfoHandlers extends HandlerBase {
-  static firstPartOfBoard(): void {
+  static showBoard(): void {
     const fenstring = this.long.fen;
-    let longString = `<p><s>${Ans.board1()}</s></p>\n`;
-    longString += manyRanks(fenstring, 1, chessBoardSize / 2);
-    this.speak(longString);
-    this.speak(Ask.askToGoNext());
-    this.contexts.set('board-next', 1);
-    this.contexts.set('rank-info', 1);
-    this.suggest(Sug.next, Sug.move);
+    const board = new ChessBoard(fenstring);
+    if (board.totalPiecesCount() > chessBoardSize * 2) {
+      let longString = `<p><s>${Ans.board1()}</s></p>\n`;
+      longString += manyRanks(fenstring, 1, chessBoardSize / 2);
+      this.speak(longString);
+      this.speak(Ask.askToGoNext());
+      this.contexts.set('board-next', 1);
+      this.contexts.set('rank-info', 1);
+      this.suggest(Sug.next, Sug.move);
+    } else {
+      let longString = `<p><s>${Ans.board()}</s></p>\n`;
+      longString += manyRanks(fenstring, 1, chessBoardSize);
+      this.speak(longString);
+      this.speak(Ask.waitMove());
+      this.contexts.set('turn-intent', 1);
+      this.suggest(Sug.move, Sug.history);
+    }
   }
 
   static secondPartOfBoard(): void {
