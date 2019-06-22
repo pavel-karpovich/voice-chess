@@ -1,6 +1,7 @@
 import { ChessBoard, ChessSquareData, Captured } from '../chess/chessboard';
 import { upFirst, pause } from './helpers';
 import { Vocabulary as Voc } from '../locales/vocabulary';
+import { Phrases as Phr } from '../locales/phrases';
 import { ChessSide, WhoseSide, totalPiecesNumber, oppositeSide } from '../chess/chessUtils';
 
 function singleRank(rank: ChessSquareData[], rankNum: number): string {
@@ -46,12 +47,12 @@ export function allPiecesForType(
   if (positions.length === 1) {
     const total = totalPiecesNumber(pieceCode);
     if (total === 1) {
-      result += Voc.someonesOnlyOnePieceIsHere(pieceCode, positions[0], whose, mixPerc);
+      result += Phr.someonesOnlyOnePieceIsHere(pieceCode, positions[0], whose, mixPerc);
     } else {
-      result += Voc.someonesOneLeftPieceIsHere(pieceCode, positions[0], whose, playerSide, mixPerc);
+      result += Phr.someonesOneLeftPieceIsHere(pieceCode, positions[0], whose, playerSide, mixPerc);
     }
   } else {
-    result += Voc.someonesPieces(pieceCode, whose, playerSide, positions.length, mixPerc) + ' ';
+    result += Phr.someonesPieces(pieceCode, whose, playerSide, positions.length, mixPerc) + ' ';
     for (let i = 0; i < positions.length; ++i) {
       if (i === positions.length - 1) {
         result += ' ' + Voc.and() + ' ';
@@ -71,7 +72,7 @@ export function allPiecesForSide(
   side: ChessSide,
   playerSide: ChessSide
 ): string {
-  let result = `<p><s>${Voc.fullSidePieces(side)}</s> \n`;
+  let result = `<p><s>${Phr.fullSidePieces(side)}</s> \n`;
   const pos = [] as string[];
   for (let i = 0; i < squares.length; ++i) {
     pos.push(squares[i].pos);
@@ -89,12 +90,12 @@ export function listCapturedPieces(captured: Captured, playerSide: ChessSide): s
   let who = playerSide === ChessSide.WHITE ? WhoseSide.ENEMY : WhoseSide.PLAYER;
   let whose = who === WhoseSide.ENEMY ? WhoseSide.PLAYER : WhoseSide.ENEMY;
   if (captured.white.length === 0) {
-    result += `<s>${upFirst(Voc.someoneDontCapture(who, whose, ChessSide.WHITE))}</s>`;
+    result += `<s>${upFirst(Phr.someoneDontCapture(who, whose, ChessSide.WHITE))}</s>`;
   } else {
     const firstPiece = captured.white[0].piece;
-    result += '<s>' + Voc.someoneCapture1(who);
+    result += '<s>' + Phr.someoneCapture1(who);
     result +=
-      ' ' + Voc.nSomeonesColoredPieces(captured.white[0].count, whose, ChessSide.WHITE, firstPiece);
+      ' ' + Phr.nSomeonesColoredPieces(captured.white[0].count, whose, ChessSide.WHITE, firstPiece);
     for (let i = 1; i < captured.white.length; ++i) {
       if (i === captured.white.length - 1) {
         result += ' ' + Voc.and() + ' ';
@@ -102,7 +103,7 @@ export function listCapturedPieces(captured: Captured, playerSide: ChessSide): s
         result += ', ';
       }
       const el = captured.white[i];
-      result += Voc.nSomeonesPieces(el.count, whose, el.piece);
+      result += Phr.nSomeonesPieces(el.count, whose, el.piece);
     }
     result += '.</s>';
   }
@@ -112,12 +113,12 @@ export function listCapturedPieces(captured: Captured, playerSide: ChessSide): s
   whose = tmp;
   if (captured.black.length === 0) {
     result += '<s>' + upFirst(Voc.andA()) + ' ';
-    result += Voc.someoneDontCapture(who, whose, ChessSide.BLACK) + '</s>';
+    result += Phr.someoneDontCapture(who, whose, ChessSide.BLACK) + '</s>';
   } else {
     const firstPiece = captured.black[0].piece;
-    result += '<s>' + Voc.someoneCapture2(who);
+    result += '<s>' + Phr.someoneCapture2(who);
     result +=
-      ' ' + Voc.nSomeonesColoredPieces(captured.black[0].count, whose, ChessSide.BLACK, firstPiece);
+      ' ' + Phr.nSomeonesColoredPieces(captured.black[0].count, whose, ChessSide.BLACK, firstPiece);
     for (let i = 1; i < captured.black.length; ++i) {
       if (i === captured.black.length - 1) {
         result += ' ' + Voc.and() + ' ';
@@ -125,7 +126,7 @@ export function listCapturedPieces(captured: Captured, playerSide: ChessSide): s
         result += ', ';
       }
       const el = captured.black[i];
-      result += Voc.nSomeonesPieces(el.count, whose, el.piece);
+      result += Phr.nSomeonesPieces(el.count, whose, el.piece);
     }
     result += '.</s>';
   }
@@ -142,7 +143,7 @@ export function someonePlayForColor(
   if (side && who) {
     const actually = side === (who === WhoseSide.PLAYER ? playerSide : oppositeSide(playerSide));
     if (actually) {
-      result += `${upFirst(Voc.yes())}, ${Voc.someonePlayForSide(who, side)}`;
+      result += `${upFirst(Voc.yes())}, ${Phr.someonePlayForSide(who, side)}`;
     } else {
       const rnd = Math.random();
       if (rnd < 0.5) {
@@ -150,18 +151,18 @@ export function someonePlayForColor(
       } else {
         side = oppositeSide(side);
       }
-      result += `${upFirst(Voc.no())}, ${Voc.someonePlayForSide(who, side)}`;
+      result += `${upFirst(Voc.no())}, ${Phr.someonePlayForSide(who, side)}`;
     }
   } else if (who) {
     side = who === WhoseSide.PLAYER ? playerSide : oppositeSide(playerSide);
-    result += upFirst(Voc.someonePlayForSide(who, side));
+    result += upFirst(Phr.someonePlayForSide(who, side));
   } else if (side) {
     who = side === playerSide ? WhoseSide.PLAYER : WhoseSide.ENEMY;
-    result += upFirst(Voc.someonePlayForSide(who, side));
+    result += upFirst(Phr.someonePlayForSide(who, side));
   } else {
     side = playerSide;
     who = side === playerSide ? WhoseSide.PLAYER : WhoseSide.ENEMY;
-    result += upFirst(Voc.someonePlayForSide(who, side));
+    result += upFirst(Phr.someonePlayForSide(who, side));
   }
   return result;
 }

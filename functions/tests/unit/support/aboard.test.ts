@@ -8,7 +8,7 @@ import {
   listCapturedPieces,
   someonePlayForColor
 } from '../../../src/support/board';
-import { Vocabulary } from '../../../src/locales/vocabulary';
+import { initLanguage } from '../../../src/locales/initLang';
 import { ChessSide, WhoseSide } from '../../../src/chess/chessUtils';
 import { ChessSquareData, Captured } from '../../../src/chess/chessboard';
 
@@ -22,7 +22,7 @@ describe('Tests for board support functions', () => {
   ])(`Functions that produce output for locale %s`, (locale) => {
 
     beforeAll(() => {
-      Vocabulary.setLanguage(locale);
+      initLanguage(locale);
       let newLog: (str: string) => void;
       if (log) {
         const consoleLog = console.log;

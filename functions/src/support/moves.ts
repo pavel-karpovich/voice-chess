@@ -1,6 +1,7 @@
 import { ChessBoard } from '../chess/chessboard';
 import { enPawnPos } from '../chess/chessUtils';
 import { Vocabulary as Voc } from '../locales/vocabulary';
+import { Phrases as Phr } from '../locales/phrases';
 import { upFirst, pause } from './helpers';
 
 interface Move {
@@ -290,9 +291,9 @@ function canDoSmth(targets: Move[]): string {
   let result = ' ';
   if (targets[0].beat) {
     const gen = Voc.pieceGender(targets[0].beat);
-    result += Voc.canAttack() + ' ' + Voc.enemy(gen);
+    result += Phr.canAttack() + ' ' + Voc.enemy(gen);
   } else {
-    result += Voc.canMove();
+    result += Phr.canMove();
   }
   for (let i = 0; i < targets.length; ++i) {
     if (i !== 0 && i === targets.length - 1) {
@@ -305,7 +306,7 @@ function canDoSmth(targets: Move[]): string {
       result += ' ' + Voc.on(targets[i].to, 'vin');
     }
     if (targets[i].promo) {
-      result += ' ' + Voc.and() + ' ' + Voc.canPromote();
+      result += ' ' + Voc.and() + ' ' + Phr.canPromote();
     }
     if (i < targets.length - 1) {
       result += ',';
@@ -355,23 +356,23 @@ function onePosFromBulk(pos: PieceMoves): string {
 }
 
 function enPassantFromBulk(pos: PieceMoves): string {
-  let result = Voc.canMakeEnPassant(pos.moves[0].to, pos.pos);
+  let result = Phr.canMakeEnPassant(pos.moves[0].to, pos.pos);
   result += ' ' + Voc.byPlay() + ' ';
-  result += Voc.enPassantByMove(pos.moves[0].from, pos.moves[0].to);
+  result += Phr.enPassantByMove(pos.moves[0].from, pos.moves[0].to);
   if (pos.moves.length === 2) {
     result += ', ' + Voc.or() + ' ';
-    result += Voc.enPassantByMove(pos.moves[1].from, pos.moves[1].to);
+    result += Phr.enPassantByMove(pos.moves[1].from, pos.moves[1].to);
   }
   result += '.';
   return result;
 }
 
 function castlingFromBulk(pos: PieceMoves): string {
-  let result = Voc.canMakeCastling(pos.pos);
-  result += ' ' + Voc.castlingTo(pos.moves[0].to);
+  let result = Phr.canMakeCastling(pos.pos);
+  result += ' ' + Phr.castlingTo(pos.moves[0].to);
   if (pos.moves.length === 2) {
     result += ' ' + Voc.and() + ' ';
-    result += Voc.castlingTo(pos.moves[1].to);
+    result += Phr.castlingTo(pos.moves[1].to);
   }
   result += '.';
   return result;

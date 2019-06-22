@@ -6,7 +6,7 @@ import {
   createHistoryItem
 } from '../../../src/support/history';
 import { ChessSide } from '../../../src/chess/chessUtils';
-import { Vocabulary } from '../../../src/locales/vocabulary';
+import { initLanguage } from '../../../src/locales/initLang';
 
 const log = false;
 
@@ -56,7 +56,7 @@ describe('Testing moves history functionality', () => {
   ])('For locale %s', (locale) => {
 
     beforeAll(() => {
-      Vocabulary.setLanguage(locale);
+      initLanguage(locale);
       let newLog: (str: string) => void;
       if (log) {
         const consoleLog = console.log;

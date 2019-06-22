@@ -1,7 +1,7 @@
 import '../../extend/toIncludeAll';
 
 import { getBulkOfMoves, listMoves,  } from '../../../src/support/moves';
-import { Vocabulary } from '../../../src/locales/vocabulary';
+import { initLanguage } from '../../../src/locales/initLang';
 
 const log = false;
 
@@ -224,7 +224,7 @@ describe('List of moves', () => {
   ])('Output string listing moves for locale %s', (locale) => {
     
     beforeAll(() => {
-      Vocabulary.setLanguage(locale);
+      initLanguage(locale);
       let newLog: (str: string) => void;
       if (log) {
         const consoleLog = console.log;

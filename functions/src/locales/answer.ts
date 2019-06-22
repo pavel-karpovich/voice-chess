@@ -1,6 +1,8 @@
-import { rand, LocalizationObject, char, upFirst } from '../support/helpers';
+import { rand, char, upFirst } from '../support/helpers';
 import { ChessSide, WhoseSide, oppositeSide, getSide } from '../chess/chessUtils';
+import { Langs, rLangs } from './struct/struct';
 import { Vocabulary as Voc } from './vocabulary';
+import { Phrases as Phr } from './phrases';
 
 // prettier-ignore
 export class Answer {
@@ -19,7 +21,7 @@ export class Answer {
         'Добро пожаловать в Голосовые Шахматы! Голосовые Шахматы - это игра в шахматы, ' +
         'рассчитанная полностью на голосовое управление. Чтобы узнать о возможностях и ' +
         'доступных командах произнесите "Помощь", "Инфо" или "Справка".',
-    } as LocalizationObject<string>)[this.lang];
+    } as Langs)[this.lang];
   }
   static welcome(): string {
     return rand(
@@ -37,7 +39,7 @@ export class Answer {
           'С возвращением в Голосовые Шахматы!',
           'Привет!',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static continueGame(side: ChessSide): string {
@@ -53,7 +55,7 @@ export class Answer {
           `Поехали! Вам ходить. Напоминаю, что вы за ${Voc.side(side, 'plr/rod')}.`,
           `Давно пора! Ваш ход. Вы играете ${Voc.side(side, 'plr/tvr')}.`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static newgame(): string {
@@ -61,7 +63,7 @@ export class Answer {
       ({
         en: ['New game is started.', "Let's go, I cleared the board.", 'Ok.'],
         ru: ['Новая игра запущена.', 'Ну давайте заново.', 'Всегда рад новой партейке!'],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static noGameToContinue(): string {
@@ -77,7 +79,7 @@ export class Answer {
           'Чтобы что-то продолжить, нужно чтобы было что-то, что можно продолжить.',
           'Простите, но у нас нет запущенной партии...',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static firstFallback(): string {
@@ -95,7 +97,7 @@ export class Answer {
           'Можно ещё раз?',
           'Не могли бы вы повторить?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static secondFallback(): string {
@@ -107,7 +109,7 @@ export class Answer {
           'Извините, я не могу понять, о чём вы говорите.',
           'Я не могу вас понять...',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static confusedExit(): string {
@@ -123,7 +125,7 @@ export class Answer {
           'Может быть в другой раз...',
           'Это игра в шахматы. Вы точно попали куда нужно?\nЯ не уверен.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static board1(): string {
@@ -139,7 +141,7 @@ export class Answer {
           'Слушайте, что на первой половине доски: ',
           'Вот первая половина доски: ',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static board2(): string {
@@ -147,7 +149,7 @@ export class Answer {
       ({
         en: ['The second part of the board: '],
         ru: ['Вторая половина доски: '],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static board(): string {
@@ -163,7 +165,7 @@ export class Answer {
           'Итак, шахматная доска: ',
           'Что же происходит на доске? Слушайте: ',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static noboard(): string {
@@ -179,7 +181,7 @@ export class Answer {
           'Сейчас нет запущенной партии.',
           'Доску можно увидеть только при запущенной игре.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static illegalMove(from: string, to: string, piece?: string): string {
@@ -199,7 +201,7 @@ export class Answer {
           'Нельзя так ходить!',
           `${char(from)} ${char(to)}... Это некорректный ход.`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static playerMove(from: string, to: string, pieceCode: string): string {
@@ -213,7 +215,7 @@ export class Answer {
           `Ход сделан! Вы передвинули ${Voc.piece(pieceCode, 'vin')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
           `Ладно, значит вы ходите ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static playerEat(eatedPieceCode: string): string {
@@ -231,7 +233,7 @@ export class Answer {
           `И я лишаюсь ${Voc.myPiece(eatedPieceCode, 'rod')}!`,
           `Вы съедаете ${Voc.myPiece(eatedPieceCode, 'vin')}!`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static enemyMove(from: string, to: string, pieceCode: string): string {
@@ -248,7 +250,7 @@ export class Answer {
           `Я сделаю ход ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}!`,
           `А я похожу ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static enemyEat(eatedPieceCode: string): string {
@@ -269,7 +271,7 @@ export class Answer {
           `С вашего позволения, я забираю ${Voc.yourPiece(eatedPieceCode, 'vin')}.`,
           `Я съедаю ${Voc.yourPiece(eatedPieceCode, 'vin')}!`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static enPassantPlayer(from: string, to: string, pawn: string): string {
@@ -283,7 +285,7 @@ export class Answer {
           `Энпассант! Вы ходите пешкой с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')} и забираете мою пешку на проходе к ${Voc.square(pawn, 'dat')}!`,
           `Энпассант! Вы забираете мою пешку на проходе к ${Voc.square(pawn, 'dat')} ходом ${char(from)} ${char(to)}!`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static enPassantEnemy(from: string, to: string, pawn: string): string {
@@ -297,7 +299,7 @@ export class Answer {
           `Энпассант! Я хожу пешкой с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')} и забираю вашу пешку ${char(pawn)} на проходе!`,
           `Энпассант! Я заберу вашу пешку на проходе к ${Voc.square(pawn, 'dat')}! Мой ход - пешка ${char(from)} ${char(to)}.`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static castlingByPlayer(kFrom: string, kTo: string, rFrom: string, rTo: string): string {
@@ -313,7 +315,7 @@ export class Answer {
           `И это рокировка! Вы перемещаете короля на две клетки c ${char(kFrom)} на ${Voc.square(kTo, 'vin')} и ставите ладью с ${Voc.square(rFrom, 'rod')} за своего короля, на ${Voc.square(rTo, 'vin')}.`,
           `Этим ходом вы совершаете рокировку, перемещая своего короля с ${Voc.square(kFrom, 'rod')} на ${Voc.square(kTo, 'vin')} и ладью с ${Voc.square(rFrom, 'rod')} на ${Voc.square(rTo, 'vin')}!`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static castlingByOpponent(kFrom: string, kTo: string, rFrom: string, rTo: string): string {
@@ -329,7 +331,7 @@ export class Answer {
           `И это рокировка! Я перемещаю короля на две клетки c ${char(kFrom)} на ${Voc.square(kTo, 'vin')} и ставлю ладью с ${Voc.square(rFrom, 'rod')} за своего короля, на ${Voc.square(rTo, 'vin')}.`,
           `Я совершу своим ходом рокировку, и перемещу короля с ${Voc.square(kFrom, 'rod')} на ${Voc.square(kTo, 'vin')}, а ладью с ${Voc.square(rFrom, 'rod')} на ${Voc.square(rTo, 'vin')}!`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static incorrectRankNumber(num: number): string {
@@ -344,7 +346,7 @@ export class Answer {
           'Вы назвали неверный номер. Ряды в шахматах нумеруются от 1 до 8.',
           'Такого ряда не существует. Нумерация идёт с 1 до 8.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static noNextRank(): string {
@@ -360,7 +362,7 @@ export class Answer {
           'Это был восьмой ряд.\nДальше некуда!',
           'Это был последний ряд.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static noPrevRank(): string {
@@ -377,7 +379,7 @@ export class Answer {
           'Это вам не программирование, в шахматах нумерация не с нуля, а с единицы идёт!',
           'Больше предыдущих нет!',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static whiteSide(): string {
@@ -390,7 +392,7 @@ export class Answer {
           'Ваша сторона - Белая.\nПервый ход за вами.', 
           'Вы за белых, ходите первыми.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static blackSide(): string {
@@ -404,7 +406,7 @@ export class Answer {
           'Ваша сторона - Чёрная. Я хожу первым...',
           'Ладно, вы за Чёрных. Тогда мой ход первый.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static showDifficulty(current: number): string {
@@ -420,7 +422,7 @@ export class Answer {
           `Текущая сложность: ${current}. Допустимые значения: от 0 до 20.`,
           `Сейчас уровень сложности равен ${current}.`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static difficultyChanged(newLevel: number, oldLevel: number): string {
@@ -436,7 +438,7 @@ export class Answer {
           `Окей, теперь уровень сложности равен ${newLevel}.`,
           `Дело сделано - сложность теперь будет равна ${newLevel}`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static difficultyTheSame(level: number): string {
@@ -449,7 +451,7 @@ export class Answer {
           `Уровень сложности уже равен ${level}!`,
           'Сложность и так такая!',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static checkmateToPlayer(): string {
@@ -457,7 +459,7 @@ export class Answer {
       ({
         en: ['You checkmate!', 'Checkmate!'],
         ru: ['Шах и мат!', 'Вам шах и мат!'],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static youLose(): string {
@@ -483,7 +485,7 @@ export class Answer {
           'Вы хорошо играли! Но в этот раз победа досталсь мне.',
           'На этот раз я победил! Посмотрим, что будет дальше.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static youWin(): string {
@@ -495,7 +497,7 @@ export class Answer {
         ru: [
           'Погодите секундочку... Вы поставили мне шах и мат? Ничего себе, да вы победили! Поздравляю!',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static draw(): string {
@@ -511,7 +513,7 @@ export class Answer {
           'И это ничья! Партия окончена.',
           'Ничья. Дальше играть некуда.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static checkToEnemy(): string {
@@ -519,7 +521,7 @@ export class Answer {
       ({
         en: ['And you set me a check!'],
         ru: ['И тем самым вы ставите мне шах!'],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static checkToPlayer(): string {
@@ -527,7 +529,7 @@ export class Answer {
       ({
         en: ['Check to your king!'],
         ru: ['Вам шах.'],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static stalemateToEnemy(): string {
@@ -543,7 +545,7 @@ export class Answer {
           'Пат! Мне нечем ходить.',
           'Вы поставили мне пат!',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static stalemateToPlayer(): string {
@@ -559,7 +561,7 @@ export class Answer {
           'Пат! У вас нет легальных ходов.',
           'Похоже, я поставил вам пат!',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static fiftymove(): string {
@@ -573,7 +575,7 @@ export class Answer {
           'Правило 50 ходов!',
           'Уже 50 ходов подряд не было ни одного взятия фигуры или передвижения пешки!',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static squareIsEmpty(square: string, pieceCode?: string): string {
@@ -590,7 +592,7 @@ export class Answer {
             `${upFirst(Voc.piece(pieceCode))} ${Voc.on(square)}? Но ${Voc.on(square)} ничего нет.`,
             `${upFirst(Voc.on(square))} нет ${Voc.piece(pieceCode, 'rod')}. На ней вообще нет фигур - это свободная клетка.`,
           ],
-        } as LocalizationObject<string[]>)[this.lang]
+        } as rLangs)[this.lang]
       );
     } else {
       return rand(
@@ -605,7 +607,7 @@ export class Answer {
             `${upFirst(Voc.on(square))} нет фигур.`,
             `Это некорректная позиция. ${upFirst(Voc.on(square))} ничего нет.`,
           ],
-        } as LocalizationObject<string[]>)[this.lang]
+        } as rLangs)[this.lang]
       );
     }
   }
@@ -622,7 +624,7 @@ export class Answer {
           `Только ${Voc.on(square)} находится ${Voc.piece(actualPiece)}, а не ${Voc.piece(playerPiece)}.`,
           `${upFirst(Voc.on(square))} не ${Voc.piece(playerPiece)}, а ${Voc.piece(actualPiece)}.`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static promotion(from: string, to: string): string {
@@ -640,7 +642,7 @@ export class Answer {
           `Время превращения пешки!`,
           `Повышение пешки!`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static moveWithPromotion(pieceCode: string): string {
@@ -656,7 +658,7 @@ export class Answer {
           `Теперь это ${Voc.piece(pieceCode)}!`,
           `Пешка превратилась в ${Voc.piece(pieceCode, 'vin')}!`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static itsAll(): string {
@@ -672,7 +674,7 @@ export class Answer {
           'Все, это конец.',
           'Это всё, что есть.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static emptyHistory(): string {
@@ -688,7 +690,7 @@ export class Answer {
           'В истории нет ни одного хода, мы только начали.',
           'Никакой истории нет, ещё не было сделано ни одного хода',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static invalidMovesNumber(invNum: number): string {
@@ -702,7 +704,7 @@ export class Answer {
           'Вы назвали некорректное число.',
           `Количество ходов не может быть равно ${invNum}!`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static moreMovesThanWeHave(invNum: number, num: number): string {
@@ -722,7 +724,7 @@ export class Answer {
           'Это больше чем было за всю игру. Я перечислю вам всё, что есть.',
           `За всю игру было только ${num} ходов. Так что больше чем ${num} я вам не назову.`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static wrongSide(playerSide: ChessSide, from: string, pieceCode: string): string {
@@ -740,7 +742,7 @@ export class Answer {
           `Вообще то за ${Voc.color(enemySide, 'plr/rod')} играю я. Вы не можете ходить моими фигурами.`,
           `Вы за ${Voc.color(playerSide, 'plr/rod')}, я за ${Voc.color(enemySide, 'plr/rod')}. Следите за фигурами. ${upFirst(Voc.on(from))} ${Voc.myColoredPiece(pieceCode)}.`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static confirmEnabled(): string {
@@ -754,7 +756,7 @@ export class Answer {
           'Хорошо, подтверждение ходов теперь включено.',
           'Принято! Теперь я буду спрашивать у вас подтверждение ходов.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static confirmDisabled(): string {
@@ -768,7 +770,7 @@ export class Answer {
           'Окей, подтверждение ходов выключено.',
           'Хорошо, я больше не буду спрашивать подтверждения для ваших ходов.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static doNotHurry(): string {
@@ -785,7 +787,7 @@ export class Answer {
           'Вы можете подумать и ответить позже, я пока ещё не планирую разряжаться.',
           'Можете подумать и ответить позже, только не забудьте сказать "Ok, Google!".',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static adviseMove(from: string, to: string, pieceCode: string): string {
@@ -803,7 +805,7 @@ export class Answer {
           `Вы можете сыграть ${Voc.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}.`,
           `Что насчёт хода ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}?`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static playerAutoMove(): string {
@@ -823,7 +825,7 @@ export class Answer {
           'Ладно, я сделаю ваш ход вместо вас.',
           'Походить за вас? Запросто!',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static noMoveToCorrect(): string {
@@ -843,7 +845,7 @@ export class Answer {
           'В этой игре вы ещё не сделали ни одного хода.',
           'Сначала сделайте хоть один ход, чтобы было что исправлять.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static cantCastling(): string {
@@ -861,12 +863,12 @@ export class Answer {
           'Вы не можете сделать рокировку из такой позиции!',
           'Рокировка? Но вы не можете сейчас сделать рокировку.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static twoTypesOfCastling(king: string, to1: string, to2: string): string {
-    let result = `${Voc.canMakeCastling(king)} ${Voc.castlingTo(to1)}`;
-    result += ` ${Voc.and()} ${Voc.castlingTo(to2)}.`;
+    let result = `${Phr.canMakeCastling(king)} ${Phr.castlingTo(to1)}`;
+    result += ` ${Voc.and()} ${Phr.castlingTo(to2)}.`;
     return result;
   }
   static emptyPosition(pos: string): string {
@@ -884,7 +886,7 @@ export class Answer {
           `${upFirst(Voc.on(pos))} ничего нет.`,
           `${upFirst(Voc.square(pos))} пустая.`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static hereIsPieceOnPosition(pos: string, pieceCode: string, side: ChessSide): string {
@@ -905,7 +907,7 @@ export class Answer {
           `Здесь находится ${Voc.someonesPiece(whose, pieceCode)}.`,
           `${upFirst(Voc.on(pos))} находится ${Voc.someonesPiece(whose, pieceCode)}.`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static noSuchPieces(pieceCode: string, who?: WhoseSide): string {
@@ -925,7 +927,7 @@ export class Answer {
             `У ${Voc.youOrMe(who)} больше нет ${Voc.piece(pieceCode, `${pNum}/rod`)}.`,
             `${upFirst(Voc.allYourOrMy(pieceCode, who, pNum))} ${Voc.piece(pieceCode, `${pNum}/rod`)} уже захвачены.`,
           ],
-        } as LocalizationObject<string[]>)[this.lang]
+        } as rLangs)[this.lang]
       );
     } else {
       return rand(
@@ -942,7 +944,7 @@ export class Answer {
             `Здесь больше нет ${Voc.coloredPiece(pieceCode, `${pNum}/rod`)}.`,
             `${upFirst(Voc.coloredPiece(pieceCode, `${pNum}/rod`))} не осталось в игре.`,
           ],
-        } as LocalizationObject<string[]>)[this.lang]
+        } as rLangs)[this.lang]
       );
     }
   }
@@ -961,7 +963,7 @@ export class Answer {
           'Мы только начали, ещё не было съедено ни одной фигуры!',
           'Ни у вас, ни у меня, ещё нет съеденных фигур.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static wtfYouAreJustStartedANewGame(): string {
@@ -980,7 +982,7 @@ export class Answer {
           'Да мы же только в самом начале! У вас ещё есть все шансы победить - продолжайте игру.',
           'Ты сможешь сдаться только когда я разрешу. Понял?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static fullmoveNumber(num: number): string {
@@ -1002,7 +1004,7 @@ export class Answer {
           `Эта игра насчитывает ${num} ${Voc.nFullMoves(num)} с момента старта.`,
           `От начала игры ${Voc.nPassed(num)} ${num} ${Voc.nFullMoves(num)}.`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static noFullmoves(): string {
@@ -1022,7 +1024,7 @@ export class Answer {
           'Мы только начали, у нас ещё не было ни одного полного хода.',
           'Сделайте свой ход, и у нас появится первых полный ход.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static error(msg: string): string {
@@ -1042,7 +1044,7 @@ export class Answer {
           `Упс, у нас неприятности: ${msg}`,
           `Извините, произошла ошибка: ${msg}`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
 }

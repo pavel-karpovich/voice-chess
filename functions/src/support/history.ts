@@ -1,5 +1,6 @@
 import { ChessSide, getSide, WhoseSide, oppositeWho } from '../chess/chessUtils';
 import { Vocabulary as Voc } from '../locales/vocabulary';
+import { Phrases as Phr } from '../locales/phrases';
 import { upFirst, pause } from './helpers';
 import { rookMoveForCastlingMove, isMoveSuitableForCastling } from '../chess/castling';
 
@@ -62,31 +63,31 @@ export function historyOfMoves(moves: HistoryFrame[], pSide: ChessSide): string 
       const rookMove = rookMoveForCastlingMove(mv);
       const rookFrom = rookMove.slice(0, 2);
       const rookTo = rookMove.slice(2, 4);
-      let castlingPhrase = Voc.someoneDoCastling(whoseMove, from, to, rookFrom, rookTo);
+      let castlingPhrase = Phr.someoneDoCastling(whoseMove, from, to, rookFrom, rookTo);
       if (!intro) {
         castlingPhrase = upFirst(castlingPhrase);
       }
       result += castlingPhrase;
     } else if (enPassant) {
-      let enPassPhrase = Voc.someoneDoEnPassant(whoseMove, from, to, enPassant);
+      let enPassPhrase = Phr.someoneDoEnPassant(whoseMove, from, to, enPassant);
       if (!intro) {
         enPassPhrase = upFirst(enPassPhrase);
       }
       result += enPassPhrase;
     } else {
-      let firstPhrase = Voc.someoneMoved(whoseMove, piece, from, to);
+      let firstPhrase = Phr.someoneMoved(whoseMove, piece, from, to);
       if (!intro) {
         firstPhrase = upFirst(firstPhrase);
       }
       result += firstPhrase;
       if (move.b) {
         addSeparator();
-        result += Voc.someoneAtePiece(whoseMove, move.b);
+        result += Phr.someoneAtePiece(whoseMove, move.b);
       }
       if (move.m.length === 6) {
         addSeparator();
         const promoteTo = move.m[5];
-        result += Voc.someonePromoted(whoseMove, promoteTo);
+        result += Phr.someonePromoted(whoseMove, promoteTo);
       }
     }
     result += '.' + pause(1) + '\n';

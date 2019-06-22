@@ -1,8 +1,8 @@
-import { LocalizationObject, upFirst } from '../support/helpers';
+import { upFirst } from '../support/helpers';
+import { Langs } from './struct/struct';
 import { ChessSide } from '../chess/chessUtils';
 import { Vocabulary as Voc } from './vocabulary';
 
-type Langs = LocalizationObject<string>;
 // prettier-ignore
 export class Suggestions {
   private static lang: string;

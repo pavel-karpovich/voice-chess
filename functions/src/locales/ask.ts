@@ -1,5 +1,6 @@
-import { rand, LocalizationObject, char, upFirst } from '../support/helpers';
+import { rand, char, upFirst } from '../support/helpers';
 import { Vocabulary as Voc } from './vocabulary';
+import { rLangs, Langs } from './struct/struct';
 
 // prettier-ignore
 export class Ask {
@@ -22,7 +23,7 @@ export class Ask {
           'Создать новую игру?',
           'Остаётся только начать новую игру. Да?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static askToContinue(): string {
@@ -40,7 +41,7 @@ export class Ask {
           'Хотите продолжить игру?',
           'Мы с вами недоиграли. Закончим начатое?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static ingameTips(): string {
@@ -69,7 +70,7 @@ export class Ask {
         '<s>Вы всегда можете начать новую игру, или сдаться, если чувствуете, что проиграли.</s>' +
         '<s>Если вам нужно, вы можете изменить уровень сложности, или включить/отключить необходимость подтверждения каждого хода.</s></p>' +
         '<p><s>Теперь, что вы хотите сделать из этого списка?</s></p>',
-    } as LocalizationObject<string>)[this.lang];
+    } as Langs)[this.lang];
   }
   static nogameTips(): string {
     return ({
@@ -88,7 +89,7 @@ export class Ask {
         '<s>В качестве настроек вы можете отрегулировать уровень сложности игры, ' +
         'а также включить/отключить опцию подтверждения каждого хода.</s></p>' +
         '<p><s>Ну и что вы будете делать?</s></p>',
-    } as LocalizationObject<string>)[this.lang];
+    } as Langs)[this.lang];
   }
   static askToRemindBoard(): string {
     return rand(
@@ -109,7 +110,7 @@ export class Ask {
           'Напомнить расположение фигур?',
           'Я могу напомнить вам позиции на доске, если нужно.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static askToGoNext(): string {
@@ -117,7 +118,7 @@ export class Ask {
       ({
         en: ['Next?', 'Do you want more?', 'Continue?', 'Go ahead?'],
         ru: ['Дальше?', 'Ещё?', 'Продолжать?', 'Следующая часть?'],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static chooseSide(): string {
@@ -133,7 +134,7 @@ export class Ask {
           'Вы хотите играть за Белых или Чёрных?',
           'На какой вы стороне? Белые или Чёрные?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static whatToDo(): string {
@@ -141,7 +142,7 @@ export class Ask {
       ({
         en: ['And what do you want to do next?'],
         ru: ['И что вы хотите сделать?', 'И что будем делать дальше?'],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static askWhatever(): string {
@@ -160,7 +161,7 @@ export class Ask {
           'Тогда что?',
           'Тогда что вы хотите сделать?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static askToMove(): string {
@@ -174,7 +175,7 @@ export class Ask {
           'Какой вы сделаете ход?',
           'И каков будет ваш ход?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static askToMoveAgain(): string {
@@ -192,7 +193,7 @@ export class Ask {
           'Тогда как вы походите?',
           'Назовите корректный ход.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static nowYouNeedToMove(): string {
@@ -214,7 +215,7 @@ export class Ask {
           'И что же вы будете делать в ответ?',
           'Есть чем мне ответить?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static waitMove(): string {
@@ -235,7 +236,7 @@ export class Ask {
           'Теперь вы готовы походить?',
           'Я жду вашего хода. Что будете делать?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static askRankNumber(): string {
@@ -253,7 +254,7 @@ export class Ask {
           'На каком ряду вы хотите узнать фигуры?',
           'Назовите номер ряда, чтобы узнать расстановку фигур на нём.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static askToChangeDifficulty(): string {
@@ -269,7 +270,7 @@ export class Ask {
           'Какую сложность поставить?',
           'На какую сложность её изменить? От 0 до 20.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static difficultyWithoutValue(): string {
@@ -284,7 +285,7 @@ export class Ask {
           'Простите, не могли бы вы повторить, какой уровень сложности поставить?',
           'Ещё раз, какой уровень сложности поставить?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static wantReduceDifficulty(current: number): string {
@@ -304,7 +305,7 @@ export class Ask {
           'Может просто обойдёмся уменьшением уровня сложности? Хотите?',
           'А что на счёт уменьшения уровня сложности?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static moveWithoutPiecesMatch(
@@ -329,7 +330,7 @@ export class Ask {
           `Будете ходить ${Voc.piece(actualPiece, 'rod')} с ${char(from)} на ${char(to)}?`,
           `Значит, ${Voc.piece(actualPiece)} ${char(from)} ${char(to)}?`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static howToPromote(): string {
@@ -347,7 +348,7 @@ export class Ask {
           'В кого превращать? Ферзь, слон, конь, ладья?',
           'Ферзь, слон, конь, ладья. Выбирайте!',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static askToConfirm(from: string, to: string, pieceCode: string): string {
@@ -363,7 +364,7 @@ export class Ask {
           `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(to)}. Всё верно?`,
           `Вы хотите походить ${Voc.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}. Верно?`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static askToConfirmCastling(kFrom: string, kTo: string, rFrom: string, rTo: string): string {
@@ -381,7 +382,7 @@ export class Ask {
           `При рокировке король перейдёт на клетку ${char(kTo)}, а ладья с ${char(rFrom)} встанет на ${char(rTo)}. Вы подтверждаете рокировку?`,
           `Рокировка короля с ладьёй приведёт к перемещению короля на клетку ${char(kTo)}, а ладью на клетку ${char(rTo)}. Вы согласны?`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static isAnybodyHere(): string {
@@ -399,7 +400,7 @@ export class Ask {
           'Аууу! Есть кто на связи?',
           'Я вас не слышу, повторите, пожалуйста.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static waitForReactOnAdvise(): string {
@@ -417,7 +418,7 @@ export class Ask {
           'Будете ходить так?',
           'Послушаете меня, или походите по-своему?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static moveToCorrect(from: string, to: string, pieceCode: string): string {
@@ -437,7 +438,7 @@ export class Ask {
           `И как вы хотите походить вместо ${char(from)} ${char(to)}?`,
           `И какой ход вы хотите на замену старому ${char(from)} ${char(to)}?`,
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static correctFails() {
@@ -455,7 +456,7 @@ export class Ask {
           'Корректировки хода не произошло и вы вернулись к оригинальному варианту. Ходите.',
           'Значит продолжаем партию как обычно. Ваш ход.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static chooseCastling(): string {
@@ -474,7 +475,7 @@ export class Ask {
           'Какую из этих двух рокировок вы хотите совершить?',
           'Какую рокировку вы сделаете?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static orMove(): string {
@@ -492,7 +493,7 @@ export class Ask {
           'Или вы сделаете свой ход?',
           'Или вы походите?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static nextSquare(): string {
@@ -510,7 +511,7 @@ export class Ask {
           'Другая клетка?',
           'Напомнить ещё какую-нибудь позицию?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static nextPiece(): string {
@@ -528,7 +529,7 @@ export class Ask {
           'Хотите узнать о других фигурах?',
           'Напомнить ещё о какой-нибудь фигуре?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static confirmNewGame(): string {
@@ -553,7 +554,7 @@ export class Ask {
           'Начав новую игру, вы перезапишете свою незавершенную партию. Вы уверены?',
           'Вы хотите бросить текущую партию и начать новую? А ведь, на этот раз, вы почти что неплохо играли. Вы уверены?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static confirmResign(): string {
@@ -573,7 +574,7 @@ export class Ask {
           'Это окончательное решение?',
           'Вы признаёте поражение в этой партии?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static thenPlay(): string {
@@ -592,7 +593,7 @@ export class Ask {
           'Тогда делайте свой ход! Ещё не всё потеряно.',
           'Это ещё не конец, продолжайте играть!',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static stillWantToResign(): string {
@@ -612,7 +613,7 @@ export class Ask {
           'Значит вы приняли выбор сдаться?',
           'То есть вы сдаётесь?',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
   static tryAgainOrLater(): string {
@@ -632,7 +633,7 @@ export class Ask {
           'Если данная проблема повторится, пожалуйста, обратитесь в поддержку.',
           'Вы можете попробовать ещё раз, или сделать другой запрос.',
         ],
-      } as LocalizationObject<string[]>)[this.lang]
+      } as rLangs)[this.lang]
     );
   }
 }
