@@ -365,6 +365,7 @@ describe('Tests for move handlers', () => {
     env.userStorage.history = [];
     Mochess.enemyMove = move;
     Mochess.fen = newFen;
+    MockBoard.pos = 'p';
     await MoveHandlers.simpleMoveByAI();
     expect(env.output).toHaveLength(1);
     expect(Mochess.instance.moveAuto).toBeCalledTimes(1);

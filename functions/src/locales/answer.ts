@@ -414,7 +414,7 @@ export class Answer {
         ],
         ru: [
           `Ход сделан! Вы передвинули ${Voc.piece(pieceCode, 'vin')} ${Voc.fromTo(from, to)}.`,
-          `Ладно, значит вы ходите ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}.`,
+          `Ладно, значит вы играете ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}.`,
           `Вы передвигаете ${Voc.selfPiece(pieceCode, 'vin')} ${Voc.fromTo(from, to)}.`,
           `Что ж, вы переместили ${Voc.yourPiece(pieceCode, 'vin')} ${Voc.fromTo(from, to)}.`,
           `Значит, вы сделали ход ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}.`,
@@ -530,7 +530,7 @@ export class Answer {
           `You make En Passant - capturing in the passing! I lose my pawn ${Voc.on(pawnPos)}, and you move move your pawn ${Voc.fromTo(from, to)}.`,
         ],
         ru: [
-          `Энпассант! Вы ходите пешкой ${Voc.fromTo(from, to)} и забираете мою пешку на проходе к ${Voc.square(pawnPos, 'dat')}!`,
+          `Энпассант! Вы переходите пешкой ${Voc.fromTo(from, to)} и забираете мою пешку на проходе к ${Voc.square(pawnPos, 'dat')}!`,
           `Энпассант! Вы забираете мою пешку на проходе к ${Voc.square(pawnPos, 'dat')} ходом ${char(from)} ${char(to)}!`,
           `Как же я не предусмотрел! Вы забираете мою пешку Эн пассант, ходом ${Voc.fromTo(from, to)}!`,
           `Как же я не учёл Эн Пассант. Вы забираете пешку, которой я только что сыграл, сделав ход ${Voc.fromTo(from, to)} своей пешкой.`,
@@ -612,13 +612,20 @@ export class Answer {
     return rand(
       ({
         en: [
+          `In chess there is no row ${num}!`,
+          'You said the wrong rank number. The ranks in standard chess are numbered from 1 to 8.',
+          "Rank with this number doesn't exist. The numbering starts from 1 and ends at 8.",
           `Rank ${num}? What does it mean?`,
-          'You called the wrong rank number. Ranks in standard chess are numbered from 1 to 8.',
+          `${num} is an invalid rank number.`,
+          `Where on the chessboard did you see rank number ${num}?`,
         ],
         ru: [
           `Ряда ${num} не существует в шахматах.`,
           'Вы назвали неверный номер. Ряды в шахматах нумеруются от 1 до 8.',
           'Такого ряда не существует. Нумерация идёт с 1 до 8.',
+          `Ряд ${num}? Что это значит?`,
+          `${num} - это некорректный номер ряда.`,
+          `Где вы видели на шахматной доске ряд под номером ${num}?`,
         ],
       } as rLangs)[this.lang]
     );
@@ -630,11 +637,17 @@ export class Answer {
           'There is no next rank.',
           'It was the 8th rank.\nThere is no next rank!',
           'It was the last rank.',
+          'It was the last rank I guess.',
+          'Which row do you want to see after the last one?',
+          'It was the end of a chessboard.',
         ],
         ru: [
           'Следующего ряда нет.',
           'Это был восьмой ряд.\nДальше некуда!',
           'Это был последний ряд.',
+          'Только что был последний восьмой ряд.',
+          'Какой ряд вы хотите увидеть после последнего?',
+          'Это конец шахматной доски. Следующего ряда нет.',
         ],
       } as rLangs)[this.lang]
     );
@@ -645,13 +658,18 @@ export class Answer {
         en: [
           'There is no previous rank.',
           'It was the 1th rank.\nThere is no previous rank!',
-          'It was the first rank on the chess board. What is the "previous"?',
+          'It was the first rank on the chessboard. What is the "previous"?',
+          'It was the first rank.',
+          'Which row do you want to see before the first one?',
+          'No previous rank.',
         ],
         ru: [
           'Это был первый ряд, куда дальше то!',
           'Только что был первый ряд, перед ним на доске ничего нет.',
-          'Это вам не программирование, в шахматах нумерация не с нуля, а с единицы идёт!',
+          'Это вам не программирование, в шахматах нумерация идёт с единицы, а не с нуля!',
           'Больше предыдущих нет!',
+          'Только что был самый первый ряд. Что значит "предыдущий" от него?',
+          'В шахматах нет нулевого ряда!',
         ],
       } as rLangs)[this.lang]
     );
@@ -660,11 +678,28 @@ export class Answer {
     return rand(
       ({
         en: [
-          'Your side is White.\nAnd your turn is first!',
+          'Your side is white. And your turn is first!',
+          'You are for the whites, then must go first.',
+          'Ok, you are for the whites.',
+          'So, you move first.',
+          'Good. Then you need to move first.',
+          "Well, you are for whites, I'm for blacks.",
+          "Ok, so I'm for black.",
+          "Then I'm for black.",
+          "So be it, this time I'll be for black.",
+          "Ok, this time I'll play black.",
         ],
         ru: [
-          'Ваша сторона - Белая.\nПервый ход за вами.', 
-          'Вы за белых, ходите первыми.',
+          'Ваша сторона - белая. Первый ход за вами.', 
+          'Вы за белых, и должны ходить первыми.',
+          'Ладно, вы за белых.',
+          'Значит ваш ход первый.',
+          'Значит первый ход ваш.',
+          'Хорошо, вы за белых, я за чёрных.',
+          'Ок, значит я за чёрных.',
+          'Тогда я за чёрных.',
+          'Тогда ваш ход первый.',
+          'Хорошо, в этот раз я буду за чёрных.',
         ],
       } as rLangs)[this.lang]
     );
@@ -673,12 +708,28 @@ export class Answer {
     return rand(
       ({
         en: [
-          'Your side is Black. My turn is first...',
-          "Ok, you are for Black. Then I'll go first.",
+          'Your side is black. My turn is first.',
+          "Ok, you are for black. Then I'll go first.",
+          'Then I play white.',
+          'So, I play white, and my move is first.',
+          "You are for black, I'm for whites. And I'll made a move first.",
+          'You are for black... Consequently, the first move for me.',
+          "If you play black, then I'm white. And white goes first.",
+          "You have decided for blacks? Well, now I'll play for whites.",
+          'If so, then I go first.',
+          "Good, this time I'm for whites, you're for blacks.",
         ],
         ru: [
-          'Ваша сторона - Чёрная. Я хожу первым...',
-          'Ладно, вы за Чёрных. Тогда мой ход первый.',
+          'Ваша сторона - чёрная. Я хожу первым.',
+          'Ладно, вы за чёрных. Тогда мой ход первый.',
+          'Тогда за белых я.',
+          'Значит я за белых, и сейчас мой ход.',
+          'Вы за чёрных, я за белых. Значит я должен сделать первый ход.',
+          'Вы за чёрных... Следовательно, первый ход за мной.',
+          'Если вы играете за чёрных, то я за белых. Белые ходят первыми.',
+          'Вы решили за чёрных? Хорошо, сейчас за белых сыграю я.',
+          'Раз так, то я хожу первым.',
+          'Хорошо, в этот раз вы за чёрных, я за белых.',
         ],
       } as rLangs)[this.lang]
     );
@@ -690,11 +741,17 @@ export class Answer {
           `The current difficulty level is ${current}.`,
           `At the moment, the difficulty is set to ${current}.`,
           `For now, the difficulty level is ${current}. Valid values are from 0 to 20.`,
+          `The difficulty level is set to ${current} from 20.`,
+          `The current level of difficulty is ${current}. You can change it to any value from 0 to 20.`,
+          `You're now on the ${current}th difficulty level.`,
         ],
         ru: [
           `Текущий уровень сложности: ${current}.`,
-          `Текущая сложность: ${current}. Допустимые значения: от 0 до 20.`,
+          `Текущая сложность: ${current}. Допустимые значения: от <sub alias="нуля">0</sub> до <sub alias="двадцати">20</sub>.`,
           `Сейчас уровень сложности равен ${current}.`,
+          `В данный момент выбрана ${current}-ая сложность.`,
+          `На текущий момент, уровень сложности выставлен в ${current} из <sub alias="двадцати">20</sub>.`,
+          `Сейчас сложность равна ${current}, из <sub alias="двадцати">20</sub доступных уровней.`,
         ],
       } as rLangs)[this.lang]
     );
@@ -704,13 +761,19 @@ export class Answer {
       ({
         en: [
           `The difficulty level has been changed from ${oldLevel} to ${newLevel}!`,
-          `The difficulty level now is set to ${newLevel}!`,
+          `The difficulty level is now set to ${newLevel}!`,
           `Ok! Difficulty is now set to ${newLevel}.`,
+          `All right, the level of difficulty is now set to ${newLevel}.`,
+          `You have successfully changed the difficulty from level ${oldLevel} to level ${newLevel}.`,
+          `You set the difficuly level to ${newLevel}. Well, let's see how the game will go now.`,
         ],
         ru: [
           `Уровень сложности был изменён с ${oldLevel} на ${newLevel}!`,
           `Окей, теперь уровень сложности равен ${newLevel}.`,
-          `Дело сделано - сложность теперь будет равна ${newLevel}`,
+          `Дело сделано - сложность теперь будет равна ${newLevel}.`,
+          `Хорошо, вы изменили сложность с ${oldLevel} на ${newLevel}.`,
+          `Хорошо, теперь уровень сложности будет равен ${newLevel}.`,
+          `Вы изменили уровень сложности с ${oldLevel} на ${newLevel}. Посмотрим, как игра пойдёт теперь.`,
         ],
       } as rLangs)[this.lang]
     );
@@ -720,19 +783,66 @@ export class Answer {
       ({
         en: [
           `The difficulty level is already ${level}!`,
+          `The difficulty level is equal to ${level}!`,
+          `Ok, I change the level of difficulty from ${level} to ${level}. Good?`,
+          `But the level of difficulty is already equal to 7!`,
+          `Ok, I will leave the difficulty at the same level.`,
+          `Then difficulty level will remain the same.`,
         ],
         ru: [
           `Уровень сложности уже равен ${level}!`,
           'Сложность и так такая!',
+          `Ладно, я поменял сложность с ${level} на ${level}. Теперь вы довольны?`,
+          `Но уровень сложности сейчас и так равен ${level}.`,
+          `Хорошо, я оставлю сложность на прежнем уровне.`,
+          `Тогда сложность останется прежней.`,
         ],
       } as rLangs)[this.lang]
     );
   }
-  static checkmateToPlayer(): string {
+  static checkmateToPlayer(movesNum: number): string {
     return rand(
       ({
-        en: ['You checkmate!', 'Checkmate!'],
-        ru: ['Шах и мат!', 'Вам шах и мат!'],
+        en: [
+          `Checkmate in ${movesNum} moves!`,
+          'Checkmate!',
+          'Checkmate, my friend!',
+          "It's a checkmate.",
+          'Checkmate, by the way.',
+          'Checkmate, I think!',
+          'Check and mate!',
+        ],
+        ru: [
+          `Шах и мат в ${movesNum} ходов!`,
+          'Шах и мат!',
+          'Вам шах и мат!',
+          'Шах и мат, друг мой!',
+          'Я полагаю, вам шах и мат!',
+          'И я ставлю вам шах и мат!',
+          'И это шах и мат!',
+        ],
+      } as rLangs)[this.lang]
+    );
+  }
+  static checkmateToEnemy(movesNum: number): string {
+    return rand(
+      ({
+        en: [
+          `Oh... You checkmate me! Very impressive!`,
+          `And it's a checkmate! In ${movesNum} moves!`,
+          'Checkmate!',
+          "It's a checkmate!",
+          'Checkmate to me!',
+          'Check and mate! How did you do it?',
+        ],
+        ru: [
+          'Погодите секундочку... Вы поставили мне шах и мат?',
+          `Мне шах и мат! За ${movesNum} ходов!`,
+          'Вы поставили мне шах и мат!',
+          'И вы ставите меня в положение шаха и мата!',
+          'Мне шах и мат!',
+          'Вы ставите мне шах и мат! Как вы это сделали?',
+        ],
       } as rLangs)[this.lang]
     );
   }
@@ -766,10 +876,20 @@ export class Answer {
     return rand(
       ({
         en: [
-          'Oh... You checkmate me! Very impressive! You won! Congratulations!.',
+          'You won! Congratulations!',
+          'And you exit this game as a winner!',
+          'Congratulations, this match is yours!',
+          'I lose! This time you will be the winner.',
+          'It was a nice game. You won!',
+          'Victory is yours. Congratulations!',
         ],
         ru: [
-          'Погодите секундочку... Вы поставили мне шах и мат? Ничего себе, да вы победили! Поздравляю!',
+          'Ничего себе, да вы победили! Поздравляю!',
+          'И вы выходите из этой партии победителем!',
+          'Поздравляю, эта партия за вами.',
+          'Я проиграл! На этот раз победителем будете вы.',
+          'Это была славная игра. Вы победили!',
+          'Победа за вами! Примите мои поздравления!',
         ],
       } as rLangs)[this.lang]
     );
@@ -781,11 +901,17 @@ export class Answer {
           'It seems like a draw.',
           "It's a draw. The game is over.",
           "Draw, well played. Now it's over.",
+          'And this is a draw. Here we finish.',
+          "Here we'll stop. This is a draw.",
+          'And we end this game with a draw!',
         ],
         ru: [
           'Похоже, у нас ничья!',
           'И это ничья! Партия окончена.',
           'Ничья. Дальше играть некуда.',
+          'И это ничья. Здесь мы и закончим.',
+          'Здесь мы и остановимся. Это ничья.',
+          'И мы заканчиваем эту партию ничьёй!',
         ],
       } as rLangs)[this.lang]
     );
@@ -793,16 +919,44 @@ export class Answer {
   static checkToEnemy(): string {
     return rand(
       ({
-        en: ['And you set me a check!'],
-        ru: ['И тем самым вы ставите мне шах!'],
+        en: [
+          'And you set me a check!',
+          'You set me the check, by the way!',
+          'Check to my king!',
+          "And it's a check to my king!",
+          "And I'm in check now.",
+          'You are check my king!',
+        ],
+        ru: [
+          'И тем самым вы ставите мне шах!',
+          'Между прочим, вы ставите мне шах!',
+          'И вы ставите шах моему королю!',
+          'Вы поставили мне шах!',
+          'Шах моему королю!',
+          'И это шах моему королю!',
+        ],
       } as rLangs)[this.lang]
     );
   }
   static checkToPlayer(): string {
     return rand(
       ({
-        en: ['Check to your king!'],
-        ru: ['Вам шах.'],
+        en: [
+          'Check to your king!',
+          'I set check to you, by the way.',
+          'Check to your king!',
+          "And it's a check to your king!",
+          'Your king in check now.',
+          "I'm check your king!",
+        ],
+        ru: [
+          'Вам шах.',
+          'Между делом, вам шах.',
+          'И я ставлю шах вашему королю.',
+          'Я ставлю вам шах!',
+          'Шах вашему королю!',
+          'И это шах вашему королю.',
+        ],
       } as rLangs)[this.lang]
     );
   }
@@ -810,14 +964,20 @@ export class Answer {
     return rand(
       ({
         en: [
-          'Stalemate situation!',
+          "It's a stalemate situation!",
           'Stalemate! I have nothing to move.',
-          'You gave me a stalemate!',
+          'You set me in a stalemate!',
+          'Oops, stalemate!',
+          "I'm at a dead end. This is a stalemate!",
+          "You drove me into a stalemate!",
         ],
         ru: [
           'Патовая ситуация!',
           'Пат! Мне нечем ходить.',
           'Вы поставили мне пат!',
+          'Я в тупике. Это пат.',
+          'Вы загнали меня в тупик. Пат.',
+          'Пат! Я не могу сделать ход.',
         ],
       } as rLangs)[this.lang]
     );
@@ -826,14 +986,20 @@ export class Answer {
     return rand(
       ({
         en: [
-          'It is a stalemate situation!',
+          "It's a stalemate situation!",
           "Stalemate! You don't have any piece to legal move.",
-          'I put you a stalemate!',
+          'I put you into a stalemate!',
+          "I don't see a better way. Stalemate.",
+          "And it's a stalemate to you.",
+          "It's a stalemate.",
         ],
         ru: [
-          'Вам пат!',
-          'Пат! У вас нет легальных ходов.',
-          'Похоже, я поставил вам пат!',
+          'Что ж, вам пат.',
+          'У вас больше нет доступных ходов. Это пат.',
+          'Похоже, я поставил вам пат.',
+          'Я не вижу лучшего сценария... Вам пат.',
+          'Я не знаю, что ещё можно сделать. Вам пат.',
+          'И это патовая ситуация.',
         ],
       } as rLangs)[this.lang]
     );
@@ -842,12 +1008,14 @@ export class Answer {
     return rand(
       ({
         en: [
-          'It is fifty-move rule!',
+          "It's a 50 move rule!",
           'For 50 moves in a row there was not a single capture of any piece or pawn movement.',
+          'Well well. Our game is extremely delayed. The 50 move rule comes into effect.',
         ],
         ru: [
           'Правило 50 ходов!',
           'Уже 50 ходов подряд не было ни одного взятия фигуры или передвижения пешки!',
+          'Так-так. Наша игра чрезвычайно затянулась. В действие вступает правило 50 ходов.',
         ],
       } as rLangs)[this.lang]
     );

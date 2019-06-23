@@ -133,6 +133,7 @@ describe('Tests for game handlers', () => {
       const playerSide = ChessSide.WHITE;
       env.userStorage.fen = fen;
       env.userStorage.side = playerSide;
+      env.userStorage.history = [];
       GameHandlers.continueGame();
       expect(env.contexts.is('game')).toBeTruthy();
       expect(env.contexts.is('turn-showboard')).toBeFalsy();

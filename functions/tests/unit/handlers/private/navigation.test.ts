@@ -250,12 +250,12 @@ describe('Tests for navigation handlers', () => {
     });
     
     test('With "turn-showboard" context', async () => {
-      const mock = jest.spyOn(InfoHandlers, 'firstPartOfBoard').mockImplementationOnce(() => {});
+      const mock = jest.spyOn(InfoHandlers, 'showBoard').mockImplementationOnce(() => {});
       env.contexts.set('turn-showboard', 1);
       await NavigationHandlers.yes();
       expect(SettingsHandlers.safeGameContext).toBeCalledTimes(1);
       expect(env.convData.fallbackCount).toBe(0);
-      expect(InfoHandlers.firstPartOfBoard).toBeCalledTimes(1);
+      expect(InfoHandlers.showBoard).toBeCalledTimes(1);
       mock.mockReset();
     });
     

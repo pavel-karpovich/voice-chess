@@ -74,7 +74,7 @@ export class GameHandlers extends HandlerBase {
       const lastMove = this.long.history[this.long.history.length - 1].m.slice(1);
       this.speak(Ans.continueGame(playerSide, lastMove));
       this.speak(Ask.askToRemindBoard());
-    this.contexts.set('turn-showboard', 1);
+      this.contexts.set('turn-showboard', 1);
       this.suggest(
         Sug.yes,
         Sug.move,

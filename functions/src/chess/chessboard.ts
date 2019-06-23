@@ -325,7 +325,7 @@ export class ChessBoard {
 
   totalPiecesCount(): number {
     let n = 0;
-    this.board.forEach(val => val !== null ? n++ : void 0);
+    this.board.forEach(val => (val !== null ? n++ : void 0));
     return n;
   }
 

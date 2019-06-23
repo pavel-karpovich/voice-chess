@@ -5,7 +5,7 @@ import { Suggestions as Sug } from '../../locales/suggestions';
 import { Ask } from '../../locales/ask';
 import { ChessBoard } from '../../chess/chessboard';
 import { pause, shuffle } from '../../support/helpers';
-import { getSide } from '../../chess/chessUtils';
+import { getSide, oppositeSide, ChessSide } from '../../chess/chessUtils';
 import { GameHandlers } from './game';
 import { createHistoryItem } from '../../support/history';
 import { OtherHandlers } from './other';
@@ -104,18 +104,20 @@ export class MoveHandlers extends HandlerBase {
     this.long.fen = chess.fenstring;
     switch (chess.currentGameState) {
       case ChessGameState.CHECKMATE:
-        this.speak(answer + ' \n' + Ans.youWin());
-        this.speak(Ask.askToNewGame());
+        const isCompBlack = oppositeSide(this.long.side) === ChessSide.BLACK;
+        const moveNum = board.movesNumber + Number(isCompBlack);
+        this.speak(`${answer} \n${Ans.checkmateToEnemy(moveNum)}`);
+        this.speak(`${pause(0.6)}${Ans.youWin()} \n${Ask.askToNewGame()}`);
         GameHandlers.dropGame();
         return;
       case ChessGameState.STALEMATE:
-        this.speak(`${answer} \n${Ans.stalemateToEnemy()} \n${Ans.draw()}`);
-        this.speak(Ask.askToNewGame());
+        this.speak(`${answer} \n${Ans.stalemateToEnemy()}`);
+        this.speak(`${pause(0.6)}${Ans.draw()} \n${Ask.askToNewGame()}`);
         GameHandlers.dropGame();
         return;
       case ChessGameState.FIFTYMOVEDRAW:
-        this.speak(`${answer} \n${Ans.fiftymove()} \n${Ans.draw()}`);
-        this.speak(Ask.askToNewGame());
+        this.speak(`${answer} \n${Ans.fiftymove()}`);
+        this.speak(`${pause(0.6)}${Ans.draw()} \n${Ask.askToNewGame()}`);
         GameHandlers.dropGame();
         return;
       case ChessGameState.CHECK:
@@ -172,20 +174,21 @@ export class MoveHandlers extends HandlerBase {
     hist.push(historyItem);
     switch (chess.currentGameState) {
       case ChessGameState.CHECKMATE:
-        answer += `${answer} \n${Ans.checkmateToPlayer()} \n`;
-        answer += `${Ans.youLose()} \n${Ask.askToNewGame()}`;
+        const movesNum = boardAfterMove.movesNumber;
+        answer += `${answer} \n${Ans.checkmateToPlayer(movesNum)} \n`;
+        answer += `${pause(0.6)}${Ans.youLose()} \n${Ask.askToNewGame()}`;
         this.speak(answer);
         GameHandlers.dropGame();
         return;
       case ChessGameState.STALEMATE:
         answer += ` \n${Ans.stalemateToPlayer()} \n`;
-        answer += `${Ans.draw()} \n${Ask.askToNewGame()}`;
+        answer += `${pause(0.6)}${Ans.draw()} \n${Ask.askToNewGame()}`;
         this.speak(answer);
         GameHandlers.dropGame();
         return;
       case ChessGameState.FIFTYMOVEDRAW:
         answer += ` \n${Ans.fiftymove()} \n`;
-        answer += `${Ans.draw()} \n${Ask.askToNewGame()}`;
+        answer += `${pause(0.6)}${Ans.draw()} \n${Ask.askToNewGame()}`;
         this.speak(answer);
         GameHandlers.dropGame();
         return;

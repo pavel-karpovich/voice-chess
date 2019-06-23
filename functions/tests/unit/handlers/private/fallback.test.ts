@@ -79,7 +79,7 @@ describe('Tests for Fallback handlers', () => {
       
       test('4 fallbacks count', () => {
         const mock = jest.spyOn(OtherHandlers, 'help').mockImplementation(() => {});
-        const fallbackCount = 3;
+        const fallbackCount = 4;
         env.convData.fallbackCount = fallbackCount;
         FallbackHandlers.fallback();
         expect(env.output.length).toBe(1);
@@ -90,7 +90,7 @@ describe('Tests for Fallback handlers', () => {
       });
       
       test('More than 4 fallbacks count', () => {
-        const fallbackCount = 4;
+        const fallbackCount = 5;
         env.convData.fallbackCount = fallbackCount;
         FallbackHandlers.fallback();
         expect(env.output.length).toBe(1);

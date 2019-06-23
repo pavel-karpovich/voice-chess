@@ -93,7 +93,7 @@ describe('Test configured dialogflow application', () => {
       ['Default Fallback Intent', 'fallback'],
       ['New Game', 'newGame'],
       ['Continue Game', 'continueGame'],
-      ['Board', 'firstPartOfBoard'],
+      ['Board', 'showBoard'],
       ['Board - next', 'secondPartOfBoard'],
       ['Rank', 'rank'],
       ['Rank - number', 'rank'],
