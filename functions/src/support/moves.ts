@@ -316,7 +316,7 @@ function canDoSmth(targets: Move[]): string {
 }
 
 function onePosFromBulk(pos: PieceMoves): string {
-  let result = upFirst(Voc.pieceFromPosition(pos.type, pos.pos));
+  let result = upFirst(Voc.pieceFrom(pos.type, pos.pos));
   let startIndex = 0;
   let endIndex = 0;
   let end = false;

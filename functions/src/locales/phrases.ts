@@ -70,9 +70,9 @@ export class Phrases {
           `from ${V.square(from)}`,
         ],
         ru: [
-          `пешкой с ${V.square(from, 'rod')} на ${V.square(to, 'vin')}`,
+          `пешкой ${V.fromTo(from, to)}`,
           `пешкой ${char(from)} ${char(to)}`,
-          `с ${V.square(from)} на ${V.square(to)}`,
+          `${V.fromTo(from, to)}`,
           `пешкой с ${V.square(from)}`,
         ],
       } as rLangs)[this.lang]
@@ -136,15 +136,15 @@ export class Phrases {
     return rand(
       ({
         en: [
-          `${V.youOrI(who)} moved ${V.yourOrMy(pieceCode, who)} ${V.piece(pieceCode)} from ${V.square(from)} to ${V.square(to)}`,
+          `${V.youOrI(who)} moved ${V.yourOrMy(pieceCode, who)} ${V.piece(pieceCode)} ${V.fromTo(from, to)}`,
           `${V.youOrI(who)} played ${V.piece(pieceCode)} ${char(from)} ${char(to)}`,
-          `${V.youOrI(who)} made a ${V.piece(pieceCode)} move from ${V.square(from)} to ${V.square(to)}`,
+          `${V.youOrI(who)} made a ${V.piece(pieceCode)} move ${V.fromTo(from, to)}`,
         ],
         ru: [
-          `${V.youOrI(who)} ${V.moved(who)} ${V.piece(pieceCode, 'tvr')} с ${V.square(from, 'rod')} на ${V.square(to, 'vin')}`,
+          `${V.youOrI(who)} ${V.moved(who)} ${V.piece(pieceCode, 'tvr')} ${V.fromTo(from, to)}`,
           `${V.youOrI(who)} ${V.played(who)} ${V.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}`,
-          `${V.youOrI(who)} ${V.moved2(who)} ${V.piece(pieceCode, 'tvr')} с ${V.square(from, 'rod')} на ${V.square(to, 'vin')}`,
-          `${V.youOrI(who)} ${V.moved(who)} ${V.byHis(V.pieceGender(pieceCode))} ${V.piece(pieceCode, 'tvr')} с ${V.square(from, 'rod')} на ${V.square(to, 'vin')}`,
+          `${V.youOrI(who)} ${V.moved2(who)} ${V.piece(pieceCode, 'tvr')} ${V.fromTo(from, to)}`,
+          `${V.youOrI(who)} ${V.moved(who)} ${V.selfPiece(pieceCode, 'tvr')} ${V.fromTo(from, to)}`,
         ],
       } as rLangs)[this.lang]
     );
@@ -185,15 +185,15 @@ export class Phrases {
     return rand(
       ({
         en: [
-          `${V.youOrI(who)} moved pawn from ${V.square(from)} to ${V.square(to)} and made 'En Passant', capturing ${V.yourOrMy('p', oppositeWho(who))} pawn on ${V.square(pawn)}`,
-          `${V.youOrI(who)} made in passing capturing of ${V.yourOrMy('p', oppositeWho(who))} pawn on ${V.square(pawn)} by move from ${V.square(from)} to ${V.square(to)}`,
-          `${V.youOrI(who)} captured ${V.yourOrMy('p', oppositeWho(who))} pawn 'En Passant' by moving from ${V.square(from)} to ${V.square(to)}`,
+          `${V.youOrI(who)} moved pawn ${V.fromTo(from, to)} and made 'En Passant', capturing ${V.yourOrMy('p', oppositeWho(who))} pawn on ${V.square(pawn)}`,
+          `${V.youOrI(who)} made in passing capturing of ${V.yourOrMy('p', oppositeWho(who))} pawn on ${V.square(pawn)} by move ${V.fromTo(from, to)}`,
+          `${V.youOrI(who)} captured ${V.yourOrMy('p', oppositeWho(who))} pawn 'En Passant' by moving ${V.fromTo(from, to)}`,
         ],
         ru: [
-          `${V.youOrI(who)} ${V.moved(who)} пешкой с ${V.square(from, 'rod')} на ${V.square(to, 'vin')} и ${V.made(who)} Энпассант, забрав ${V.yourOrMy('p', oppositeWho(who), 'vin')} пешку на ${V.square(pawn, 'prd')}`,
-          `${V.youOrI(who)} ${V.made(who)} взятие ${V.yourOrMy('p', oppositeWho(who), 'rod')} пешки на проходе к ${V.square(pawn, 'dat')} своим ходом с ${V.square(from, 'rod')} на ${V.square(to, 'vin')}`,
-          `своим ходом с ${V.square(from, 'rod')} на ${V.square(to, 'vin')}, ${V.youOrI(who)} ${V.made(who)} взятие ${V.yourOrMy('p', oppositeWho(who), 'rod')} пешки на проходе к ${V.square(pawn, 'dat')}`,
-          `${V.youOrI(who)} ${V.capture(who)} ${V.yourOrMy('p', oppositeWho(who), 'vin')} пешку 'Эн пассант', сделав ход с ${V.square(from, 'rod')} на ${V.square(to, 'vin')}`,
+          `${V.youOrI(who)} ${V.moved(who)} пешкой ${V.fromTo(from, to)} и ${V.made(who)} Энпассант, забрав ${V.yourOrMy('p', oppositeWho(who), 'vin')} пешку на ${V.square(pawn, 'prd')}`,
+          `${V.youOrI(who)} ${V.made(who)} взятие ${V.yourOrMy('p', oppositeWho(who), 'rod')} пешки на проходе к ${V.square(pawn, 'dat')} своим ходом ${V.fromTo(from, to)}`,
+          `своим ходом ${V.fromTo(from, to)}, ${V.youOrI(who)} ${V.made(who)} взятие ${V.yourOrMy('p', oppositeWho(who), 'rod')} пешки на проходе к ${V.square(pawn, 'dat')}`,
+          `${V.youOrI(who)} ${V.capture(who)} ${V.yourOrMy('p', oppositeWho(who), 'vin')} пешку 'Эн пассант', сделав ход ${V.fromTo(from, to)}`,
         ],
       } as rLangs)[this.lang]
     );

@@ -1,6 +1,7 @@
 import { ChessSide, WhoseSide, getSide } from '../chess/chessUtils';
 import { WordForms, Langs, rLangs } from './struct/struct';
 import { rand, char, upFirst } from '../support/helpers';
+import { getTypeOfCastling, CastlingType } from '../chess/castling';
 
 // prettier-ignore
 export class Vocabulary {
@@ -23,6 +24,19 @@ export class Vocabulary {
     } else {
       return 'mus';
     }
+  }
+  static self(opt = 'mus/imn'): string {
+    return ({
+      en: '',
+      ru: ({
+        'mus/imn': 'свой',
+        'fem/imn': 'своя',
+        'mus/vin': 'своего',
+        'fem/vin': 'свою',
+        'mus/tvr': 'своим',
+        'fem/tvr': 'своей',
+      } as WordForms)[opt],
+    } as Langs)[this.lang];
   }
   static my(opt = 'mus'): string {
     return ({
@@ -449,6 +463,10 @@ export class Vocabulary {
     const gen = this.pieceGender(pieceCode);
     return this.your(`${gen}/${opt}`) + ' ' + this.piece(pieceCode, opt);
   }
+  static selfPiece(pieceCode: string, opt = 'imn'): string {
+    const gen = this.pieceGender(pieceCode);
+    return this.self(`${gen}/${opt}`) + ' ' + this.piece(pieceCode, opt);
+  }
   static myColoredPiece(pieceCode: string, opt = 'sin'): string {
     const gen = this.pieceGender(pieceCode);
     return this.my(`${gen}/${opt}`) + ' ' + this.coloredPiece(pieceCode, opt);
@@ -551,7 +569,7 @@ export class Vocabulary {
         ru: `на ${this.square(pos, opt)}`,
     } as Langs)[this.lang];
   }
-  static pieceFromPosition(code: string, pos: string): string {
+  static pieceFrom(code: string, pos: string): string {
     return rand([
       `${this.piece(code)} ${this.from()} ${this.square(pos, 'rod')}`,
       `${this.piece(code)} ${this.from()} ${this.square(pos, 'rod')}`,
@@ -559,10 +577,19 @@ export class Vocabulary {
       `${this.piece(code)} ${char(pos)}`,
     ]);
   }
+  static fromTo(from: string, to: string): string {
+    return `${this.from()} ${this.square(from, 'rod')} ${this.to()} ${this.square(to, 'vin')}`;
+  }
   static from(): string {
     return ({
         en: 'from',
         ru: 'с',
+    } as Langs)[this.lang];
+  }
+  static to(): string {
+    return ({
+        en: 'to',
+        ru: 'на',
     } as Langs)[this.lang];
   }
   static or(): string {
@@ -629,16 +656,6 @@ export class Vocabulary {
         ru: ['Далее', 'Затем', 'В ответ', 'После этого'],
       } as rLangs)[this.lang]
     );
-  }
-  static byHis(gen: string): string {
-    return ({
-        en: '',
-        ru: ({
-          mus: 'своим',
-          fem: 'своей',
-        } as WordForms)[gen],
-      } as Langs)[this.lang];
-
   }
   static deprived(who: WhoseSide): string {
     return ({
@@ -898,5 +915,24 @@ export class Vocabulary {
         return 'полных ходов';
       }
     } else return null;
+  }
+  static kingside(): string {
+    return ({
+      en: 'kingside',
+      ru: 'королевском фланге',
+    } as Langs)[this.lang];
+  }
+  static queenside(): string {
+    return ({
+      en: 'queenside',
+      ru: 'ферзевом фланге',
+    } as Langs)[this.lang];
+  }
+  static castlSide(move: string): string {
+    const type = getTypeOfCastling(move);
+    return ({
+      [CastlingType.KINGSIDE]: this.kingside(),
+      [CastlingType.QUEENSIDE]: this.queenside(),
+    })[type];
   }
 }

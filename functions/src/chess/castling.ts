@@ -16,3 +16,14 @@ export function rookMoveForCastlingMove(move: string): string {
 export function isMoveSuitableForCastling(piece: string, move: string): boolean {
   return piece.toLowerCase() === 'k' && castlings.has(move);
 }
+
+export function getTypeOfCastling(move: string): CastlingType {
+  if (!castlings.has(move)) {
+    return null;
+  }
+  if (move[2] === 'g') {
+    return CastlingType.KINGSIDE;
+  } else {
+    return CastlingType.QUEENSIDE;
+  }
+}

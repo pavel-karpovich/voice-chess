@@ -316,7 +316,7 @@ export class MoveHandlers extends HandlerBase {
     await chess.updateGameState();
     const isLegal = chess.isMoveLegal(move);
     if (!isLegal) {
-      let illegal = Ans.illegalMove(from, to, piece);
+      let illegal = Ans.illegalMove(from, to, actualPiece);
       if (chess.currentGameState === ChessGameState.CHECK) {
         illegal = `${Ans.checkToPlayer()}${pause(2)}\n${illegal}`;
       }

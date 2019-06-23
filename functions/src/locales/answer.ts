@@ -368,22 +368,31 @@ export class Answer {
       } as rLangs)[this.lang]
     );
   }
-  static illegalMove(from: string, to: string, piece?: string): string {
+  static illegalMove(from: string, to: string, pieceCode: string): string {
     return rand(
       ({
         en: [
-          "You can't!",
-          "You can't do this move!",
-          `You can't move ${char(from)} ${char(to)}!`,
-          'This makes no sense!\nYou need to come up with another move.',
+          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(to)}. You can't move like that!`,
+          `${char(from)} ${char(to)}. You can't do this move!`,
+          `You can't move ${Voc.fromTo(from, to)}!`,
+          `You can't make a ${Voc.piece(pieceCode)} move ${Voc.fromTo(from, to)}.`,
+          `${char(from)} ${char(to)}... It is incorrect move.`,
+          `${upFirst(Voc.pieceFrom(pieceCode, from))} can't make such a move!`,
+          `You can't move ${Voc.piece(pieceCode)} from ${char(from)} to ${Voc.square(to)}.`,
+          `${upFirst(Voc.pieceFrom(pieceCode, from))} can't move to ${Voc.square(to)}.`,
+          `${char(from)} ${char(to)}. This move makes no sense!\n You need to come up with another move.`,
           "Sorry, but you can't move like that...",
         ],
         ru: [
-          'Вы не можете так походить!',
-          'Вы не можете сделать такой ход!',
-          `Вы не можете ходить с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
-          'Нельзя так ходить!',
+          `${upFirst(Voc.piece(pieceCode))} ${char(from)} ${char(to)}. Вы не можете так походить!`,
+          `${char(from)} ${char(to)}. Вы не можете сделать такой ход!`,
+          `Вы не можете ходить ${Voc.fromTo(from, to)}.`,
+          `Вы не можете сделать ход ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}.`,
           `${char(from)} ${char(to)}... Это некорректный ход.`,
+          `${upFirst(Voc.pieceFrom(pieceCode, from))} не может так ходить!`,
+          `Нельзя походить ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
+          `${upFirst(Voc.piece(pieceCode))} с ${Voc.square(from, 'rod')} не может ходить на ${char(to)}.`,
+          'Извините, но вы не можете так походить...',
         ],
       } as rLangs)[this.lang]
     );
@@ -392,12 +401,28 @@ export class Answer {
     return rand(
       ({
         en: [
-          `The move is made! You move ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}.`,
-          `Okay, you move ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}.`,
+          `The move is made! You move ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}.`,
+          `Ok, you move ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}.`,
+          `You move your ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}.`,
+          `You move ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}. I get it.`,
+          `Well, you make a ${Voc.piece(pieceCode)} move ${Voc.fromTo(from, to)}.`,
+          `So you make your move by setting the ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}.`,
+          `Your ${Voc.piece(pieceCode)} from ${Voc.square(from)} moves to ${Voc.square(to)}.`,
+          `${upFirst(Voc.piece(pieceCode))} ${Voc.fromTo(from, to)}. You made your move.`,
+          `You move ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}. Not bad.`,
+          `${char(from)} ${char(to)}. Ok, let it be so.`,
         ],
         ru: [
-          `Ход сделан! Вы передвинули ${Voc.piece(pieceCode, 'vin')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
-          `Ладно, значит вы ходите ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
+          `Ход сделан! Вы передвинули ${Voc.piece(pieceCode, 'vin')} ${Voc.fromTo(from, to)}.`,
+          `Ладно, значит вы ходите ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}.`,
+          `Вы передвигаете ${Voc.selfPiece(pieceCode, 'vin')} ${Voc.fromTo(from, to)}.`,
+          `Что ж, вы переместили ${Voc.yourPiece(pieceCode, 'vin')} ${Voc.fromTo(from, to)}.`,
+          `Значит, вы сделали ход ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}.`,
+          `${upFirst(Voc.yourPiece(pieceCode))} с ${Voc.square(from, 'rod')} переходит на ${Voc.square(to, 'vin')}`,
+          `Вы делаете ход ${Voc.selfPiece(pieceCode, 'tvr')}, передвигая его ${Voc.fromTo(from, to)}`,
+          `${Voc.piece(pieceCode)} с ${char(from)} на ${char(to)}. Вы сделали свой ход!`,
+          `Ход ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from)} на ${Voc.square(to)}. Неплохо.`,
+          `${char(from)} ${char(to)}. Ход принят.`,
         ],
       } as rLangs)[this.lang]
     );
@@ -406,16 +431,26 @@ export class Answer {
     return rand(
       ({
         en: [
-          `And grab ${Voc.myPiece(eatedPieceCode, 'vin')}.`,
-          `And you take off ${Voc.myPiece(eatedPieceCode, 'vin')}.`,
-          `And I loose ${Voc.myPiece(eatedPieceCode, 'vin')}!`,
-          `And you eat ${Voc.myPiece(eatedPieceCode)}.`,
+          `And grab my ${Voc.piece(eatedPieceCode)}. What a loss.`,
+          `And you take off my ${Voc.piece(eatedPieceCode)}.`,
+          `And I lose my ${Voc.piece(eatedPieceCode)}!`,
+          `And so I loose ${Voc.piece(eatedPieceCode)}`,
+          `And you eat my ${Voc.piece(eatedPieceCode)}. Very unpleasant.`,
+          `You eat my ${Voc.piece(eatedPieceCode)}!`,
+          `And you beat my ${Voc.piece(eatedPieceCode)}.`,
+          `And you capture my ${Voc.piece(eatedPieceCode)}!`,
+          `You are capturing my beloved ${Voc.piece(eatedPieceCode)}!`,
         ],
         ru: [
-          `Ко всему прочему я теряю ${Voc.myPiece(eatedPieceCode, 'vin')}.`,
+          `Ко всему прочему, я теряю ${Voc.selfPiece(eatedPieceCode, 'vin')}.`,
           `И вы забираете ${Voc.myPiece(eatedPieceCode, 'vin')}, чёрт...`,
-          `И я лишаюсь ${Voc.myPiece(eatedPieceCode, 'rod')}!`,
+          `Вы забираете ${Voc.myPiece(eatedPieceCode, 'vin')}!`,
+          `И я лишаюсь ${Voc.selfPiece(eatedPieceCode, 'rod')}!`,
           `Вы съедаете ${Voc.myPiece(eatedPieceCode, 'vin')}!`,
+          `И я теряю ${Voc.selfPiece(eatedPieceCode, 'vin')}.`,
+          `${upFirst(Voc.myPiece(eatedPieceCode))} выходит из игры.`,
+          `И вы лишили меня ${Voc.piece(eatedPieceCode, 'rod')}.`,
+          `Весьма неприятно, но вы лишаете меня ${Voc.myPiece(eatedPieceCode, 'rod')}.`,
         ],
       } as rLangs)[this.lang]
     );
@@ -424,15 +459,30 @@ export class Answer {
     return rand(
       ({
         en: [
-          `I would move a ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}!`,
-          `My move is a ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}! And what do you say to that?`,
-          `I move my ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}.`,
+          `I will play a ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}!`,
+          `My move is a ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}!`,
+          `I move my ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}.`,
+          `I'll make a ${Voc.piece(pieceCode)} move from ${char(from)} to ${char(to)}.`,
+          `Now my turn. I'll make a move by the ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}.`,
+          `Very interesting... I'll venture and make a move ${Voc.fromTo(from, to)} by my ${Voc.piece(pieceCode)}.`,
+          `Then I'll make a move ${Voc.fromTo(from, to)} by the ${Voc.piece(pieceCode)}.`,
+          `Then I'll play my ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}.`,
+          `In turn, I will make a ${Voc.piece(pieceCode)} move ${Voc.fromTo(from, to)}.`,
+          `And now it's my turn. Let's say I moved my ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}.`,
         ],
         ru: [
-          `Мой ход таков: ${Voc.piece(pieceCode)} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
-          `Так. Пожалуй, я отвечу ${Voc.piece(pieceCode)} ${char(from)} ${char(to)}.`,
-          `Я сделаю ход ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}!`,
-          `А я похожу ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
+          `Мой ход: ${Voc.piece(pieceCode)} с ${char(from)} на ${char(to)}.`,
+          `Мой ход таков: ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}.`,
+          `Что ж, пожалуй я отвечу следующим образом: ${Voc.piece(pieceCode)} ${char(from)} ${char(to)}.`,
+          `А я отвечу вам ходом ${Voc.piece(pieceCode, 'tvr')} с ${char(from)} на ${char(to)}.`,
+          `Я сделаю ход ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}!`,
+          `А я похожу ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}.`,
+          `Теперь я. ${upFirst(Voc.piece(pieceCode))} с ${char(from)} на ${char(to)}.`,
+          `Любопытно... Я рискну и сделаю ход ${Voc.selfPiece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}.`,
+          `Теперь мой черёд. Я похожу ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}.`,
+          `Тогда я, в свою очередь, сделаю ход ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}.`,
+          `Мой ход. Я решил сыграть ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}`,
+          `Не буду заставлять вас ждать. Мой ход: ${Voc.piece(pieceCode)} с ${char(from)} на ${char(to)}.`,
         ],
       } as rLangs)[this.lang]
     );
@@ -442,78 +492,118 @@ export class Answer {
       ({
         en: [
           `I eat ${Voc.yourPiece(eatedPieceCode)}!`,
-          `And I will take ${Voc.yourPiece(eatedPieceCode)}!`,
+          `And I''ll take ${Voc.yourPiece(eatedPieceCode)}!`,
           `Minus ${Voc.yourPiece(eatedPieceCode)}.`,
           `And I captured ${Voc.yourPiece(eatedPieceCode)}!`,
           `I captured ${Voc.yourPiece(eatedPieceCode)}.`,
+          `Say goodbye to your ${Voc.piece(eatedPieceCode)}!`,
+          `Of course, I capture your ${Voc.piece(eatedPieceCode)}.`,
+          `I take your ${Voc.piece(eatedPieceCode)}!`,
+          `And I took your ${Voc.piece(eatedPieceCode)}!`,
+          `Now your ${Voc.piece(eatedPieceCode)} is mine!`,
+          `You lose ${Voc.piece(eatedPieceCode)}.`,
         ],
         ru: [
           `${upFirst(Voc.yourPiece(eatedPieceCode, 'sin'))} теперь ${Voc.my(Voc.pieceGender(eatedPieceCode))}!`,
-          `И я лишу вас ${Voc.piece(eatedPieceCode, 'rod')}.`,
+          `И я лишаю вас ${Voc.piece(eatedPieceCode, 'rod')}.`,
+          `Попрощайтесь со ${Voc.selfPiece(eatedPieceCode, 'tvr')}!`,
           `И я забираю ${Voc.yourPiece(eatedPieceCode, 'vin')}.`,
           `${upFirst(Voc.yourPiece(eatedPieceCode, 'vin'))} уходит в минус.`,
           `С вашего позволения, я забираю ${Voc.yourPiece(eatedPieceCode, 'vin')}.`,
           `Я съедаю ${Voc.yourPiece(eatedPieceCode, 'vin')}!`,
+          `Я захвачу ${Voc.yourPiece(eatedPieceCode, 'vin')}.`,
+          `И я возьму ${Voc.yourPiece(eatedPieceCode, 'vin')}.`,
+          `И этим ходом я бью ${Voc.yourPiece(eatedPieceCode, 'vin')}!`,
         ],
       } as rLangs)[this.lang]
     );
   }
-  static enPassantPlayer(from: string, to: string, pawn: string): string {
+  static enPassantPlayer(from: string, to: string, pawnPos: string): string {
     return rand(
       ({
         en: [
-          `En passant! You move your pawn from ${Voc.square(from)} to ${Voc.square(to)} and capture my pawn in passing to ${Voc.square(pawn)}!`,
-          `En passant! You capture my pawn in passing to ${Voc.square(pawn)}! You made a move by pawn from ${Voc.square(from)} to ${Voc.square(to)}.`,
+          `En passant! You move your pawn ${Voc.fromTo(from, to)} and capture my pawn in passing to ${Voc.square(pawnPos)}!`,
+          `En passant! You capture my pawn in passing to ${Voc.square(pawnPos)}! You made a move by pawn ${Voc.fromTo(from, to)}.`,
+          `How could I forget this? You take my pawn which I played the last move by making En Passant move from A2 to F5.`,
+          `How I did not consider En Passant?. You took my pawn ${Voc.on(pawnPos)}, moving your pawn ${Voc.fromTo(from, to)}.`,
+          `Have you decided to make En Passant? Very clever. I lose my pawn ${Voc.on(pawnPos)}.`,
+          `You make En Passant - capturing in the passing! I lose my pawn ${Voc.on(pawnPos)}, and you move move your pawn ${Voc.fromTo(from, to)}.`,
         ],
         ru: [
-          `Энпассант! Вы ходите пешкой с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')} и забираете мою пешку на проходе к ${Voc.square(pawn, 'dat')}!`,
-          `Энпассант! Вы забираете мою пешку на проходе к ${Voc.square(pawn, 'dat')} ходом ${char(from)} ${char(to)}!`,
+          `Энпассант! Вы ходите пешкой ${Voc.fromTo(from, to)} и забираете мою пешку на проходе к ${Voc.square(pawnPos, 'dat')}!`,
+          `Энпассант! Вы забираете мою пешку на проходе к ${Voc.square(pawnPos, 'dat')} ходом ${char(from)} ${char(to)}!`,
+          `Как же я не предусмотрел! Вы забираете мою пешку Эн пассант, ходом ${Voc.fromTo(from, to)}!`,
+          `Как же я не учёл Эн Пассант. Вы забираете пешку, которой я только что сыграл, сделав ход ${Voc.fromTo(from, to)} своей пешкой.`,
+          `Вы решили сделать Эн Пассант? Умно. Я теряю свою пешку на ${char(pawnPos)}.`,
+          `Вы делаете Эн Пассант - взятие на проходе! Я лишаюсь своей пешки ${Voc.on(pawnPos)}, а вы перемещаете свою на ${Voc.square(to, 'vin')}`,
         ],
       } as rLangs)[this.lang]
     );
   }
-  static enPassantEnemy(from: string, to: string, pawn: string): string {
+  static enPassantEnemy(from: string, to: string, pawnPos: string): string {
     return rand(
       ({
         en: [
-          `En passant! I move my pawn from ${Voc.square(from)} to ${Voc.square(to)} and capture your pawn in passing to ${Voc.square(pawn)}!`,
-          `En passant! I will capture your pawn in passing to ${Voc.square(pawn)}! My move is pawn ${Voc.square(from)} ${Voc.square(to)}.`,
+          `En passant! I move my pawn ${Voc.fromTo(from, to)} and capture your pawn in passing to ${Voc.square(pawnPos)}!`,
+          `En passant! I will capture your pawn in passing to ${Voc.square(pawnPos)}! My move is pawn ${Voc.square(from)} ${Voc.square(to)}.`,
+          `What about this? En Passant! I catch your pawn ${Voc.on(pawnPos)}, making a move ${char(from)} ${char(to)}.`,
+          `And I will answer you capturing on the pass! En Passant! I move my pawn ${Voc.fromTo(from, to)}, and take off your pawn!`,
+          `Have you considered this? ${char(from)} ${char(to)}. I make En Passant and grab the pawn you just moved!`,
+          `Now my turn. I move my pawn ${Voc.fromTo(from, to)} and capture En Passant the pawn you just moved!`,
         ],
         ru: [
-          `Энпассант! Я хожу пешкой с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')} и забираю вашу пешку ${char(pawn)} на проходе!`,
-          `Энпассант! Я заберу вашу пешку на проходе к ${Voc.square(pawn, 'dat')}! Мой ход - пешка ${char(from)} ${char(to)}.`,
+          `Энпассант! Я хожу пешкой ${Voc.fromTo(from, to)} и забираю вашу пешку ${char(pawnPos)} на проходе!`,
+          `Энпассант! Я заберу вашу пешку на проходе к ${Voc.square(pawnPos, 'dat')}! Мой ход - пешка ${char(from)} ${char(to)}.`,
+          `А об этом вы подумали? Эн Пассант! Я захватываю вашу пешку ${Voc.on(pawnPos)} своим ходом с ${char(from)} на ${char(to)}.`,
+          `А я отвечу вам взятием на проходе! Эн Пассант! Я переставляю свою пешку ${Voc.fromTo(from, to)}, и забираю вашу ${Voc.on(pawnPos)}.`,
+          `А вы учли вот это? Я делаю Эн Пассант и забираю пешку, которой вы только что походили! ${char(from)} ${char(to)}!`,
+          `Теперь мой черёд. Я сделаю ход пешкой ${Voc.fromTo(from, to)} и заберу Эн Пассант вашу пешку на ${char(pawnPos)}!`,
         ],
       } as rLangs)[this.lang]
     );
   }
   static castlingByPlayer(kFrom: string, kTo: string, rFrom: string, rTo: string): string {
+    const cSide = Voc.castlSide(kFrom + kTo);
     return rand(
       ({
         en: [
           `You made castling! The king moves from ${Voc.square(kFrom)} to ${Voc.square(kTo)} and the rock moves from ${Voc.square(rFrom)} to ${Voc.square(rTo)}!`,
           `This is castling! You move the king through two squares from ${Voc.square(kFrom)} to ${Voc.square(kTo)}, and place your rock from ${Voc.square(rFrom)} to ${Voc.square(rTo)} behind the king.`,
           `This move you castling, moving your king from ${Voc.square(kFrom)} to ${Voc.square(kTo)} and the rock from ${Voc.square(rFrom)} to ${Voc.square(rTo)}.`,
+          `So you make castling on the ${cSide}.`,
+          `And you do ${cSide} castling!`,
+          `You make castling on the ${cSide}. The king moves to ${Voc.square(kTo)}, and the rook moves to ${Voc.square(rTo)}.`,
         ],
         ru: [
           `Вы делаете рокировку! Король перемещается с ${Voc.square(kFrom, 'rod')} на ${Voc.square(kTo, 'vin')}, а ладья с ${Voc.square(rFrom, 'rod')} двигается за короля на ${Voc.square(rTo, 'vin')}.`,
           `И это рокировка! Вы перемещаете короля на две клетки c ${char(kFrom)} на ${Voc.square(kTo, 'vin')} и ставите ладью с ${Voc.square(rFrom, 'rod')} за своего короля, на ${Voc.square(rTo, 'vin')}.`,
           `Этим ходом вы совершаете рокировку, перемещая своего короля с ${Voc.square(kFrom, 'rod')} на ${Voc.square(kTo, 'vin')} и ладью с ${Voc.square(rFrom, 'rod')} на ${Voc.square(rTo, 'vin')}!`,
+          `Вы делаете рокировку на ${cSide}!`,
+          `И вы совершаете рокировку на ${cSide}.`,
+          `И вы делаете рокировку на ${cSide}. Король перемещается на ${Voc.square(kTo, 'vin')}, а ладья на ${Voc.square(rTo, 'vin')}.`,
         ],
       } as rLangs)[this.lang]
     );
   }
   static castlingByOpponent(kFrom: string, kTo: string, rFrom: string, rTo: string): string {
+    const cSide = Voc.castlSide(kFrom + kTo);
     return rand(
       ({
         en: [
           `I will do castling! My king from ${Voc.square(kFrom)} moves to ${Voc.square(kTo)} and my rock from ${Voc.square(rFrom)} moves to ${Voc.square(rTo)}!`,
           `And I make castling! I move the king from ${Voc.square(kFrom)} to ${Voc.square(kTo)}, and place the rock from ${Voc.square(rFrom)} on ${Voc.square(rTo)} behind the king.`,
           `I will do castling in my turn. I move my king from ${Voc.square(kFrom)} to ${Voc.square(kTo)} and rock from ${Voc.square(rFrom)} to ${Voc.square(rTo)}.`,
+          `And my turn. I'll make a ${cSide} castling!`,
+          `Let's see... I make castling on the ${cSide}.`,
+          `Then I'll make castling on the ${cSide}! My king moves to ${Voc.square(kTo)}, and my rook from ${Voc.square(rFrom)} moves to ${Voc.square(rTo)}.`,
         ],
         ru: [
           `Я сделаю рокировку! Мой король перемещается с ${Voc.square(kFrom, 'rod')} на ${Voc.square(kTo, 'vin')}, а ладья с ${Voc.square(rFrom, 'rod')} встаёт за короля на ${Voc.square(rTo, 'vin')}.`,
           `И это рокировка! Я перемещаю короля на две клетки c ${char(kFrom)} на ${Voc.square(kTo, 'vin')} и ставлю ладью с ${Voc.square(rFrom, 'rod')} за своего короля, на ${Voc.square(rTo, 'vin')}.`,
           `Я совершу своим ходом рокировку, и перемещу короля с ${Voc.square(kFrom, 'rod')} на ${Voc.square(kTo, 'vin')}, а ладью с ${Voc.square(rFrom, 'rod')} на ${Voc.square(rTo, 'vin')}!`,
+          `Мой ход. И я сделаю рокировку на ${cSide}.`,
+          `Что ж, тогда я сделаю рокировку. На ${cSide}.`,
+          `А я выполняю рокировку на ${cSide}. Мой король перемещается на ${Voc.square(kTo, 'vin')}, а ладья на ${Voc.square(rTo, 'vin')}`,
         ],
       } as rLangs)[this.lang]
     );
@@ -816,13 +906,13 @@ export class Answer {
       ({
         en: [
           `Your pawn reaches the last rank! Now you need to use promotion!`,
-          `When your pawn moves from ${Voc.square(from)} to ${Voc.square(to)}, there will be a promotion!`,
+          `When your pawn moves ${Voc.fromTo(from, to)}, there will be a promotion!`,
           `It is time to Pawn promotion!`,
           `Pawn promotion!`,
         ],
         ru: [
           `Ваша Пешка дошла до последнего ряда. Теперь её можно превратить в другую фигуру!`,
-          `При переходе Пешки с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')} происходит превращение!`,
+          `При переходе Пешки ${Voc.fromTo(from, to)} происходит превращение!`,
           `Время превращения пешки!`,
           `Повышение пешки!`,
         ],
@@ -978,16 +1068,16 @@ export class Answer {
     return rand(
       ({
         en: [
-          `I can advise you to make a ${Voc.piece(pieceCode)} move from ${Voc.square(from)} to ${Voc.square(to)}.`,
-          `If I were you, I would move a ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}.`,
-          `The ${Voc.piece(pieceCode)} move from ${Voc.square(from)} to ${Voc.square(to)} seems pretty good!`,
-          `What about ${Voc.piece(pieceCode)} from ${Voc.square(from)} to ${Voc.square(to)}?`,
+          `I can advise you to make a ${Voc.piece(pieceCode)} move ${Voc.fromTo(from, to)}.`,
+          `If I were you, I would move a ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}.`,
+          `The ${Voc.piece(pieceCode)} move ${Voc.fromTo(from, to)} seems pretty good!`,
+          `What about ${Voc.piece(pieceCode)} ${Voc.fromTo(from, to)}?`,
         ],
         ru: [
-          `Могу посоветовать вам походить ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
-          `Я бы на вашем месте походил ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}.`,
+          `Могу посоветовать вам походить ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}.`,
+          `Я бы на вашем месте походил ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}.`,
           `Вы можете сыграть ${Voc.piece(pieceCode, 'tvr')} ${char(from)} ${char(to)}.`,
-          `Что насчёт хода ${Voc.piece(pieceCode, 'tvr')} с ${Voc.square(from, 'rod')} на ${Voc.square(to, 'vin')}?`,
+          `Что насчёт хода ${Voc.piece(pieceCode, 'tvr')} ${Voc.fromTo(from, to)}?`,
         ],
       } as rLangs)[this.lang]
     );

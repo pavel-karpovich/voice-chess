@@ -167,7 +167,10 @@ export class Ask {
   static askToMove(): string {
     return rand(
       ({
-        en: ['Well, then you need to make a move.', "Ok, then what's your move?"],
+        en: [
+          'Well, then you need to make a move.',
+          "Ok, then what's your move?",
+        ],
         ru: [
           'И как вы будете ходить?',
           'Ладно, и как вы походите?',
@@ -205,15 +208,18 @@ export class Ask {
           'What will you do?',
           'How will you answer me?',
           'Now show me what you are capable of!',
+          'And what do you say to that?',
         ],
         ru: [
           'Теперь вы. Ходите!',
           'Теперь ваш ход. Вперёд.',
+          'Что вы скажете на это?',
           'Что вы будете делать?',
           'И чем вы мне ответите?',
-          'Покажите, на что вы способны! Ходите.',
-          'И что же вы будете делать в ответ?',
+          'Чем вы мне на это ответите?',
           'Есть чем мне ответить?',
+          'И что же вы будете делать в ответ?',
+          'Покажите, на что вы способны! Ходите.',
         ],
       } as rLangs)[this.lang]
     );

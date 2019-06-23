@@ -1,4 +1,4 @@
-import { rookMoveForCastlingMove, isMoveSuitableForCastling } from "../../../src/chess/castling";
+import { rookMoveForCastlingMove, isMoveSuitableForCastling, CastlingType, getTypeOfCastling } from "../../../src/chess/castling";
 
 describe('Tests for castling utility functions', () => {
 
@@ -22,5 +22,16 @@ describe('Tests for castling utility functions', () => {
   ])('Check if move is suitable for castling', (piece, move, itIs) => {
     const actual = isMoveSuitableForCastling(piece as string, move as string);
     expect(actual).toBe(itIs);
+  });
+
+  test.each([
+    ['e1g1', CastlingType.KINGSIDE],
+    ['e1c1', CastlingType.QUEENSIDE],
+    ['e8g8', CastlingType.KINGSIDE],
+    ['e8c8', CastlingType.QUEENSIDE],
+    ['e1b1', null],
+  ])('Getting the type of castling move', (move, castlingType) => {
+    const actual = getTypeOfCastling(move);
+    expect(actual).toBe(castlingType);
   });
 });
