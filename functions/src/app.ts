@@ -1,4 +1,4 @@
-import { dialogflow, DialogflowConversation, Suggestions } from 'actions-on-google';
+import { dialogflow, DialogflowConversation, Suggestions, Image } from 'actions-on-google';
 
 import { initLanguage } from './locales/initLang';
 import { ChessSide, WhoseSide } from './chess/chessUtils';
@@ -31,8 +31,11 @@ app.middleware(
     function suggest(...ss: string[]) {
       conv.ask(new Suggestions(ss.filter((_, i) => i < 8)));
     }
+    function image(url: string, alt: string) {
+      conv.ask(new Image({ url, alt }));
+    }
     const gCont = new GoogleContextManager(conv.contexts);
-    Handlers.load(speak, gCont, conv.data, conv.user.storage, suggest, conv.close.bind(conv));
+    Handlers.load(speak, gCont, conv.data, conv.user.storage, suggest, image, conv.close.bind(conv));
   }
 );
 

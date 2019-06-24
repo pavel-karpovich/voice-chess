@@ -17,29 +17,60 @@ import { ChessBoard } from '../../chess/chessboard';
 import { oppositeSide, WhoseSide, ChessSide } from '../../chess/chessUtils';
 import { pause } from '../../support/helpers';
 import { FallbackHandlers } from './fallback';
+import * as admin from 'firebase-admin';
+import * as path from 'path';
+
+const serviceAccount = require('../../../firebase-admin-key.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://voice-chess-a27c0.firebaseio.com',
+  storageBucket: 'voice-chess-a27c0.appspot.com/',
+});
+const bucket = admin.storage().bucket();
 
 const ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
 export class InfoHandlers extends HandlerBase {
-  static showBoard(): void {
+
+  static async uploadImage(): Promise<string> {
+    return new Promise<string>((resolve: (url: string) => void, reject: () => void) => {
+      bucket.upload(path.join(__dirname, '../../../assets/img/chessboard.png'), (err, data, api) => {
+        if (!err) {
+          console.log('Upload file!');
+          const publicUrl = `https://storage.googleapis.com/${bucket.name}/${data.name}`;
+          resolve(publicUrl);
+        } else {
+          console.log(err);
+          reject();
+        }
+      });
+    });
+  }
+  static async showBoard(): Promise<string> {
     const fenstring = this.long.fen;
     const board = new ChessBoard(fenstring);
     if (board.totalPiecesCount() > chessBoardSize * 2) {
-      let longString = `<p><s>${Ans.board1()}</s></p>\n`;
-      longString += manyRanks(fenstring, 1, chessBoardSize / 2);
-      this.speak(longString);
-      this.speak(Ask.askToGoNext());
+      // let longString = `<p><s>${Ans.board1()}</s></p>\n`;
+      // longString += manyRanks(fenstring, 1, chessBoardSize / 2);
+      // this.speak(longString);
+      // this.speak(Ask.askToGoNext());
       this.contexts.set('board-next', 1);
       this.contexts.set('rank-info', 1);
       this.suggest(Sug.next, Sug.move);
     } else {
-      let longString = `<p><s>${Ans.board()}</s></p>\n`;
-      longString += manyRanks(fenstring, 1, chessBoardSize);
-      this.speak(longString);
-      this.speak(Ask.waitMove());
+      // let longString = `<p><s>${Ans.board()}</s></p>\n`;
+      // longString += manyRanks(fenstring, 1, chessBoardSize);
+      // this.speak(longString);
+      // this.speak(Ask.waitMove());
       this.contexts.set('turn-intent', 1);
       this.suggest(Sug.move, Sug.history);
     }
+    const prom = this.uploadImage();
+    prom.then((url) => {
+      console.log('Url: ' + url);
+      this.image(url, 'Nannananana');
+    });
+    return prom;
   }
 
   static secondPartOfBoard(): void {

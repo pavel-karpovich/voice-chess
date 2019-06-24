@@ -54,4 +54,5 @@ export class Env {
     this.isEnd = true;
   });
 
+  sendImage = jest.fn((url: string, alt: string) => {});
 }

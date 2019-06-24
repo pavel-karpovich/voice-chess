@@ -18,17 +18,18 @@ export class Handlers extends HandlerBase {
     shortStorage: ConversationData,
     longStorage: LongStorageData,
     suggest: (...suggestions: string[]) => void,
+    image: (src: string, alt: string) => void,
     endConv?: (msg: string) => void
   ) {
-    super.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
-    MoveHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
-    SettingsHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
-    InfoHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
-    GameHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
-    NavigationHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
-    AroundMoveHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
-    FallbackHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
-    OtherHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
+    super.load(response, contextManager, shortStorage, longStorage, suggest, image, endConv);
+    MoveHandlers.load(response, contextManager, shortStorage, longStorage, suggest, image, endConv);
+    SettingsHandlers.load(response, contextManager, shortStorage, longStorage, suggest, image, endConv);
+    InfoHandlers.load(response, contextManager, shortStorage, longStorage, suggest, image, endConv);
+    GameHandlers.load(response, contextManager, shortStorage, longStorage, suggest, image, endConv);
+    NavigationHandlers.load(response, contextManager, shortStorage, longStorage, suggest, image, endConv);
+    AroundMoveHandlers.load(response, contextManager, shortStorage, longStorage, suggest, image, endConv);
+    FallbackHandlers.load(response, contextManager, shortStorage, longStorage, suggest, image, endConv);
+    OtherHandlers.load(response, contextManager, shortStorage, longStorage, suggest, image, endConv);
   }
 
   static newGame = GameHandlers.newGame.bind(GameHandlers);

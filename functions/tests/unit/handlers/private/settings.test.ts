@@ -19,6 +19,7 @@ describe('Tests for Settings Handlers', () => {
       env.convData,
       env.userStorage,
       env.addSuggestions.bind(env),
+      env.sendImage.bind(env),
       env.endConversation.bind(env)
     );
   });

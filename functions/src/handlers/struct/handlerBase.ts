@@ -6,6 +6,7 @@ export class HandlerBase {
   protected static speak: (msg: string) => void;
   protected static end: (endMsg: string) => void;
   protected static suggest: (...suggestions: string[]) => void;
+  protected static image: (src: string, alt: string) => void;
 
   protected static contexts: ContextManager;
   protected static short: ConversationData;
@@ -17,6 +18,7 @@ export class HandlerBase {
     shortStorage: ConversationData,
     longStorage: LongStorageData,
     suggest: (...suggestions: string[]) => void,
+    image: (src: string, alt: string) => void,
     endConv?: (msg: string) => void
   ) {
     this.speak = response;
@@ -24,6 +26,7 @@ export class HandlerBase {
     this.short = shortStorage;
     this.long = longStorage;
     this.suggest = suggest;
+    this.image = image;
     this.end = endConv || this.speak;
   }
 }

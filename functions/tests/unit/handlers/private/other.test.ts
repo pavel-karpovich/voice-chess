@@ -18,6 +18,7 @@ describe('Tests for the others handlers', () => {
       env.convData,
       env.userStorage,
       env.addSuggestions.bind(env),
+      env.sendImage.bind(env),
       env.endConversation.bind(env)
     );
   });

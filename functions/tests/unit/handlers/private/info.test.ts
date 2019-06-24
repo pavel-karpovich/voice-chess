@@ -35,6 +35,7 @@ describe('Tests for info handlers', () => {
       env.convData,
       env.userStorage,
       env.addSuggestions.bind(env),
+      env.sendImage.bind(env),
       env.endConversation.bind(env)
     );
   });
