@@ -11,5 +11,4 @@ engine.stdout.on('data', (str) => worker.onmessage(str.toString()));
 engine.stderr.on('data', (str) => worker.onmessage(str.toString()));
 engine.on('error', (err) => { throw err; });
 
-
 worker.onmessage = (str) => console.log(str);

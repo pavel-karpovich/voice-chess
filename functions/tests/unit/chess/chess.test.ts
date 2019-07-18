@@ -1,6 +1,6 @@
 import { Mockfish } from '../../mocks/mockfish';
-jest.mock('stockfish', () => {
-  return (path: string) => new Mockfish();
+jest.mock('../../../src/chess/stockfish/engine', () => {
+  return { StockfishEngine: Mockfish };
 });
 import { Chess, ChessGameState } from '../../../src/chess/chess';
 
