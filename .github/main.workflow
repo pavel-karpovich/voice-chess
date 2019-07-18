@@ -56,21 +56,3 @@ action "Deploy on Firebase" {
   args = "deploy --only functions"
   needs = ["Filter master"]
 }
-
-workflow "Build and Deploy with Debug" {
-  on = "push"
-  resolves = ["Deploy on Firebase Debug"]
-}
-
-action "Filter debug" {
-  uses = "actions/bin/filter@master"
-  needs = ["Run tests", "Send coverage to codecov"]
-  args = "branch debug"
-}
-
-action "Deploy on Firebase Debug" {
-  uses = "w9jds/firebase-action@7d6b2b058813e1224cdd4db255b2f163ae4084d3"
-  secrets = ["FIREBASE_TOKEN"]
-  args = "deploy --only functions"
-  needs = ["Filter debug"]
-}
