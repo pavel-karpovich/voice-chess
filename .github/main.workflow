@@ -47,12 +47,12 @@ action "Send coverage to codecov" {
 action "Filter master" {
   uses = "actions/bin/filter@master"
   needs = ["Run tests", "Send coverage to codecov"]
-  args = "branch master"
+  args = "branch master debug"
 }
 
 action "Deploy on Firebase" {
   uses = "w9jds/firebase-action@7d6b2b058813e1224cdd4db255b2f163ae4084d3"
-  needs = ["Filter master"]
   secrets = ["FIREBASE_TOKEN"]
   args = "deploy --only functions"
+  needs = ["Filter master"]
 }
