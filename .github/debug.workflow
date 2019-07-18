@@ -1,4 +1,4 @@
-workflow "Build and Deploy" {
+workflow "Build and Deploy with Debug" {
   on = "push"
   resolves = ["Deploy on Firebase"]
 }
@@ -47,7 +47,7 @@ action "Send coverage to codecov" {
 action "Filter master" {
   uses = "actions/bin/filter@master"
   needs = ["Run tests", "Send coverage to codecov"]
-  args = "branch master debug"
+  args = "branch debug"
 }
 
 action "Deploy on Firebase" {
