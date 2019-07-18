@@ -106,6 +106,7 @@ function sideHandler(conv: VoiceChessConv): void {
   Handlers.side(side, whose);
 }
 app.intent('Help', Handlers.help);
+app.intent('Play chess', Handlers.welcome);
 app.intent('Default Welcome Intent', Handlers.welcome);
 app.intent('Default Fallback Intent', Handlers.fallback);
 app.intent('New Game', Handlers.newGame);
