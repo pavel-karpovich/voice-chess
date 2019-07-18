@@ -25,9 +25,8 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Test",
-            "program": "${workspaceFolder}\\test.js",
-            "sourceMaps": true
+            "name": "Test stockfish",
+            "program": "${workspaceFolder}\\functions\\tests\\stockfish.js"
         },
         {
             "type": "node",

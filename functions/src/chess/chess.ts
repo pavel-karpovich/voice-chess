@@ -1,6 +1,5 @@
-const loadEngine = require('stockfish');
-import * as path from 'path';
-const stockfishPath = path.join(__dirname, '../../node_modules/stockfish/src/stockfish.wasm');
+import { StockfishEngine } from './stockfish/engine';
+
 export const chessBoardSize = 8;
 export const maxDifficulty = 20;
 
@@ -16,7 +15,7 @@ export const enum ChessGameState {
  * Class for making move in chess
  */
 export class Chess {
-  private stockfish: any;
+  private stockfish: StockfishEngine;
   private fen: string;
   private moves: string[];
   private checkers: string[];
@@ -32,7 +31,7 @@ export class Chess {
    * Callback is needed only when creating new game without fenstring
    */
   constructor(fenstring: string, difficulty: number) {
-    this.stockfish = loadEngine(stockfishPath);
+    this.stockfish = new StockfishEngine();
     this.fen = fenstring || Chess.initialFen;
     this.stateChangeHandler = null;
     this.bestMoveHandler = null;
