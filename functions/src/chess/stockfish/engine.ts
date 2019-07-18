@@ -9,9 +9,9 @@ export class StockfishEngine {
 
   constructor() {
     const nodeJsPath = process.execPath;
-    this.process = subproc.spawn(nodeJsPath, [stockfishPath], { stdio: "pipe" });
-    this.process.stdout.on('data', (str) => this.onmessage(str.toString()));
-    this.process.stderr.on('data', (str) => this.onmessage(str.toString()));
+    this.process = subproc.spawn(nodeJsPath, [stockfishPath], { stdio: 'pipe' });
+    this.process.stdout.on('data', str => this.onmessage(str.toString()));
+    this.process.stderr.on('data', str => this.onmessage(str.toString()));
   }
 
   postMessage(str: string): void {
