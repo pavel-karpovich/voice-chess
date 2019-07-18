@@ -23,7 +23,7 @@
   },
   "main": "lib/firebase.js",
   "dependencies": {
-    "actions-on-google": "^2.7.1",
+    "actions-on-google": "^2.9.0",
     "firebase-admin": "~7.0.0",
     "firebase-functions": "^3.0.1",
     "stockfish": "^10.0.0"
