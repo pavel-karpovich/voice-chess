@@ -47,7 +47,7 @@ action "Send coverage to codecov" {
 action "Filter master" {
   uses = "actions/bin/filter@master"
   needs = ["Run tests", "Send coverage to codecov"]
-  args = "branch (master|debug)"
+  args = "branch master"
 }
 
 action "Deploy on Firebase" {
