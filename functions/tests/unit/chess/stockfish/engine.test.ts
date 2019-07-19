@@ -2,6 +2,7 @@ interface SubprocessMock {
   stdout: { on: (event: string, listener: (data: string) => void) => void },
   stderr: { on: (event: string, listener: (data: string) => void) => void },
   stdin: { write: jest.Mock },
+  on: (event: string, listener: (data: string) => void) => void,
   callStdout?: (data: string) => void,
   callStderr?: (data: string) => void,
 };
@@ -24,6 +25,7 @@ jest.mock('child_process', () => {
         stdout: { on: stdoutMock },
         stderr: { on: stderrMock },
         stdin: { write: stdinMock },
+        on: jest.fn((err: string) => {}),
       };
       return mockProc;
     },
