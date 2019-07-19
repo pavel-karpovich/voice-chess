@@ -15,7 +15,10 @@ const app = dialogflow<ConversationData, LongStorageData>();
 
 function intent(name: string, handler: (conv: VoiceChessConv) => void) {
   app.intent(name, handler);
-  StockfishEngine.instance.kill();
+  if (StockfishEngine.instance) {
+    StockfishEngine.instance.kill();
+    StockfishEngine.instance = null;
+  }
 }
 
 app.middleware(

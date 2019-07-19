@@ -31,9 +31,10 @@ export class StockfishEngine {
     this.process.on('error', err => {
       throw err;
     });
-    if (StockfishEngine.instance) {
-      StockfishEngine.instance.kill();
-    }
+    // if (StockfishEngine.instance) {
+    //   StockfishEngine.instance.kill();
+    //   StockfishEngine.instance = null;
+    // }
     StockfishEngine.instance = this.process;
   }
 
