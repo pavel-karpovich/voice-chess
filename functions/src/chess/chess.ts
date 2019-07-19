@@ -37,13 +37,6 @@ export class Chess {
     this.bestMoveHandler = null;
     this.enemy = null;
     this.memorizedState = null;
-    this.stockfish.postMessage('isready');
-    this.stockfish.postMessage('ucinewgame');
-    this.configureDifficulty(difficulty);
-    this.stockfish.postMessage('setoption name Ponder value false');
-    this.stockfish.postMessage('setoption name Slow Mover value 10');
-    this.stockfish.postMessage(`position fen ${this.fen}`);
-
     this.stockfish.onmessage = (e: any) => {
       if (typeof e !== 'string') return;
       if (e.startsWith('bestmove')) {
@@ -61,6 +54,12 @@ export class Chess {
         this.stateChangeHandler();
       }
     };
+    this.stockfish.postMessage('isready');
+    this.stockfish.postMessage('ucinewgame');
+    this.configureDifficulty(difficulty);
+    this.stockfish.postMessage('setoption name Ponder value false');
+    this.stockfish.postMessage('setoption name Slow Mover value 10');
+    this.stockfish.postMessage(`position fen ${this.fen}`);
   }
   /**
    * Set given level of difficulty in the Stockfish Engine
