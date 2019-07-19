@@ -13,12 +13,15 @@ type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
 
 const app = dialogflow<ConversationData, LongStorageData>();
 
-function intent(name: string, handler: (conv: VoiceChessConv) => void) {
-  app.intent(name, handler);
-  if (StockfishEngine.instance) {
-    StockfishEngine.instance.kill();
-    StockfishEngine.instance = null;
-  }
+function registerFulfillment(name: string, handler: (conv: VoiceChessConv) => void) {
+  console.log(name);
+  app.intent(name, (conv: VoiceChessConv) => {
+    handler(conv);
+    if (StockfishEngine.instance) {
+      StockfishEngine.instance.kill();
+      StockfishEngine.instance = null;
+    }
+  });
 }
 
 app.middleware(
@@ -115,45 +118,45 @@ function sideHandler(conv: VoiceChessConv): void {
   const whose = conv.parameters.whose as WhoseSide;
   Handlers.side(side, whose);
 }
-intent('Help', Handlers.help);
-intent('Play chess', Handlers.welcome);
-intent('Default Welcome Intent', Handlers.welcome);
-intent('Default Fallback Intent', Handlers.fallback);
-intent('New Game', Handlers.newGame);
-intent('Continue Game', Handlers.continueGame);
-intent('Board', Handlers.showBoard);
-intent('Board - next', Handlers.secondPartOfBoard);
-intent('Rank', rankHandler);
-intent('Rank - number', rankHandler);
-intent('Rank - next', Handlers.nextRank);
-intent('Rank - previous', Handlers.prevRank);
-intent('Turn', turnHandler);
-intent('Promotion', promotionHandler);
-intent('Correct', Handlers.correct);
-intent('Choose Side', chooseSideHandler);
-intent('Auto move', Handlers.moveAuto);
-intent('Castling', Handlers.castling);
-intent('Choose Castling', chooseCastlingHandler);
-intent('Difficulty', Handlers.difficulty);
-intent('Difficulty - number', modifyDifficultyHandler);
-intent('Difficulty - full', modifyDifficultyHandler);
-intent('Legal moves', legalMovesHandler);
-intent('History', movesHistoryHandler);
-intent('Enable confirm', Handlers.enableConfirm);
-intent('Disable confirm', Handlers.disableConfirm);
-intent('Advice', Handlers.advice);
-intent('Accept Advice', Handlers.acceptAdvice);
-intent('Square', squareHandler);
-intent('Piece', pieceHandler);
-intent('All', allPiecesHandler);
-intent('Captured', Handlers.captured);
-intent('Resign', Handlers.resign);
-intent('Side', sideHandler);
-intent('Fullmove number', Handlers.fullmove);
-intent('Next', Handlers.next);
-intent('No', Handlers.no);
-intent('Yes', Handlers.yes);
-intent('Silence', Handlers.silence);
-intent('Repeat', Handlers.repeat);
+registerFulfillment('Help', Handlers.help);
+registerFulfillment('Play chess', Handlers.welcome);
+registerFulfillment('Default Welcome Intent', Handlers.welcome);
+registerFulfillment('Default Fallback Intent', Handlers.fallback);
+registerFulfillment('New Game', Handlers.newGame);
+registerFulfillment('Continue Game', Handlers.continueGame);
+registerFulfillment('Board', Handlers.showBoard);
+registerFulfillment('Board - next', Handlers.secondPartOfBoard);
+registerFulfillment('Rank', rankHandler);
+registerFulfillment('Rank - number', rankHandler);
+registerFulfillment('Rank - next', Handlers.nextRank);
+registerFulfillment('Rank - previous', Handlers.prevRank);
+registerFulfillment('Turn', turnHandler);
+registerFulfillment('Promotion', promotionHandler);
+registerFulfillment('Correct', Handlers.correct);
+registerFulfillment('Choose Side', chooseSideHandler);
+registerFulfillment('Auto move', Handlers.moveAuto);
+registerFulfillment('Castling', Handlers.castling);
+registerFulfillment('Choose Castling', chooseCastlingHandler);
+registerFulfillment('Difficulty', Handlers.difficulty);
+registerFulfillment('Difficulty - number', modifyDifficultyHandler);
+registerFulfillment('Difficulty - full', modifyDifficultyHandler);
+registerFulfillment('Legal moves', legalMovesHandler);
+registerFulfillment('History', movesHistoryHandler);
+registerFulfillment('Enable confirm', Handlers.enableConfirm);
+registerFulfillment('Disable confirm', Handlers.disableConfirm);
+registerFulfillment('Advice', Handlers.advice);
+registerFulfillment('Accept Advice', Handlers.acceptAdvice);
+registerFulfillment('Square', squareHandler);
+registerFulfillment('Piece', pieceHandler);
+registerFulfillment('All', allPiecesHandler);
+registerFulfillment('Captured', Handlers.captured);
+registerFulfillment('Resign', Handlers.resign);
+registerFulfillment('Side', sideHandler);
+registerFulfillment('Fullmove number', Handlers.fullmove);
+registerFulfillment('Next', Handlers.next);
+registerFulfillment('No', Handlers.no);
+registerFulfillment('Yes', Handlers.yes);
+registerFulfillment('Silence', Handlers.silence);
+registerFulfillment('Repeat', Handlers.repeat);
 
 export { app };
