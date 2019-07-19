@@ -33,6 +33,7 @@ app.middleware(
     }
     const gCont = new GoogleContextManager(conv.contexts);
     Handlers.load(speak, gCont, conv.data, conv.user.storage, suggest, conv.close.bind(conv));
+    console.log('handler');
   }
 );
 

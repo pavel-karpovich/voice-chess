@@ -1,6 +1,5 @@
-const loadEngine = require('stockfish');
-import * as path from 'path';
-const stockfishPath = path.join(__dirname, '../../node_modules/stockfish/src/stockfish.wasm');
+import { StockfishEngine } from './stockfish/engine';
+
 export const chessBoardSize = 8;
 export const maxDifficulty = 20;
 
@@ -16,7 +15,7 @@ export const enum ChessGameState {
  * Class for making move in chess
  */
 export class Chess {
-  private stockfish: any;
+  private stockfish: StockfishEngine;
   private fen: string;
   private moves: string[];
   private checkers: string[];
@@ -32,19 +31,12 @@ export class Chess {
    * Callback is needed only when creating new game without fenstring
    */
   constructor(fenstring: string, difficulty: number) {
-    this.stockfish = loadEngine(stockfishPath);
+    this.stockfish = new StockfishEngine();
     this.fen = fenstring || Chess.initialFen;
     this.stateChangeHandler = null;
     this.bestMoveHandler = null;
     this.enemy = null;
     this.memorizedState = null;
-    this.stockfish.postMessage('isready');
-    this.stockfish.postMessage('ucinewgame');
-    this.configureDifficulty(difficulty);
-    this.stockfish.postMessage('setoption name Ponder value false');
-    this.stockfish.postMessage('setoption name Slow Mover value 10');
-    this.stockfish.postMessage(`position fen ${this.fen}`);
-
     this.stockfish.onmessage = (e: any) => {
       if (typeof e !== 'string') return;
       if (e.startsWith('bestmove')) {
@@ -62,6 +54,12 @@ export class Chess {
         this.stateChangeHandler();
       }
     };
+    this.stockfish.postMessage('isready');
+    this.stockfish.postMessage('ucinewgame');
+    this.configureDifficulty(difficulty);
+    this.stockfish.postMessage('setoption name Ponder value false');
+    this.stockfish.postMessage('setoption name Slow Mover value 10');
+    this.stockfish.postMessage(`position fen ${this.fen}`);
   }
   /**
    * Set given level of difficulty in the Stockfish Engine
