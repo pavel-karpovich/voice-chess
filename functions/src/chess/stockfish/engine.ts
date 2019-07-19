@@ -8,6 +8,8 @@ export class StockfishEngine {
   private process: subproc.ChildProcess;
   onmessage: (str: string) => void;
 
+  static instance: subproc.ChildProcess;
+
   constructor() {
     const nodeJsPath = process.execPath;
     this.process = subproc.spawn(nodeJsPath, [stockfishPath], { stdio: 'pipe' });
@@ -29,6 +31,10 @@ export class StockfishEngine {
     this.process.on('error', err => {
       throw err;
     });
+    if (StockfishEngine.instance) {
+      StockfishEngine.instance.kill();
+    }
+    StockfishEngine.instance = this.process;
   }
 
   postMessage(str: string): void {

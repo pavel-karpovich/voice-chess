@@ -7,10 +7,16 @@ import { LongStorageData } from './storage/longStorageData';
 import { GoogleContextManager } from './handlers/struct/context/googleContextManager';
 import { Handlers } from './handlers/public';
 import { CastlingType } from './chess/castling';
+import { StockfishEngine } from './chess/stockfish/engine';
 
 type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
 
 const app = dialogflow<ConversationData, LongStorageData>();
+
+function intent(name: string, handler: (conv: VoiceChessConv) => void) {
+  app.intent(name, handler);
+  StockfishEngine.instance.kill();
+}
 
 app.middleware(
   (conv: VoiceChessConv): void => {
@@ -106,45 +112,45 @@ function sideHandler(conv: VoiceChessConv): void {
   const whose = conv.parameters.whose as WhoseSide;
   Handlers.side(side, whose);
 }
-app.intent('Help', Handlers.help);
-app.intent('Play chess', Handlers.welcome);
-app.intent('Default Welcome Intent', Handlers.welcome);
-app.intent('Default Fallback Intent', Handlers.fallback);
-app.intent('New Game', Handlers.newGame);
-app.intent('Continue Game', Handlers.continueGame);
-app.intent('Board', Handlers.showBoard);
-app.intent('Board - next', Handlers.secondPartOfBoard);
-app.intent('Rank', rankHandler);
-app.intent('Rank - number', rankHandler);
-app.intent('Rank - next', Handlers.nextRank);
-app.intent('Rank - previous', Handlers.prevRank);
-app.intent('Turn', turnHandler);
-app.intent('Promotion', promotionHandler);
-app.intent('Correct', Handlers.correct);
-app.intent('Choose Side', chooseSideHandler);
-app.intent('Auto move', Handlers.moveAuto);
-app.intent('Castling', Handlers.castling);
-app.intent('Choose Castling', chooseCastlingHandler);
-app.intent('Difficulty', Handlers.difficulty);
-app.intent('Difficulty - number', modifyDifficultyHandler);
-app.intent('Difficulty - full', modifyDifficultyHandler);
-app.intent('Legal moves', legalMovesHandler);
-app.intent('History', movesHistoryHandler);
-app.intent('Enable confirm', Handlers.enableConfirm);
-app.intent('Disable confirm', Handlers.disableConfirm);
-app.intent('Advice', Handlers.advice);
-app.intent('Accept Advice', Handlers.acceptAdvice);
-app.intent('Square', squareHandler);
-app.intent('Piece', pieceHandler);
-app.intent('All', allPiecesHandler);
-app.intent('Captured', Handlers.captured);
-app.intent('Resign', Handlers.resign);
-app.intent('Side', sideHandler);
-app.intent('Fullmove number', Handlers.fullmove);
-app.intent('Next', Handlers.next);
-app.intent('No', Handlers.no);
-app.intent('Yes', Handlers.yes);
-app.intent('Silence', Handlers.silence);
-app.intent('Repeat', Handlers.repeat);
+intent('Help', Handlers.help);
+intent('Play chess', Handlers.welcome);
+intent('Default Welcome Intent', Handlers.welcome);
+intent('Default Fallback Intent', Handlers.fallback);
+intent('New Game', Handlers.newGame);
+intent('Continue Game', Handlers.continueGame);
+intent('Board', Handlers.showBoard);
+intent('Board - next', Handlers.secondPartOfBoard);
+intent('Rank', rankHandler);
+intent('Rank - number', rankHandler);
+intent('Rank - next', Handlers.nextRank);
+intent('Rank - previous', Handlers.prevRank);
+intent('Turn', turnHandler);
+intent('Promotion', promotionHandler);
+intent('Correct', Handlers.correct);
+intent('Choose Side', chooseSideHandler);
+intent('Auto move', Handlers.moveAuto);
+intent('Castling', Handlers.castling);
+intent('Choose Castling', chooseCastlingHandler);
+intent('Difficulty', Handlers.difficulty);
+intent('Difficulty - number', modifyDifficultyHandler);
+intent('Difficulty - full', modifyDifficultyHandler);
+intent('Legal moves', legalMovesHandler);
+intent('History', movesHistoryHandler);
+intent('Enable confirm', Handlers.enableConfirm);
+intent('Disable confirm', Handlers.disableConfirm);
+intent('Advice', Handlers.advice);
+intent('Accept Advice', Handlers.acceptAdvice);
+intent('Square', squareHandler);
+intent('Piece', pieceHandler);
+intent('All', allPiecesHandler);
+intent('Captured', Handlers.captured);
+intent('Resign', Handlers.resign);
+intent('Side', sideHandler);
+intent('Fullmove number', Handlers.fullmove);
+intent('Next', Handlers.next);
+intent('No', Handlers.no);
+intent('Yes', Handlers.yes);
+intent('Silence', Handlers.silence);
+intent('Repeat', Handlers.repeat);
 
 export { app };
