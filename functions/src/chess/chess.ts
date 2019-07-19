@@ -31,13 +31,16 @@ export class Chess {
    * Callback is needed only when creating new game without fenstring
    */
   constructor(fenstring: string, difficulty: number) {
+    console.log('Before engine creation');
     this.stockfish = new StockfishEngine();
+    console.log('After engine creation');
     this.fen = fenstring || Chess.initialFen;
     this.stateChangeHandler = null;
     this.bestMoveHandler = null;
     this.enemy = null;
     this.memorizedState = null;
     this.stockfish.onmessage = (e: any) => {
+      console.log(e);
       if (typeof e !== 'string') return;
       if (e.startsWith('bestmove')) {
         const bestMove = e.split(' ')[1];
@@ -60,6 +63,7 @@ export class Chess {
     this.stockfish.postMessage('setoption name Ponder value false');
     this.stockfish.postMessage('setoption name Slow Mover value 10');
     this.stockfish.postMessage(`position fen ${this.fen}`);
+    console.log('Complete engine settings');
   }
   /**
    * Set given level of difficulty in the Stockfish Engine
