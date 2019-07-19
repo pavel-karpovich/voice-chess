@@ -15,13 +15,12 @@ export class StockfishEngine {
     this.process = subproc.spawn(nodeJsPath, [stockfishPath], { stdio: 'pipe' });
     const self = this;
     function echo(data: Uint8Array) {
-      let str;
       if (self.onmessage) {
-        str = data.toString();
-        if (str.slice(-1) === '\n') {
-          str = str.slice(0, -1);
+        const str = data.toString();
+        const splits = str.split('\n');
+        for (const line of splits) {
+          self.onmessage(line);
         }
-        self.onmessage(str);
       } else {
         console.error('onmessage handler must be defined.');
       }

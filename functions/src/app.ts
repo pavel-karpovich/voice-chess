@@ -13,10 +13,20 @@ type VoiceChessConv = DialogflowConversation<ConversationData, LongStorageData>;
 
 const app = dialogflow<ConversationData, LongStorageData>();
 
-function registerFulfillment(name: string, handler: (conv: VoiceChessConv) => void) {
-  console.log(name);
-  app.intent(name, (conv: VoiceChessConv) => {
-    handler(conv);
+function registerFulfillment(
+  name: string,
+  handler: (conv: VoiceChessConv) => Promise<void> | void
+) {
+  app.intent(name, async (conv: VoiceChessConv) => {
+    console.log(name);
+    const ret = handler(conv);
+    if (ret instanceof Promise) {
+      try {
+        await ret;
+      } catch (reason) {
+        console.log('Error:' + reason);
+      }
+    }
     if (StockfishEngine.instance) {
       StockfishEngine.instance.kill();
       StockfishEngine.instance = null;
@@ -45,7 +55,6 @@ app.middleware(
     }
     const gCont = new GoogleContextManager(conv.contexts);
     Handlers.load(speak, gCont, conv.data, conv.user.storage, suggest, conv.close.bind(conv));
-    console.log('handler');
   }
 );
 
