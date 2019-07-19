@@ -12,13 +12,12 @@ export class StockfishEngine {
     const nodeJsPath = process.execPath;
     this.process = subproc.spawn(nodeJsPath, [stockfishPath], { stdio: 'pipe' });
     const self = this;
-    function echo(data: Uint8Array)
-    {
+    function echo(data: Uint8Array) {
       let str;
       if (self.onmessage) {
         str = data.toString();
-        if (str.slice(-1) === "\n") {
-            str = str.slice(0, -1);
+        if (str.slice(-1) === '\n') {
+          str = str.slice(0, -1);
         }
         self.onmessage(str);
       } else {
@@ -27,7 +26,9 @@ export class StockfishEngine {
     }
     this.process.stdout.on('data', echo);
     this.process.stderr.on('data', echo);
-    this.process.on("error", function (err) { throw err; });
+    this.process.on('error', err => {
+      throw err;
+    });
   }
 
   postMessage(str: string): void {
