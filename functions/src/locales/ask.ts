@@ -17,11 +17,17 @@ export class Ask {
           'Do you want to start new game?',
           'Create a new game?',
           'Maybe you wanna start a new game?',
+          'New game, yes?',
+          'Will you create a new game?',
+          'What about starting a new game?',
         ],
         ru: [
           'Хотите начать новую игру?',
           'Создать новую игру?',
           'Остаётся только начать новую игру. Да?',
+          'Сыграем партейку?',
+          'Что насчёт новой партии?',
+          'Начнём новую игру?',
         ],
       } as rLangs)[this.lang]
     );
