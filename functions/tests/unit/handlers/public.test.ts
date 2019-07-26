@@ -24,7 +24,7 @@ describe('Test public Handlers API', () => {
   });
 
   test('Load all handlers', () => {
-    Handlers.load(null, null, null, null, null);
+    Handlers.load(null, null, null, {}, null);
     expect(HandlerBase.load).toBeCalledTimes(1);
     expect(MoveHandlers.load).toBeCalledTimes(1);
     expect(SettingsHandlers.load).toBeCalledTimes(1);

@@ -29,6 +29,14 @@ export class Handlers extends HandlerBase {
     AroundMoveHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
     FallbackHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
     OtherHandlers.load(response, contextManager, shortStorage, longStorage, suggest, endConv);
+    if (!longStorage.options || !longStorage.options.difficulty) {
+      const initialDifficulty = 2;
+      const initialConfirmOpt = true;
+      longStorage.options = {
+        difficulty: initialDifficulty,
+        confirm: initialConfirmOpt,
+      };
+    }
   }
 
   static newGame = GameHandlers.newGame.bind(GameHandlers);

@@ -21,11 +21,7 @@ function registerFulfillment(
     console.log(name);
     const ret = handler(conv);
     if (ret instanceof Promise) {
-      try {
-        await ret;
-      } catch (reason) {
-        console.log('Error:' + reason);
-      }
+      await ret;
     }
     if (StockfishEngine.instance) {
       StockfishEngine.instance.kill();
