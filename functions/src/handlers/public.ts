@@ -37,6 +37,9 @@ export class Handlers extends HandlerBase {
         confirm: initialConfirmOpt,
       };
     }
+    if (!longStorage.history) {
+      longStorage.history = [];
+    }
   }
 
   static newGame = GameHandlers.newGame.bind(GameHandlers);
